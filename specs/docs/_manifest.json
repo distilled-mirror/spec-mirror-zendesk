@@ -1,0 +1,41 @@
+{
+  "origin": "https://developer.zendesk.com",
+  "openapi": [
+    {
+      "file": "openapi.json",
+      "source": "https://developer.zendesk.com/zendesk/oas.yaml",
+      "openapi": "3.0.3",
+      "title": "Support API",
+      "paths": 448
+    },
+    {
+      "file": "help_center.json",
+      "source": "https://developer.zendesk.com/help_center/oas.yaml",
+      "openapi": "3.0.2",
+      "title": "Help Center API",
+      "paths": 120
+    }
+  ],
+  "docs": [
+    {
+      "path": "docs/ticketing-introduction.html",
+      "source": "https://developer.zendesk.com/api-reference/ticketing/introduction/",
+      "bytes": 160386
+    },
+    {
+      "path": "docs/security-and-auth.html",
+      "source": "https://developer.zendesk.com/api-reference/introduction/security-and-auth/",
+      "bytes": 119323
+    },
+    {
+      "path": "docs/pagination.html",
+      "source": "https://developer.zendesk.com/api-reference/introduction/pagination/",
+      "bytes": 127991
+    },
+    {
+      "path": "docs/help-center-introduction.html",
+      "source": "https://developer.zendesk.com/api-reference/help_center/help-center-api/introduction/",
+      "bytes": 104153
+    }
+  ]
+}
