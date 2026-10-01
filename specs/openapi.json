@@ -1443,6 +1443,20 @@
         "description": "#### Allowed For\n\n* Admins on accounts that have audit log access\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\nReturns a maximum of 100 records per page.\n\n#### Filtering by multiple values\n\nTo filter by multiple values for the same field, repeat the filter parameter and append empty square brackets \"[]\" to the name of each repeated parameter. For example, to return audit logs where `action` is \"create\", \"update\", or \"destroy\":\n\n`/api/v2/audit_logs?filter[action][]=create&filter[action][]=update&filter[action][]=destroy`\n",
         "parameters": [
           {
+            "name": "ids[]",
+            "in": "query",
+            "description": "Filters audit logs by id. To specify multiple ids, repeat the `ids[]` parameter. For example, `?ids[]=1&ids[]=2`",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
             "name": "filter[source_type]",
             "in": "query",
             "description": "Filter audit logs by the source type. For example, user or rule",
@@ -16493,6 +16507,21 @@
         ],
         "summary": "Record a New Skip for the Current User",
         "description": "Record a new ticket skip for the current user.\n\n#### Allowed For\n\n* Agents\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketSkipCreateInput"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/TicketSkipCreateInputExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Success response",
@@ -32871,6 +32900,36 @@
           }
         ]
       },
+      "BoostsResponse": {
+        "type": "object",
+        "properties": {
+          "boosts": {
+            "type": "array",
+            "description": "The account's boosts, including both plan boosts and feature (addon) boosts",
+            "items": {
+              "type": "object",
+              "properties": {
+                "days_remaining": {
+                  "type": "integer",
+                  "description": "The number of days before the boost expires. Can be negative for expired boosts."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the boost"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The type of boost",
+                  "enum": [
+                    "addon",
+                    "plan"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "BrandAgentObject": {
         "type": "object",
         "properties": {
@@ -33167,8 +33226,7 @@
         "properties": {
           "action": {
             "type": "string",
-            "description": "The action to perform on the attribute values. One of the following: \"upsert\", \"update\", \"delete\"",
-            "readOnly": true
+            "description": "The action to perform on the attribute values. One of the following: \"upsert\", \"update\", \"delete\""
           },
           "attributes": {
             "type": "object",
@@ -33187,8 +33245,7 @@
             "description": "The list of agent ids",
             "items": {
               "type": "integer"
-            },
-            "readOnly": true
+            }
           }
         },
         "required": [
@@ -41928,7 +41985,7 @@
           },
           "shared_tickets": {
             "type": "boolean",
-            "description": "End users in this organization are able to see each other's tickets"
+            "description": "End users in this organization are able to see each other's tickets. This property will be deprecated in the future. Use `ticket_restriction` instead."
           },
           "tags": {
             "type": "array",
@@ -41936,6 +41993,14 @@
             "items": {
               "type": "string"
             }
+          },
+          "ticket_restriction": {
+            "type": "string",
+            "description": "Which tickets end users in this organization can see. Possible values are \"restricted\" or \"organization\". Takes precedence over the `shared_tickets` property.",
+            "enum": [
+              "restricted",
+              "organization"
+            ]
           },
           "updated_at": {
             "type": "string",
@@ -41970,6 +42035,7 @@
             "enterprise",
             "other_tag"
           ],
+          "ticket_restriction": "organization",
           "updated_at": "2011-05-05T10:38:52Z",
           "url": "https://company.zendesk.com/api/v2/organizations/35436"
         },
@@ -50324,6 +50390,33 @@
             "$ref": "#/components/schemas/TicketObject"
           }
         }
+      },
+      "TicketSkipCreateInput": {
+        "type": "object",
+        "properties": {
+          "skip": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "type": "string",
+                "description": "Reason for skipping the ticket",
+                "example": "I have no idea."
+              },
+              "ticket_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "ID of the ticket to skip",
+                "example": 123
+              }
+            },
+            "required": [
+              "ticket_id"
+            ]
+          }
+        },
+        "required": [
+          "skip"
+        ]
       },
       "TicketSkipCreation": {
         "type": "object",
@@ -58820,6 +58913,22 @@
           "count": 1,
           "next_page": null,
           "previous_page": null
+        }
+      },
+      "BoostsResponseExample": {
+        "value": {
+          "boosts": [
+            {
+              "days_remaining": 20,
+              "name": "light_agents",
+              "type": "addon"
+            },
+            {
+              "days_remaining": 7,
+              "name": "Professional",
+              "type": "plan"
+            }
+          ]
         }
       },
       "BrandAgentResponseExample": {
@@ -68528,6 +68637,14 @@
             "via": {
               "channel": "web"
             }
+          }
+        }
+      },
+      "TicketSkipCreateInputExample": {
+        "value": {
+          "skip": {
+            "reason": "I have no idea.",
+            "ticket_id": 123
           }
         }
       },
