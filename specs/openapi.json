@@ -1290,7 +1290,7 @@
           "Approval Requests"
         ],
         "summary": "Create Approval Request",
-        "description": "Creates an approval request for a ticket.\n\nWhen manual approval requests are turned off for the account, approval requests can still be created through this API. Approval requests created by the API have a `Sent by` value of `API`.\n\n#### Allowed For\n\n* System users (flowstate)\n* Agents\n",
+        "description": "Creates one or more approval requests for a ticket.\n\nWhen manual approval requests are turned off for the account, approval requests can still be created through this API. Approval requests created by the API have a `Sent by` value of `API`.\n\n#### Allowed For\n\n* System users (flowstate)\n* Agents\n\n#### Single approval request\n\nTo create a single approval request, supply a top-level `assignee_user_id` or `assignee_group_id`. This is helpful when only one approval is required or approvals need to be received in a specific order.\n\nThe response returns the created request under the\n`approval_request` key. See the **Example body** and **Example response(s)**\nsections below for the single-request request and response shapes.\n\n#### Parallel approval requests\n\nTo create multiple approval requests at once, for the approvers to review and respond to in parallel, supply an `approval_requests` array. The approval request's `subject` and `message` are set once at the top level and apply to every individual approval request in the array.\n\nThe approval requests are created atomically as an array under the `approval_requests` key, and all share the same `approval_workflow_instance_id`. If any of the approval request entries are invalid, none of the requests are created. To avoid invalid entries, do the following:\n\n * Specify exactly one `assignee_user_id` or `assignee_group_id` for each entry in the `approval_requests` array.\n * Make sure you don't combine a top-level `assignee_user_id` or `assignee_group_id` with the\n  `approval_requests` array. Doing so returns a `422`.\n\nExample request:\n\n```bash\ncurl https://{subdomain}.zendesk.com/api/v2/approval_requests \\\n  -H \"Content-Type: application/json\" -X POST \\\n  -d '{\"ticket_id\": 123, \"subject\": \"Budget Approval\", \"message\": \"Please approve the Q1 budget\", \"approval_requests\": [{\"assignee_user_id\": 101}, {\"assignee_group_id\": 202}]}' \\\n  -v -u {email_address}/token:{api_token}\n```\n\nExample response:\n\n```json\n{\n  \"approval_requests\": [\n    {\n      \"id\": \"01KFP3S9EVXF9CKAYY080NV98C\",\n      \"approval_workflow_instance_id\": \"01KFP3S9EVXF9CKAYY080NV98D\",\n      \"subject\": \"Budget Approval\",\n      \"message\": \"Please approve the Q1 budget\",\n      \"status\": \"active\",\n      \"created_at\": \"2026-01-23T19:02:36Z\",\n      \"created_by_id\": 789,\n      \"assignee_user_id\": 101,\n      \"assignee_group_id\": null,\n      \"ticket_id\": 123,\n      \"origination_type\": \"API_ORIGINATION\"\n    },\n    {\n      \"id\": \"01KFP3S9EVXF9CKAYY080NV98E\",\n      \"approval_workflow_instance_id\": \"01KFP3S9EVXF9CKAYY080NV98D\",\n      \"subject\": \"Budget Approval\",\n      \"message\": \"Please approve the Q1 budget\",\n      \"status\": \"active\",\n      \"created_at\": \"2026-01-23T19:02:36Z\",\n      \"created_by_id\": 789,\n      \"assignee_user_id\": null,\n      \"assignee_group_id\": 202,\n      \"ticket_id\": 123,\n      \"origination_type\": \"API_ORIGINATION\"\n    }\n  ]\n}\n```\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -1304,6 +1304,9 @@
                 },
                 "default": {
                   "$ref": "#/components/examples/ApprovalRequestCreateRequestExample"
+                },
+                "parallel": {
+                  "$ref": "#/components/examples/ApprovalRequestCreateParallelRequestExample"
                 }
               }
             }
@@ -1311,15 +1314,18 @@
         },
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Created. A single request returns the created approval request under the\n`approval_request` key. A parallel request returns an array of the created approval\nrequests under the `approval_requests` key.\n",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApprovalRequestSimpleResponse"
+                  "$ref": "#/components/schemas/ApprovalRequestCreateResponse"
                 },
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/ApprovalRequestSimpleResponseExample"
+                  },
+                  "parallel": {
+                    "$ref": "#/components/examples/ApprovalRequestsParallelResponseExample"
                   }
                 }
               }
@@ -1335,6 +1341,9 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/ApprovalRequestErrorExample"
+                  },
+                  "mixed_assignee_format": {
+                    "$ref": "#/components/examples/ApprovalRequestMixedAssigneeErrorExample"
                   }
                 }
               }
@@ -20636,6 +20645,38 @@
         }
       }
     },
+    "/api/v2/tickets/{ticket_id}/parent_ticket_tasks": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TicketId"
+        }
+      ],
+      "get": {
+        "operationId": "ListParentTicketReferences",
+        "tags": [
+          "Task Lists"
+        ],
+        "summary": "List Parent Ticket References",
+        "description": "Returns parent tickets and task items that link to the specified subticket. If the ticket has no parent task links, `parent_ticket_tasks` is empty.\n\n#### Allowed For\n\n* Agents",
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParentTicketTasksResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/ParentTicketTasksResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v2/tickets/{ticket_id}/related": {
       "get": {
         "operationId": "TicketRelatedInformation",
@@ -20929,6 +20970,162 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v2/tickets/{ticket_id}/task_items/{task_item_id}/subticket": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TicketId"
+        },
+        {
+          "$ref": "#/components/parameters/TaskItemId"
+        }
+      ],
+      "post": {
+        "operationId": "CreateSubticket",
+        "tags": [
+          "Task Lists"
+        ],
+        "summary": "Create Subticket",
+        "description": "Creates a ticket and links it to the specified task item as a subticket. The parent ticket must not already be a subticket.\n\n`subject` and `comment.body` are required. `comment.body` can contain up to 1,000 characters.\n\n#### Allowed For\n\n* Agents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubticketCreateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/SubticketCreateRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubticketCreateResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/SubticketCreateResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/tickets/{ticket_id}/task_items/{task_item_id}/task_links": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TicketId"
+        },
+        {
+          "$ref": "#/components/parameters/TaskItemId"
+        }
+      ],
+      "get": {
+        "operationId": "ListLinkedTicketsForTaskItem",
+        "tags": [
+          "Task Lists"
+        ],
+        "summary": "List Linked Tickets",
+        "description": "Returns tickets linked to the specified task item.\n\n#### Allowed For\n\n* Agents",
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskObjectLinksResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/TaskObjectLinksResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "LinkExistingTicket",
+        "tags": [
+          "Task Lists"
+        ],
+        "summary": "Link Existing Ticket",
+        "description": "Links an existing ticket to the specified task item. A task item can have one linked ticket.\n\n#### Allowed For\n\n* Agents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskObjectLinkCreateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/TaskObjectLinkCreateRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskObjectLinkResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/TaskObjectLinkResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/tickets/{ticket_id}/task_items/{task_item_id}/task_links/{task_object_link_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/TicketId"
+        },
+        {
+          "$ref": "#/components/parameters/TaskItemId"
+        },
+        {
+          "name": "task_object_link_id",
+          "in": "path",
+          "description": "The id of the task object link",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "example": "01KH2Y95EFXWNA0BVXD4R2JH22"
+        }
+      ],
+      "delete": {
+        "operationId": "UnlinkTicket",
+        "tags": [
+          "Task Lists"
+        ],
+        "summary": "Unlink Ticket",
+        "description": "Deletes the link between the specified task item and ticket. This does not delete the ticket or the task item.\n\n#### Allowed For\n\n* Agents",
+        "responses": {
+          "204": {
+            "description": "No content response"
           }
         }
       }
@@ -25475,7 +25672,7 @@
           {
             "name": "filter",
             "in": "query",
-            "description": "Filter to apply to autocomplete results. Accepted values: `assignable`, `requester`.\n",
+            "description": "Filter to apply to autocomplete results.\n",
             "schema": {
               "type": "string",
               "enum": [
@@ -31245,29 +31442,62 @@
       "ApprovalRequestCreateRequest": {
         "title": "ApprovalRequestCreateRequest",
         "type": "object",
+        "description": "Request body for approval requests. Two mutually exclusive shapes are supported:\n\n* **Single**: Specify a top-level `assignee_user_id` or `assignee_group_id` to create one approval request with a specified `subject` and `message`. \n* **Parallel**: Specify an `approval_requests` array instead of a top-level assignee value. This creates multiple approval requests under a single workflow instance. All approval requests in the array share the same `subject` and `message`.\n",
         "properties": {
+          "approval_requests": {
+            "type": "array",
+            "description": "Parallel approval requests only. One entry per approval request to create, up to five. Each entry must\nspecify exactly one of `assignee_user_id` or `assignee_group_id`.  Can't be used with a top-level `assignee_user_id` or `assignee_group_id`.\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "assignee_group_id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "The id of the group assigned to review and approve the request",
+                  "example": 202,
+                  "nullable": true
+                },
+                "assignee_user_id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "The id of the user assigned to review and approve the request",
+                  "example": 101,
+                  "nullable": true
+                }
+              }
+            },
+            "example": [
+              {
+                "assignee_user_id": 101
+              },
+              {
+                "assignee_group_id": 202
+              }
+            ],
+            "nullable": true
+          },
           "assignee_group_id": {
             "type": "integer",
             "format": "int64",
-            "description": "The id of the group assigned to review and approve the request",
+            "description": "Single approval request only. The id of the group assigned to review and approve the request. Can't be used with an `approval_requests` array.",
             "example": 789,
             "nullable": true
           },
           "assignee_user_id": {
             "type": "integer",
             "format": "int64",
-            "description": "The id of the user assigned to review and approve the request",
+            "description": "Single approval request only. The id of the user assigned to review and approve the request. Can't be used with an `approval_requests` array.",
             "example": 456,
             "nullable": true
           },
           "message": {
             "type": "string",
-            "description": "Details and context for the approval request",
+            "description": "Details and context for the approval request. Shared by all approval requests created in the call.",
             "example": "Please approve this request for a new laptop for the engineering team"
           },
           "subject": {
             "type": "string",
-            "description": "Subject line for the approval request",
+            "description": "Subject line for the approval request. Shared by all approval requests created in the call.",
             "example": "Laptop Purchase Approval"
           },
           "ticket_id": {
@@ -31282,6 +31512,32 @@
           "subject",
           "ticket_id"
         ]
+      },
+      "ApprovalRequestCreateResponse": {
+        "title": "ApprovalRequestCreateResponse",
+        "type": "object",
+        "description": "Response returned when creating approval requests. A single request returns\nthe created approval request under the `approval_request` key. A parallel\nrequest returns an array of the created approval requests under the\n`approval_requests` key. Exactly one of these keys is present. Every approval request in a parallel approvals array shares the same\n`approval_workflow_instance_id`.\n",
+        "properties": {
+          "approval_request": {
+            "type": "object",
+            "description": "The created approval request. Present for single requests.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ApprovalRequestObject"
+              }
+            ],
+            "nullable": true
+          },
+          "approval_requests": {
+            "type": "array",
+            "description": "The created approval requests. Present for parallel requests.",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalRequestObject"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "ApprovalRequestError": {
         "type": "object",
@@ -31316,6 +31572,12 @@
       "ApprovalRequestObject": {
         "type": "object",
         "properties": {
+          "approval_workflow_instance_id": {
+            "type": "string",
+            "description": "Unique identifier (ULID) of the parent workflow instance. Approval requests created together as a parallel group share the same value.",
+            "example": "01KFP3S9EVXF9CKAYY080NV98D",
+            "readOnly": true
+          },
           "assignee_group_id": {
             "type": "integer",
             "format": "int64",
@@ -31612,77 +31874,13 @@
         "type": "object",
         "properties": {
           "approval_request": {
-            "type": "object",
-            "properties": {
-              "assignee_group_id": {
-                "type": "integer",
-                "format": "int64",
-                "description": "The id of the group assigned to review the request",
-                "nullable": true
-              },
-              "assignee_user_id": {
-                "type": "integer",
-                "format": "int64",
-                "description": "The id of the user assigned to review the request",
-                "example": 456,
-                "nullable": true
-              },
-              "created_at": {
-                "type": "string",
-                "format": "date-time",
-                "description": "The time the approval request was created",
-                "example": "2026-01-23T19:02:36Z"
-              },
-              "created_by_id": {
-                "type": "integer",
-                "format": "int64",
-                "description": "The id of the user who created the approval request",
-                "example": 789
-              },
-              "id": {
-                "type": "string",
-                "description": "Unique identifier for the approval request (ULID format)",
-                "example": "01KFP3S9EVXF9CKAYY080NV98C"
-              },
-              "message": {
-                "type": "string",
-                "description": "Details and context for the approval request",
-                "example": "Please approve this request for a new laptop"
-              },
-              "origination_type": {
-                "type": "string",
-                "description": "How the approval request was created",
-                "enum": [
-                  "API_ORIGINATION",
-                  "UI_ORIGINATION",
-                  "TRIGGER_ORIGINATION",
-                  "DATA_IMPORTER_ORIGINATION",
-                  "TEMPLATE_ORIGINATION",
-                  "ACTION_FLOW_ORIGINATION",
-                  "UNKNOWN_ORIGINATION"
-                ],
-                "example": "API_ORIGINATION",
-                "nullable": true
-              },
-              "status": {
-                "type": "string",
-                "description": "Current status of the approval request",
-                "example": "active"
-              },
-              "subject": {
-                "type": "string",
-                "description": "Subject line for the approval request",
-                "example": "Laptop Purchase Approval"
-              },
-              "ticket_id": {
-                "type": "integer",
-                "format": "int64",
-                "description": "The id of the ticket this approval request is attached to",
-                "example": 123
-              }
-            }
+            "$ref": "#/components/schemas/ApprovalRequestObject"
           }
-        }
+        },
+        "additionalProperties": false,
+        "required": [
+          "approval_request"
+        ]
       },
       "ApprovalRequestsListResponse": {
         "title": "ApprovalRequestsListResponse",
@@ -31694,6 +31892,10 @@
             "items": {
               "type": "object",
               "properties": {
+                "approval_workflow_instance_id": {
+                  "type": "string",
+                  "description": "Unique identifier (ULID) of the parent workflow instance. Parallel approval requests share the same ULID."
+                },
                 "assignee_group": {
                   "type": "object",
                   "properties": {
@@ -31945,6 +32147,23 @@
             }
           }
         }
+      },
+      "ApprovalRequestsParallelResponse": {
+        "title": "ApprovalRequestsParallelResponse",
+        "type": "object",
+        "description": "Response returned when creating parallel approval requests. Every\napproval request in the array shares the same `approval_workflow_instance_id`.\n",
+        "properties": {
+          "approval_requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalRequestObject"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "approval_requests"
+        ]
       },
       "AssigneeFieldAssignableAgentObject": {
         "title": "AssigneeFieldAssignableAgents",
@@ -35372,6 +35591,10 @@
             "type": "string",
             "description": "What the agent can do with capacity rules. Allowed values: \"none\", \"all\", \"view-and-assign\""
           },
+          "change_management_access": {
+            "type": "string",
+            "description": "What level of access the agent has to change management. Allowed values: \"none\", \"view\", \"full\""
+          },
           "chat_access": {
             "type": "boolean",
             "description": "Whether or not the agent has access to Chat",
@@ -35434,6 +35657,10 @@
           "manage_business_rules": {
             "type": "boolean",
             "description": "Whether or not the agent can manage business rules"
+          },
+          "manage_change_management_configuration": {
+            "type": "boolean",
+            "description": "Whether or not the agent can manage change management configuration"
           },
           "manage_contextual_workspaces": {
             "type": "boolean",
@@ -42385,6 +42612,61 @@
           }
         }
       },
+      "ParentTicketTaskItemObject": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The task item description",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The task item name"
+          },
+          "task_item_id": {
+            "type": "string",
+            "description": "The id of the task item"
+          }
+        }
+      },
+      "ParentTicketTaskReferenceObject": {
+        "type": "object",
+        "properties": {
+          "parent_ticket_id": {
+            "type": "integer",
+            "description": "The id of the parent ticket. The value is null when the parent ticket is private.",
+            "nullable": true
+          },
+          "private": {
+            "type": "boolean",
+            "description": "Whether the parent ticket is private to the requester"
+          },
+          "status": {
+            "type": "string",
+            "description": "The parent ticket status. The value is null when the parent ticket is private.",
+            "nullable": true
+          },
+          "task_items": {
+            "type": "array",
+            "description": "The task items that link to the specified subticket. The array is empty when the parent ticket is private or deleted.",
+            "items": {
+              "$ref": "#/components/schemas/ParentTicketTaskItemObject"
+            }
+          }
+        }
+      },
+      "ParentTicketTasksResponse": {
+        "type": "object",
+        "properties": {
+          "parent_ticket_tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParentTicketTaskReferenceObject"
+            }
+          }
+        }
+      },
       "PermissionAction": {
         "type": "object",
         "properties": {
@@ -45309,6 +45591,81 @@
           }
         }
       },
+      "SubticketCreateRequest": {
+        "type": "object",
+        "properties": {
+          "subticket": {
+            "type": "object",
+            "properties": {
+              "assignee_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The id of the assignee"
+              },
+              "comment": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "The first comment body",
+                    "maxLength": 1000
+                  },
+                  "public": {
+                    "type": "boolean",
+                    "description": "Whether the first comment is public. Defaults to false."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              },
+              "requester_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The id of the requester. Defaults to the current user when omitted."
+              },
+              "status": {
+                "type": "string",
+                "description": "The initial status of the subticket. Supported values are new, open, pending, and hold.",
+                "enum": [
+                  "new",
+                  "open",
+                  "pending",
+                  "hold"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "description": "The subject of the subticket"
+              }
+            },
+            "required": [
+              "subject",
+              "comment"
+            ]
+          }
+        },
+        "required": [
+          "subticket"
+        ]
+      },
+      "SubticketCreateResponse": {
+        "type": "object",
+        "properties": {
+          "subticket": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "The id of the created subticket"
+              }
+            }
+          },
+          "task_object_link": {
+            "$ref": "#/components/schemas/TaskObjectLinkObject"
+          }
+        }
+      },
       "SupportAddressObject": {
         "type": "object",
         "properties": {
@@ -47127,6 +47484,117 @@
         "required": [
           "name"
         ]
+      },
+      "TaskObjectLinkCreateRequest": {
+        "type": "object",
+        "properties": {
+          "link": {
+            "type": "object",
+            "properties": {
+              "linked_object_id": {
+                "type": "string",
+                "description": "The id of the existing ticket to link"
+              },
+              "object_type": {
+                "type": "string",
+                "description": "The object type to link. The only supported value is Ticket.",
+                "enum": [
+                  "Ticket"
+                ]
+              }
+            },
+            "required": [
+              "object_type",
+              "linked_object_id"
+            ]
+          }
+        },
+        "required": [
+          "link"
+        ]
+      },
+      "TaskObjectLinkObject": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time the link was created"
+          },
+          "created_by": {
+            "$ref": "#/components/schemas/TaskObjectLinkUserObject"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the task object link"
+          },
+          "linked_object_status": {
+            "type": "string",
+            "description": "The linked ticket status. The value is null when the linked ticket is private.",
+            "nullable": true
+          },
+          "nice_id": {
+            "type": "integer",
+            "description": "The linked ticket id. The value is null when the linked ticket is private.",
+            "nullable": true
+          },
+          "object_type": {
+            "type": "string",
+            "description": "The linked object type",
+            "enum": [
+              "Ticket"
+            ]
+          },
+          "private": {
+            "type": "boolean",
+            "description": "Whether the linked ticket is private to the requester"
+          },
+          "task_item_instance_id": {
+            "type": "string",
+            "description": "The id of the linked task item"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time the link was last updated"
+          },
+          "updated_by": {
+            "$ref": "#/components/schemas/TaskObjectLinkUserObject"
+          }
+        }
+      },
+      "TaskObjectLinkResponse": {
+        "type": "object",
+        "properties": {
+          "task_object_link": {
+            "$ref": "#/components/schemas/TaskObjectLinkObject"
+          }
+        }
+      },
+      "TaskObjectLinkUserObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The id of the user"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the user"
+          }
+        }
+      },
+      "TaskObjectLinksResponse": {
+        "type": "object",
+        "properties": {
+          "task_object_links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskObjectLinkObject"
+            }
+          }
+        }
       },
       "TasksByTaskListTemplateIdResponse": {
         "type": "object",
@@ -58299,6 +58767,22 @@
           ]
         }
       },
+      "ApprovalRequestCreateParallelRequestExample": {
+        "summary": "Parallel (multiple approval requests)",
+        "value": {
+          "approval_requests": [
+            {
+              "assignee_user_id": 101
+            },
+            {
+              "assignee_group_id": 202
+            }
+          ],
+          "message": "Please approve the Q1 budget",
+          "subject": "Budget Approval",
+          "ticket_id": 123
+        }
+      },
       "ApprovalRequestCreateRequestExample": {
         "value": {
           "assignee_user_id": 456,
@@ -58325,6 +58809,17 @@
           ]
         }
       },
+      "ApprovalRequestMixedAssigneeErrorExample": {
+        "summary": "Top-level assignee combined with approval_requests array",
+        "value": {
+          "errors": [
+            {
+              "code": "ApprovalRequestCreationFailed",
+              "title": "Cannot specify assignee_user_id or assignee_group_id at top level when using approval_requests array"
+            }
+          ]
+        }
+      },
       "ApprovalRequestSimpleResponseExample": {
         "value": {
           "approval_request": {
@@ -58345,6 +58840,7 @@
         "value": {
           "approval_requests": [
             {
+              "approval_workflow_instance_id": "01HX123ABD",
               "assignee_user": {
                 "id": 12345,
                 "name": "Jane Approver"
@@ -58369,6 +58865,7 @@
               "withdrawn_reason": null
             },
             {
+              "approval_workflow_instance_id": "01HX123DEG",
               "assignee_group": {
                 "id": 456,
                 "name": "Approval Team"
@@ -58429,6 +58926,39 @@
             "before_cursor": null,
             "has_more": false
           }
+        }
+      },
+      "ApprovalRequestsParallelResponseExample": {
+        "summary": "Parallel approval requests",
+        "value": {
+          "approval_requests": [
+            {
+              "approval_workflow_instance_id": "01KFP3S9EVXF9CKAYY080NV98D",
+              "assignee_group_id": null,
+              "assignee_user_id": 101,
+              "created_at": "2026-01-23T19:02:36Z",
+              "created_by_id": 789,
+              "id": "01KFP3S9EVXF9CKAYY080NV98C",
+              "message": "Please approve the Q1 budget",
+              "origination_type": "API_ORIGINATION",
+              "status": "active",
+              "subject": "Budget Approval",
+              "ticket_id": 123
+            },
+            {
+              "approval_workflow_instance_id": "01KFP3S9EVXF9CKAYY080NV98D",
+              "assignee_group_id": 202,
+              "assignee_user_id": null,
+              "created_at": "2026-01-23T19:02:36Z",
+              "created_by_id": 789,
+              "id": "01KFP3S9EVXF9CKAYY080NV98E",
+              "message": "Please approve the Q1 budget",
+              "origination_type": "API_ORIGINATION",
+              "status": "active",
+              "subject": "Budget Approval",
+              "ticket_id": 123
+            }
+          ]
         }
       },
       "AssigneeFieldAssignableGroupAgentsResponseExample": {
@@ -64862,6 +65392,24 @@
           }
         }
       },
+      "ParentTicketTasksResponseExample": {
+        "value": {
+          "parent_ticket_tasks": [
+            {
+              "parent_ticket_id": 123456,
+              "private": false,
+              "status": "Open",
+              "task_items": [
+                {
+                  "description": "Create the employee hardware request",
+                  "name": "Provision laptop",
+                  "task_item_id": "01KH2TPNQR5WB7MV9XEJD0FZHS"
+                }
+              ]
+            }
+          ]
+        }
+      },
       "PermanentlyDeleteTicketJobStatusResponseExample": {
         "value": {
           "job_status": {
@@ -66791,6 +67339,42 @@
           ]
         }
       },
+      "SubticketCreateRequestExample": {
+        "value": {
+          "subticket": {
+            "comment": {
+              "body": "Please provision a laptop for the new hire."
+            },
+            "requester_id": 123,
+            "subject": "Need a laptop"
+          }
+        }
+      },
+      "SubticketCreateResponseExample": {
+        "value": {
+          "subticket": {
+            "id": 456
+          },
+          "task_object_link": {
+            "created_at": "2025-08-06T17:10:00Z",
+            "created_by": {
+              "id": 123,
+              "name": "Ada Lovelace"
+            },
+            "id": "01KH2Y95EFXWNA0BVXD4R2JH22",
+            "linked_object_status": "New",
+            "nice_id": 456,
+            "object_type": "Ticket",
+            "private": false,
+            "task_item_instance_id": "01KH2TPNQR5WB7MV9XEJD0FZHS",
+            "updated_at": "2025-08-06T17:10:00Z",
+            "updated_by": {
+              "id": 123,
+              "name": "Ada Lovelace"
+            }
+          }
+        }
+      },
       "SupportAddressCreateResponseExample": {
         "value": {
           "recipient_address": {
@@ -67454,6 +68038,60 @@
               "task_count": 3,
               "updated_at": "2026-01-12T18:31:19Z",
               "url": "https://{subdomain}.zendesk.com/api/v2/task_list_templates/01K3KV7834EFJPHQC2VFXKSYGN.json"
+            }
+          ]
+        }
+      },
+      "TaskObjectLinkCreateRequestExample": {
+        "value": {
+          "link": {
+            "linked_object_id": "456",
+            "object_type": "Ticket"
+          }
+        }
+      },
+      "TaskObjectLinkResponseExample": {
+        "value": {
+          "task_object_link": {
+            "created_at": "2025-08-06T17:10:00Z",
+            "created_by": {
+              "id": 123,
+              "name": "Ada Lovelace"
+            },
+            "id": "01KH2Y95EFXWNA0BVXD4R2JH22",
+            "linked_object_status": "Open",
+            "nice_id": 456,
+            "object_type": "Ticket",
+            "private": false,
+            "task_item_instance_id": "01KH2TPNQR5WB7MV9XEJD0FZHS",
+            "updated_at": "2025-08-06T17:10:00Z",
+            "updated_by": {
+              "id": 123,
+              "name": "Ada Lovelace"
+            }
+          }
+        }
+      },
+      "TaskObjectLinksResponseExample": {
+        "value": {
+          "task_object_links": [
+            {
+              "created_at": "2025-08-06T17:10:00Z",
+              "created_by": {
+                "id": 123,
+                "name": "Ada Lovelace"
+              },
+              "id": "01KH2Y95EFXWNA0BVXD4R2JH22",
+              "linked_object_status": "Open",
+              "nice_id": 456,
+              "object_type": "Ticket",
+              "private": false,
+              "task_item_instance_id": "01KH2TPNQR5WB7MV9XEJD0FZHS",
+              "updated_at": "2025-08-06T17:10:00Z",
+              "updated_by": {
+                "id": 123,
+                "name": "Ada Lovelace"
+              }
             }
           ]
         }
