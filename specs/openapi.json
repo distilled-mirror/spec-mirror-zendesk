@@ -66,7 +66,7 @@
     },
     {
       "name": "WhatsApp Templates",
-      "description": "Endpoints supporting Zendesk's agent- and admin-facing WhatsApp message template listing and activation UI."
+      "description": "WhatsApp message templates synced from SunCo."
     },
     {
       "name": "Organizations"
@@ -3170,6 +3170,489 @@
                 "example": ""
               }
             }
+          }
+        }
+      }
+    },
+    "/api/v2/channels/whatsapp_templates": {
+      "get": {
+        "operationId": "ListWhatsappTemplates",
+        "tags": [
+          "WhatsApp Templates"
+        ],
+        "summary": "List WhatsApp Templates",
+        "description": "Returns the WhatsApp message templates synced from SunCo for the account's\nWhatsApp integrations. Only templates approved by WhatsApp are synced.\n\nListing triggers a freshness check per integration. If local data is missing or stale, a\nbackground sync is started and the `syncing` flag is set in the response. The list may be\nincomplete while that flag is set, so poll until it clears.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Allowed For\n\n* Agents\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DualPaginationPage"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "name": "integration_id",
+            "in": "query",
+            "description": "Only return templates active on this SunCo WhatsApp integration.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "5f3a1b2c4d5e6f7a8b9c0d1e"
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "description": "Only return templates with this activation state.",
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Only return templates in this WhatsApp category, for example `UTILITY`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "UTILITY"
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Only return templates authored in this language, for example `en_US`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "en_US"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Only return templates whose name contains this value.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatsappTemplatesResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/WhatsappTemplatesResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returned when `integration_id` does not match a WhatsApp integration on the account, or\nwhen the WhatsApp re-engagement feature is not enabled for the account.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "error": "Integration not found"
+                    }
+                  },
+                  "feature_not_enabled": {
+                    "value": {
+                      "description": "Not found",
+                      "error": "RecordNotFound"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/channels/whatsapp_templates/{template_id}/toggle": {
+      "put": {
+        "operationId": "ToggleWhatsappTemplate",
+        "tags": [
+          "WhatsApp Templates"
+        ],
+        "summary": "Toggle WhatsApp Template",
+        "description": "Enables or disables a single WhatsApp message template for the account. Activation is\ncontrolled by admins and is never overwritten by a sync from SunCo.\n\n#### Allowed For\n\n* Admins\n",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "description": "The template's identifier at WABA (WhatsApp)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1234567890"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Whether the template should be enabled for the account"
+                  }
+                },
+                "required": [
+                  "is_active"
+                ]
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "is_active": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "whatsapp_template": {
+                      "$ref": "#/components/schemas/WhatsappTemplateObject"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "whatsapp_template": {
+                        "category": "UTILITY",
+                        "components": [
+                          {
+                            "text": "Hi {{1}}, your order {{2}} has shipped.",
+                            "type": "BODY"
+                          }
+                        ],
+                        "created_at": "2026-09-14T14:32:27Z",
+                        "id": "01JBQ8Z5K7N3M9P2R4T6V8X0YA",
+                        "integrations": [
+                          {
+                            "id": "5f3a1b2c4d5e6f7a8b9c0d1e",
+                            "name": "WhatsApp Support"
+                          }
+                        ],
+                        "is_active": true,
+                        "language": "en_US",
+                        "name": "order_confirmation",
+                        "status": "approved",
+                        "template_id": "1234567890",
+                        "updated_at": "2026-09-17T17:24:25Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when `is_active` is omitted or null.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "description": "Parameter is_active is required",
+                  "error": "ParameterMissing"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the current user is not an admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "description": "You do not have access to this page",
+                  "error": "Forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returned when no template matches `template_id` on the account, or when the WhatsApp\nre-engagement feature is not enabled for the account.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "description": "Not found",
+                  "error": "RecordNotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/channels/whatsapp_templates/languages": {
+      "get": {
+        "operationId": "ListWhatsappTemplateLanguages",
+        "tags": [
+          "WhatsApp Templates"
+        ],
+        "summary": "List WhatsApp Template Languages",
+        "description": "Returns the distinct languages present across the account's synced WhatsApp message\ntemplates. Use it to populate a language filter for\n[List WhatsApp Templates](#list-whatsapp-templates).\n\n#### Allowed For\n\n* Agents\n",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "query",
+            "description": "Scope the languages to templates active on this WhatsApp integration.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "5f3a1b2c4d5e6f7a8b9c0d1e"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatsappTemplateLanguagesResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/WhatsappTemplateLanguagesResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returned when `integration_id` does not match a WhatsApp integration on the account, or\nwhen the WhatsApp re-engagement feature is not enabled for the account.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "error": "Integration not found"
+                    }
+                  },
+                  "feature_not_enabled": {
+                    "value": {
+                      "description": "Not found",
+                      "error": "RecordNotFound"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/channels/whatsapp_templates/toggle_many": {
+      "put": {
+        "operationId": "ToggleManyWhatsappTemplates",
+        "tags": [
+          "WhatsApp Templates"
+        ],
+        "summary": "Bulk Toggle WhatsApp Templates",
+        "description": "Enables or disables several WhatsApp message templates in one request. All templates are\nset to the same `is_active` value. The update is applied only if every supplied\n`template_id` exists on the account.\n\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Whether the templates should be enabled for the account"
+                  },
+                  "template_ids": {
+                    "type": "array",
+                    "description": "The WABA (WhatsApp) identifiers of the templates to update",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "template_ids",
+                  "is_active"
+                ]
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "is_active": false,
+                    "template_ids": [
+                      "1234567890",
+                      "1234567891"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WhatsappTemplatesResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/WhatsappTemplatesResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returned when `is_active` or `template_ids` is omitted or null.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "description": "Parameter is_active is required",
+                  "error": "ParameterMissing"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - the current user is not an admin.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "description": "You do not have access to this page",
+                  "error": "Forbidden"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Returned when one or more supplied `template_ids` do not exist on the account, or when\nthe WhatsApp re-engagement feature is not enabled for the account.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "error": "One or more templates not found"
+                    }
+                  },
+                  "feature_not_enabled": {
+                    "value": {
+                      "description": "Not found",
+                      "error": "RecordNotFound"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Returned when `template_ids` contains no non-blank values. No response body is returned\nin this case.\n"
           }
         }
       }
@@ -45676,12 +46159,13 @@
           },
           "cname_status": {
             "type": "string",
-            "description": "Whether all of the required CNAME records are set. Possible values: \"unknown\", \"verified\", \"failed\"",
+            "description": "**Deprecated.** This field is no longer in use. Existing support addresses will return their previously stored value. New support addresses will return `\"unknown\"`.",
             "enum": [
               "unknown",
               "verified",
               "failed"
             ],
+            "deprecated": true,
             "readOnly": true
           },
           "created_at": {
@@ -55305,7 +55789,21 @@
             "type": "array",
             "description": "The distinct languages present across the account's synced templates",
             "items": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Language code from the template, for example `en_US`"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Localized display name for the language"
+                }
+              },
+              "required": [
+                "code",
+                "label"
+              ]
             }
           }
         }
@@ -55322,7 +55820,7 @@
           },
           "components": {
             "type": "array",
-            "description": "The template's WhatsApp components (header, body, footer, and buttons) as returned by\nSunshine Conversations. The shape is defined by WhatsApp and passed through unmodified.\n",
+            "description": "The template's WhatsApp components (header, body, footer, and buttons) as returned by WhatsApp",
             "items": {
               "type": "object",
               "additionalProperties": true
@@ -55349,7 +55847,7 @@
               "properties": {
                 "id": {
                   "type": "string",
-                  "description": "The Sunshine Conversations integration ID"
+                  "description": "The SunCo integration ID"
                 },
                 "name": {
                   "type": "string",
@@ -55387,7 +55885,7 @@
           },
           "template_id": {
             "type": "string",
-            "description": "The template's identifier in Sunshine Conversations",
+            "description": "The template's identifier at WABA (WhatsApp)",
             "readOnly": true
           },
           "updated_at": {
@@ -55446,7 +55944,7 @@
           },
           "syncing": {
             "type": "boolean",
-            "description": "Whether a background sync with Sunshine Conversations is still in progress. While it is\nset, the returned list may be incomplete and the client should poll again.\n"
+            "description": "Whether a background sync with SunCo is still in progress. While it is\nset, the returned list may be incomplete and the client should poll again.\n"
           },
           "whatsapp_templates": {
             "type": "array",
@@ -71319,9 +71817,18 @@
         "value": {
           "integration_id": "5f3a1b2c4d5e6f7a8b9c0d1e",
           "whatsapp_template_languages": [
-            "en_US",
-            "es_ES",
-            "pt_BR"
+            {
+              "code": "en_US",
+              "label": "English (United States)"
+            },
+            {
+              "code": "es_ES",
+              "label": "Spanish (Spain)"
+            },
+            {
+              "code": "pt_BR",
+              "label": "Portuguese (Brazil)"
+            }
           ]
         }
       },

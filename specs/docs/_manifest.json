@@ -6,7 +6,7 @@
       "source": "https://developer.zendesk.com/zendesk/oas.yaml",
       "openapi": "3.0.3",
       "title": "Support API",
-      "paths": 455
+      "paths": 459
     },
     {
       "file": "help_center.json",
