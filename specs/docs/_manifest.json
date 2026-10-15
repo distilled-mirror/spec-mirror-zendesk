@@ -13,7 +13,7 @@
       "source": "https://developer.zendesk.com/help_center/oas.yaml",
       "openapi": "3.0.2",
       "title": "Help Center API",
-      "paths": 120
+      "paths": 126
     }
   ],
   "docs": [
