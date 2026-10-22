@@ -2063,7 +2063,7 @@
           "Votes"
         ],
         "summary": "Create Vote",
-        "description": "Creates an up or down vote for a given [article](/api-reference/help_center/help-center-api/articles), [article comment](/api-reference/help_center/help-center-api/article_comments/), [post](/api-reference/help_center/help-center-api/posts), or [post comment](/api-reference/help_center/help-center-api/post_comments).\nIf a vote already exists for the source object, it's updated.\n\n#### Allowed for\n\n* End users\n",
+        "description": "Creates an up or down vote for a given [article](/api-reference/help_center/help-center-api/articles), [article comment](/api-reference/help_center/help-center-api/article_comments/), [post](/api-reference/help_center/help-center-api/posts), or [post comment](/api-reference/help_center/help-center-api/post_comments).\nIf a vote already exists for the source object, it's updated.\n\n#### Allowed for\n\n* End users\n* Anonymous users (for voting)\n",
         "responses": {
           "200": {
             "description": "OK Response",
@@ -3618,7 +3618,7 @@
           "Votes"
         ],
         "summary": "Downvote Article",
-        "description": "Creates a downvote for a given [article](/api-reference/help_center/help-center-api/articles).\nIf a vote already exists for the article, it's updated.\n\n#### Allowed for\n\n* End users\n",
+        "description": "Creates a downvote for a given [article](/api-reference/help_center/help-center-api/articles).\nIf a vote already exists for the article, it's updated.\n\n#### Allowed for\n\n* End users\n* Anonymous users - when anonymous voting feature has been enabled\n",
         "responses": {
           "200": {
             "description": "OK Response",
@@ -4073,7 +4073,7 @@
           "Votes"
         ],
         "summary": "Upvote Article",
-        "description": "Creates an upvote for a given [article](/api-reference/help_center/help-center-api/articles).\nIf a vote already exists for the article, it's updated.\n\n#### Allowed for\n\n* End users\n",
+        "description": "Creates an upvote for a given [article](/api-reference/help_center/help-center-api/articles).\nIf a vote already exists for the article, it's updated.\n\n#### Allowed for\n\n* End users\n* Anonymous users - when anonymous voting feature has been enabled\n",
         "responses": {
           "200": {
             "description": "OK Response",
@@ -8053,6 +8053,11 @@
             "description": "The time the article was created",
             "readOnly": true
           },
+          "downvote_count": {
+            "type": "integer",
+            "description": "The number of downvotes",
+            "readOnly": true
+          },
           "draft": {
             "type": "boolean",
             "description": "True if the translation for the current locale is a draft; false otherwise. false by default. Can be set when creating but not when updating. For updating, see Translations",
@@ -8125,6 +8130,11 @@
           "updated_at": {
             "type": "string",
             "description": "The time the article was last updated",
+            "readOnly": true
+          },
+          "upvote_count": {
+            "type": "integer",
+            "description": "The number of upvotes",
             "readOnly": true
           },
           "url": {
