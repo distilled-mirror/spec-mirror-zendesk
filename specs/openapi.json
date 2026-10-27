@@ -133,6 +133,10 @@
       "description": "Billing APIs"
     },
     {
+      "name": "Sandboxes",
+      "description": "The current account's sandboxes"
+    },
+    {
       "name": "Collaboration",
       "description": "Collaboration APIs"
     },
@@ -1221,6 +1225,291 @@
         "deprecated": true
       }
     },
+    "/api/v2/approval_clarification_flow_messages": {
+      "post": {
+        "operationId": "CreateApprovalClarificationFlowMessage",
+        "tags": [
+          "Approval Requests"
+        ],
+        "summary": "Create Approval Clarification Flow Message",
+        "description": "Adds a message to the clarification flow thread for an approval request and returns the\nfull, updated thread.\n\n#### Allowed For\n\n* The approval request's assignee or creator, the ticket assignee, or a member of the\n  assigned group\n* Any user who can view the ticket when the `approvals_allow_comments_from_ticket_viewers`\n  feature is enabled\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approval_request_id": {
+                    "type": "string",
+                    "description": "The id of the approval request to add the message to",
+                    "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "The content of the message",
+                    "example": "Can you clarify the budget line?"
+                  },
+                  "raw": {
+                    "description": "Slack rich-text blocks for the message. Only used when `via` is `SLACK`",
+                    "nullable": true
+                  },
+                  "via": {
+                    "type": "string",
+                    "description": "The channel the message is sent through. Defaults to `SUPPORT` when omitted or blank",
+                    "enum": [
+                      "SUPPORT",
+                      "SLACK",
+                      ""
+                    ],
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "approval_request_id",
+                  "message"
+                ]
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "approval_request_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "message": "Can you clarify the budget line?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalClarificationFlowMessagesShowResponse"
+                },
+                "example": {
+                  "approval_request_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                  "clarification_flow_messages": [
+                    {
+                      "author": {
+                        "avatar": "https://company.zendesk.com/system/photos/12345/avatar.png",
+                        "id": 12345,
+                        "name": "Jane Doe",
+                        "role": "end_user"
+                      },
+                      "created_at": "2026-09-29T14:32:00Z",
+                      "id": "msg_123",
+                      "message": "Can you clarify the budget line?",
+                      "via": "SUPPORT"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - the via parameter is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You passed an invalid value for the via attribute.",
+                    "title": "Invalid attribute"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The current user is not permitted to comment on this approval request, SLACK commenting is not enabled for the account, or the clarification flow feature is not enabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "errors": "Access denied"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The approval request could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You've reached this page because what you were looking for does not exist or there's been an error.",
+                    "title": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The message could not be added. The `errors` field is an array of validation messages\nwhen the approval request is no longer active, or a single string paired with an\n`error` code when the comment limit has been reached.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Present only when the comment limit has been reached. Value is always `CommentLimitExceeded`"
+                    },
+                    "errors": {
+                      "description": "Validation errors (array), or the comment-limit message (string)"
+                    }
+                  }
+                },
+                "examples": {
+                  "comment_limit_exceeded": {
+                    "summary": "The clarification thread has reached the maximum number of comments",
+                    "value": {
+                      "error": "CommentLimitExceeded",
+                      "errors": "Comment limit reached, approvers can still approve or deny."
+                    }
+                  },
+                  "default": {
+                    "summary": "The approval request is no longer active",
+                    "value": {
+                      "errors": [
+                        "This approval request has already been withdrawn and cannot be updated."
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/approval_clarification_flow_messages/{approval_request_id}": {
+      "get": {
+        "operationId": "ShowApprovalClarificationFlowMessages",
+        "tags": [
+          "Approval Requests"
+        ],
+        "summary": "Show Approval Clarification Flow Messages",
+        "description": "Returns the clarification flow thread (comments exchanged between the requester and the\napprover) for an approval request.\n\n#### Allowed For\n\n* Agents\n* End users who can view the approval request's ticket, or who are its assignee\n",
+        "parameters": [
+          {
+            "name": "approval_request_id",
+            "in": "path",
+            "description": "The id of the approval request",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalClarificationFlowMessagesShowResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/ApprovalClarificationFlowMessagesShowResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The current user is not permitted to view this approval request's clarification flow, or the feature is not enabled for this account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "errors": "Access denied"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The approval request could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You’ve reached this page because what you were looking for does not exist or there’s been an error.",
+                    "title": "Not Found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v2/approval_requests": {
       "get": {
         "operationId": "ListApprovalRequests",
@@ -1228,7 +1517,7 @@
           "Approval Requests"
         ],
         "summary": "List Approval Requests",
-        "description": "Lists all approval requests for the current account with optional filtering by status and assignee.\n\n#### Allowed For\n\n* Admins\n\n#### Query Parameters\n\n| Name                      | Type   | Description\n|---------------------------|--------|--------------------------------------------------------------------------------------------\n| filter[status]            | string | Filter by a comma-separated list of one or more approval statuses. Values: active, approved, rejected, withdrawn\n| filter[assignee_user_id]  | string | Filter by a comma-separated list of assigned user ids. Maximum 100 ids\n| filter[assignee_group_id] | string | Filter by a comma-separated list of assigned group ids. Maximum 100 ids\n\n#### Filtering Logic\n\n- When multiple values are provided for a filter, `or` logic is used. For example, `filter[status]=active,approved` is evaluated as `status=active OR status=approved`.\n- If multiple filters are applied to a single request, `AND` logic is used. For example, `filter[status]=active AND filter[assignee_user_id]=123`.\n- Each filter parameter supports a maximum 100 values.\n- Numeric ids must be valid integers.\n\n#### Pagination\n\nThis endpoint supports cursor-based pagination. Use `after_cursor` and `before_cursor` parameters to navigate through results.\n",
+        "description": "Lists all approval requests for the current account with optional filtering by status and assignee.\n\n#### Allowed For\n\n* Admins\n\n#### Query Parameters\n\n| Name                      | Type   | Description\n|---------------------------|--------|--------------------------------------------------------------------------------------------\n| filter[status]            | string | Filter by a comma-separated list of one or more approval statuses. Values: active, approved, rejected, withdrawn\n| filter[assignee_user_id]  | string | Filter by a comma-separated list of assigned user ids. Maximum 100 ids\n| filter[assignee_group_id] | string | Filter by a comma-separated list of assigned group ids. Maximum 100 ids\n| include                   | string | Comma-separated list of extra fields to sideload. Supports `deeplinks` — adds a `deeplink` field to each approval request, resolving to that request's agent-facing or Help Center decision page. Omitting `include` leaves the response unchanged.\n\n`include=deeplinks` requires the `approvals_api_parity` feature to be enabled for the account. When it isn't, `include=deeplinks` is silently ignored: no `deeplink` field is added, and the rest of the response is unaffected.\n\n#### Filtering Logic\n\n- When multiple values are provided for a filter, `or` logic is used. For example, `filter[status]=active,approved` is evaluated as `status=active OR status=approved`.\n- If multiple filters are applied to a single request, `AND` logic is used. For example, `filter[status]=active AND filter[assignee_user_id]=123`.\n- Each filter parameter supports a maximum 100 values.\n- Numeric ids must be valid integers.\n\n#### Pagination\n\nThis endpoint supports cursor-based pagination. Use `after_cursor` and `before_cursor` parameters to navigate through results.\n",
         "parameters": [
           {
             "name": "filter[status]",
@@ -1299,6 +1588,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Comma-separated list of extra fields to sideload. Supports `deeplinks` — adds a\n`deeplink` field to each approval request. Requires the `approvals_api_parity`\nfeature; silently ignored when the account doesn't have it enabled.\n",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "default": {
+                "summary": "Sideload deep links",
+                "value": "deeplinks"
+              }
+            }
           }
         ],
         "responses": {
@@ -1312,6 +1615,9 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/ApprovalRequestsListResponseExample"
+                  },
+                  "with_deeplinks": {
+                    "$ref": "#/components/examples/ApprovalRequestsListResponseWithDeeplinksExample"
                   }
                 }
               }
@@ -1402,6 +1708,545 @@
                   "mixed_assignee_format": {
                     "$ref": "#/components/examples/ApprovalRequestMixedAssigneeErrorExample"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/approval_workflow_instances/{workflow_instance_id}/approval_requests/{id}": {
+      "get": {
+        "operationId": "ShowApprovalWorkflowInstanceApprovalRequest",
+        "tags": [
+          "Approval Requests"
+        ],
+        "summary": "Show Approval Request",
+        "description": "Shows a single approval request nested under its approval workflow instance.\n\n#### Allowed For\n\n* Agents assigned to the approval request\n",
+        "parameters": [
+          {
+            "name": "workflow_instance_id",
+            "in": "path",
+            "description": "The ULID of the approval workflow instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "01KFP3S9EVXF9CKAYY080NV98D"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ULID of the approval request to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "01KFP3S9EVXF9CKAYY080NV98C"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalRequestShowResponse"
+                },
+                "example": {
+                  "approval_request": {
+                    "approval_workflow_instance_id": "01KFP3S9EVXF9CKAYY080NV98D",
+                    "assignee_group": null,
+                    "assignee_user": {
+                      "id": 456,
+                      "name": "Jane Approver",
+                      "photo": {
+                        "content_url": "https://company.zendesk.com/system/photos/456/photo.png"
+                      }
+                    },
+                    "created_at": "2026-01-23T19:02:36Z",
+                    "created_by_user": {
+                      "id": 789,
+                      "name": "John Requester",
+                      "photo": {
+                        "content_url": "https://company.zendesk.com/system/photos/789/photo.png"
+                      }
+                    },
+                    "decided_at": null,
+                    "decisions": [],
+                    "id": "01KFP3S9EVXF9CKAYY080NV98C",
+                    "message": "Please approve this request for a new laptop",
+                    "origination_type": "API_ORIGINATION",
+                    "status": "active",
+                    "subject": "Laptop Purchase Approval",
+                    "ticket_details": {
+                      "custom_fields": [],
+                      "id": 123,
+                      "priority": "normal",
+                      "requester": {
+                        "id": 789,
+                        "name": "John Requester"
+                      },
+                      "status": "open"
+                    },
+                    "withdrawn_reason": null
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The current user is not permitted to view this approval request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "errors": "Access denied"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The approval request could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You’ve reached this page because what you were looking for does not exist or there’s been an error.",
+                    "title": "Not Found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/approval_workflow_instances/{workflow_instance_id}/approval_requests/{id}/decision": {
+      "patch": {
+        "operationId": "DecideApprovalRequest",
+        "tags": [
+          "Approval Requests"
+        ],
+        "summary": "Decide Approval Request",
+        "description": "Records a decision (approve, reject, or withdraw) on an approval request, with optional notes.\n\n#### Allowed For\n\n* The user or a member of the group assigned to review the approval request\n\nThe ticket requester, the ticket assignee, and the user who created the approval request are not\nallowed to decide on it, even when they are also the assignee.\n",
+        "parameters": [
+          {
+            "name": "workflow_instance_id",
+            "in": "path",
+            "description": "The id of the approval workflow instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "01KFP3S9EVXF9CKAYY080NV98D"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the approval request to decide on",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "01KFP3S9EVXF9CKAYY080NV98C"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notes": {
+                    "type": "string",
+                    "description": "Optional notes to record with the decision"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "The decision to record",
+                    "enum": [
+                      "pending",
+                      "active",
+                      "approved",
+                      "rejected",
+                      "withdrawn"
+                    ]
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "notes": "Looks good, approved",
+                    "status": "approved"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalRequestShowResponse"
+                },
+                "example": {
+                  "approval_request": {
+                    "approval_workflow_instance_id": "01KFP3S9EVXF9CKAYY080NV98D",
+                    "assignee_group": null,
+                    "assignee_user": {
+                      "id": 456,
+                      "name": "Jane Approver",
+                      "photo": {
+                        "content_url": "https://company.zendesk.com/system/photos/456/photo.png"
+                      }
+                    },
+                    "created_at": "2026-01-23T19:02:36Z",
+                    "created_by_user": {
+                      "id": 789,
+                      "name": "John Requester",
+                      "photo": {
+                        "content_url": "https://company.zendesk.com/system/photos/789/photo.png"
+                      }
+                    },
+                    "decided_at": "2026-01-23T19:10:00Z",
+                    "decisions": [
+                      {
+                        "decided_at": "2026-01-23T19:10:00Z",
+                        "decided_by_user": {
+                          "id": 456,
+                          "name": "Jane Approver",
+                          "photo": {
+                            "content_url": "https://company.zendesk.com/system/photos/456/photo.png"
+                          }
+                        },
+                        "decision_notes": "Looks good, approved",
+                        "status": "approved"
+                      }
+                    ],
+                    "id": "01KFP3S9EVXF9CKAYY080NV98C",
+                    "message": "Please approve this request for a new laptop",
+                    "origination_type": "API_ORIGINATION",
+                    "status": "approved",
+                    "subject": "Laptop Purchase Approval",
+                    "ticket_details": {
+                      "custom_fields": [],
+                      "id": 123,
+                      "priority": "normal",
+                      "requester": {
+                        "id": 789,
+                        "name": "John Requester"
+                      },
+                      "status": "open"
+                    },
+                    "withdrawn_reason": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - the status parameter is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You passed an invalid value for the status attribute.",
+                    "title": "Invalid attribute"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The current user is not permitted to decide on this approval request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "errors": "Access denied"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The approval request could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You've reached this page because what you were looking for does not exist or there's been an error.",
+                    "title": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The decision could not be recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    "This approval request has already been withdrawn and cannot be updated."
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/approval_workflow_instances/{workflow_instance_id}/withdraw": {
+      "patch": {
+        "operationId": "WithdrawApprovalWorkflowInstance",
+        "tags": [
+          "Approval Requests"
+        ],
+        "summary": "Withdraw Approval Workflow Instance",
+        "description": "Withdraws every non-withdrawn approval request in the given workflow instance and marks\nthe workflow instance as withdrawn. Works for both parallel and non-parallel workflow\ninstances.\n\n#### Allowed For\n\n* Agents who can manage approval requests and edit the associated ticket, and who are\n  either the approval request's requester or the ticket's assignee\n",
+        "parameters": [
+          {
+            "name": "workflow_instance_id",
+            "in": "path",
+            "description": "The id of the approval workflow instance",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "01KFP3S9EVXF9CKAYY080NV98D"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "withdrawn_reason": {
+                    "type": "string",
+                    "description": "Reason provided for withdrawing the approval request(s)"
+                  }
+                },
+                "required": [
+                  "withdrawn_reason"
+                ]
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "withdrawn_reason": "No longer needed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalWorkflowInstanceWithdrawResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/ApprovalWorkflowInstanceWithdrawResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - the withdrawn_reason parameter is missing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "message": "You passed an invalid value for the withdrawn_reason attribute.",
+                    "title": "Invalid attribute"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The current user is not permitted to withdraw this workflow instance, or the feature is not enabled for this account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "summary": "Current user is not an agent or admin",
+                    "value": {
+                      "errors": [
+                        "Access denied"
+                      ]
+                    }
+                  },
+                  "feature_not_enabled": {
+                    "summary": "Account is not allowed to create or withdraw approval requests",
+                    "value": {
+                      "errors": [
+                        "You are not allowed to create or withdraw approval requests."
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The approval workflow instance could not be found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    "You’ve reached this page because what you were looking for does not exist or there’s been an error."
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The approval request(s) could not be withdrawn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "errors": [
+                    "Only a requester can withdraw the request."
+                  ]
                 }
               }
             }
@@ -2263,6 +3108,46 @@
             }
           }
         }
+      },
+      "post": {
+        "operationId": "CreateBrandAgent",
+        "tags": [
+          "Brand Agents"
+        ],
+        "summary": "Create Brand Agent Membership",
+        "description": "Creates a brand agent membership, granting the agent access to the brand.\n\n\nReturns `422` if the user is not an agent, the brand does not belong to the\naccount, or a membership for the same user and brand already exists.\n\n#### Allowed For:\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandAgentCreateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/BrandAgentCreateRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandAgentResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandAgentResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v2/brand_agents/{brand_agent_id}": {
@@ -2302,7 +3187,7 @@
           "Brand Agents"
         ],
         "summary": "Delete Brand Agent Membership",
-        "description": "Deletes a brand agent membership.\n\n\n#### Allowed For\n\n* Admins\n",
+        "description": "Deletes a brand agent membership, removing the agent's access to the\nbrand.\n\nThe `brand_agent_id` is the id of the brand agent membership returned by\nthe list and show endpoints, not the id of the brand or the user.\n\n\n#### Allowed For\n\n* Admins\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/BrandAgentId"
@@ -4648,7 +5533,7 @@
           "Custom Object Fields"
         ],
         "summary": "Create Custom Object Field",
-        "description": "Creates any of the following custom field types:\n\n* text (default when no \"type\" is specified)\n* textarea\n* checkbox\n* currency\n* date\n* integer\n* decimal\n* regexp\n* dropdown\n* lookup\n* multiselect\n* parent\n\nAdditionally, you can create a roll-up summary field by specifying an existing type (`integer`, `decimal`, or `date`) with roll-up configuration in the `properties` object. See [About roll-up summary fields](/api-reference/custom-data/custom-objects/custom_object_fields/#about-roll-up-summary-fields).\n\nSee [About custom field types](https://support.zendesk.com/hc/en-us/articles/4408838961562) in Zendesk help.\n\n#### Allowed For\n\n* Admins\n",
+        "description": "Creates any of the following custom field types:\n\n* text (default when no \"type\" is specified)\n* textarea\n* checkbox\n* currency\n* date\n* integer\n* decimal\n* regexp\n* dropdown\n* lookup\n* multiselect\n* parent\n\nAdditionally, you can create a roll-up summary field by specifying an existing type (`integer`, `decimal`, or `date`) with roll-up configuration in the `properties` object. See [About roll-up summary fields](/api-reference/custom-data/custom-objects/custom_object_fields/#about-roll-up-summary-fields).\n\nTo make a text, integer, regexp, or lookup field require unique values, set `is_unique` to true in the `properties` object. See [About unique fields](/api-reference/custom-data/custom-objects/custom_object_fields/#about-unique-fields).\n\nSee [About custom field types](https://support.zendesk.com/hc/en-us/articles/4408838961562) in Zendesk help.\n\n#### Allowed For\n\n* Admins\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -4735,7 +5620,7 @@
           "Custom Object Fields"
         ],
         "summary": "Update Custom Object Field",
-        "description": "Updates individual custom object fields. The updating rules are as follows:\n* Takes a `custom_object_field` object that specifies the properties to update.\n* The `key` property cannot be updated.\n* If updating a standard field, only the `title`, `description`, and `properties` attributes can be updated.\n* Standard name field is always required. Therefore, the `required` property for standard name field isn't editable.\n* The `properties` parameter is comprised of four parts and can't be changed if any records exist for the object.\n    * `autoincrement_enabled`: A Boolean that enables and disables autonumbering. Must be false if is_unique is true.\n    * `autoincrement_prefix`: A string value that is used as a prefix to the autogenerated numbers. It can't exceed 30 characters.\n    * `autoincrement_padding`: An integer specifying the starting number of digits in the autogenerated numbers. This value may be between 0-9. However, if you create records in excess of of these digits, additional digits are added as necessary.\n    * `autoincrement_next_sequence`: An integer that will be used as the next number in the autonumbering sequence. It can't be negative or less than the current autonumbering value.\n    * `is_unique`: A Boolean that enforces uniqueness for manually entered record names. When true, custom object record names must be unique. Must be false if autoincrement_enabled is true.\n\n#### Updating drop-down field options\n\nYou can also use the update endpoint to add, update, or remove options in a drop-down custom field. Updating field options for multi-select fields works exactly the same as drop-down field options.\n\n**Important**: Unless you want to remove some options, you must specify all existing options in any update request. Omitting an option removes it from the drop-down field, which removes its values from any tickets or macros.\n\nUse the `custom_field_options` attribute to update the options. The attribute consists of an array of option objects, with each object consisting of an `id`, `name`, and `value` property. The name and value properties correspond to the \"Title\" and \"Tag\" text boxes in the admin interface respectively. For new drop-down options, specify `\"id\":\"null\"`. Example request body:\n\n```json\n{\"custom_object_field\": {\n    \"custom_field_options\": [\n      {\"id\": \"null\", \"name\": \"Apple Pie\", \"value\": \"apple\"},\n      {\"id\": \"null\", \"name\": \"Pecan Pie\", \"value\": \"pecan\"}\n    ]\n  }\n}\n```\n\n#### Example Request\n\n```bash\ncurl https://{subdomain}.zendesk.com/api/v2/custom_objects/{custom_object_key}/fields/{custom_object_field_key_or_id}\n  -d '{\"ticket_field\": {\"custom_field_options\": [{\"name\": \"Apple Pie\", \"value\": \"apple\"}, {\"name\": \"Pecan Pie\", \"value\": \"pecan\"}]}}' \\\n  -H \"Content-Type: application/json\" -X PUT \\\n  -v -H \"Authorization: Bearer {access_token}\"\n```\n#### Allowed For\n* Admins",
+        "description": "Updates individual custom object fields. The updating rules are as follows:\n* Takes a `custom_object_field` object that specifies the properties to update.\n* The `key` property cannot be updated.\n* If updating a standard field, only the `title`, `description`, and `properties` attributes can be updated.\n* Standard name field is always required. Therefore, the `required` property for standard name field isn't editable.\n* The `properties` parameter is comprised of four parts and can't be changed if any records exist for the object.\n    * `autoincrement_enabled`: A Boolean that enables and disables autonumbering. Must be false if is_unique is true.\n    * `autoincrement_prefix`: A string value that is used as a prefix to the autogenerated numbers. It can't exceed 30 characters.\n    * `autoincrement_padding`: An integer specifying the starting number of digits in the autogenerated numbers. This value may be between 0-9. However, if you create records in excess of of these digits, additional digits are added as necessary.\n    * `autoincrement_next_sequence`: An integer that will be used as the next number in the autonumbering sequence. It can't be negative or less than the current autonumbering value.\n    * `is_unique`: A Boolean that enforces uniqueness for manually entered record names. When true, custom object record names must be unique. Must be false if autoincrement_enabled is true.\n* For text, integer, regexp, and lookup fields, `properties` can include `is_unique`, a Boolean that requires each record to have a different value in the field. Unlike the name field's properties, it can be changed when records exist: it can be turned on only if no record has a value for the field, and it can always be turned off. See [About unique fields](#about-unique-fields).\n\n#### Updating drop-down field options\n\nYou can also use the update endpoint to add, update, or remove options in a drop-down custom field. Updating field options for multi-select fields works exactly the same as drop-down field options.\n\n**Important**: Unless you want to remove some options, you must specify all existing options in any update request. Omitting an option removes it from the drop-down field, which removes its values from any tickets or macros.\n\nUse the `custom_field_options` attribute to update the options. The attribute consists of an array of option objects, with each object consisting of an `id`, `name`, and `value` property. The name and value properties correspond to the \"Title\" and \"Tag\" text boxes in the admin interface respectively. For new drop-down options, specify `\"id\":\"null\"`. Example request body:\n\n```json\n{\"custom_object_field\": {\n    \"custom_field_options\": [\n      {\"id\": \"null\", \"name\": \"Apple Pie\", \"value\": \"apple\"},\n      {\"id\": \"null\", \"name\": \"Pecan Pie\", \"value\": \"pecan\"}\n    ]\n  }\n}\n```\n\n#### Example Request\n\n```bash\ncurl https://{subdomain}.zendesk.com/api/v2/custom_objects/{custom_object_key}/fields/{custom_object_field_key_or_id}\n  -d '{\"ticket_field\": {\"custom_field_options\": [{\"name\": \"Apple Pie\", \"value\": \"apple\"}, {\"name\": \"Pecan Pie\", \"value\": \"pecan\"}]}}' \\\n  -H \"Content-Type: application/json\" -X PUT \\\n  -v -H \"Authorization: Bearer {access_token}\"\n```\n#### Allowed For\n* Admins",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -4821,7 +5706,7 @@
           "Custom Object Records"
         ],
         "summary": "Custom Object Record Bulk Jobs",
-        "description": "Queues a background job to perform bulk actions on up to 100 custom object records per single request.\nTakes a `job` object with two nested fields:\n* `action`, one of:\n    * `\"create\"`\n    * `\"delete\"`\n    * `\"delete_by_external_id\"`\n    * `\"create_or_update_by_external_id\"`\n    * `\"create_or_update_by_name\"`\n    * `\"update\"`\n* `items`\n    * For a `\"create\"` action, an array of JSON objects representing the custom object records being created\n    * For a `\"delete\"` action, an array of strings representing Zendesk record ids\n    * For a `\"delete_by_external_id\"` action, an array of strings representing external ids\n    * For a `\"create_or_update_by_external_id\"` action, an array of JSON objects representing the custom object records being created or updated by external id\n    * For a `\"create_or_update_by_name\"` action, an array of JSON objects representing the custom object records being created or updated by name. The `is_unique` property on the custom object's name field must be enabled.\n    * For an `\"update\"` action, an array of JSON objects representing the custom object records being updated\n\nNote: If autonumbering is selected for the custom object's name field, record names aren't allowed in the request body because they are generated automatically. If uniqueness is enabled, the record names must be unique.\n\n#### Allowed For\n* Agents\n\n#### Response ###\nThis endpoint returns a `job_status` [JSON object](/api-reference/ticketing/ticket-management/job_statuses/#json-format) and queues a background job to do the work. Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuses/#show-job-status) endpoint to check for the job's completion. Only a certain number of jobs can be queued or running at the same time. See [Job limit](/api-reference/introduction/rate-limits/#job-limit) for more information.\n",
+        "description": "Queues a background job to perform bulk actions on up to 100 custom object records per single request.\nTakes a `job` object with the following nested fields:\n* `action`, one of:\n    * `\"create\"`\n    * `\"delete\"`\n    * `\"delete_by_external_id\"`\n    * `\"delete_by_unique_field\"`\n    * `\"create_or_update_by_external_id\"`\n    * `\"create_or_update_by_name\"`\n    * `\"create_or_update_by_unique_field\"`\n    * `\"update\"`\n* `items`\n    * For a `\"create\"` action, an array of JSON objects representing the custom object records being created\n    * For a `\"delete\"` action, an array of strings representing Zendesk record ids\n    * For a `\"delete_by_external_id\"` action, an array of strings representing external ids\n    * For a `\"delete_by_unique_field\"` action, an array of strings representing values of the unique field named in `unique_field_key`\n    * For a `\"create_or_update_by_external_id\"` action, an array of JSON objects representing the custom object records being created or updated by external id\n    * For a `\"create_or_update_by_name\"` action, an array of JSON objects representing the custom object records being created or updated by name. The `is_unique` property on the custom object's name field must be enabled.\n    * For a `\"create_or_update_by_unique_field\"` action, an array of JSON objects representing the custom object records being created or updated by the unique field named in `unique_field_key`. Each object must include that field's value in `custom_object_fields`.\n    * For an `\"update\"` action, an array of JSON objects representing the custom object records being updated\n* `unique_field_key`, required for the `\"create_or_update_by_unique_field\"` and `\"delete_by_unique_field\"` actions: the key of the custom object field that identifies the records. The field's `is_unique` property must be enabled. Use the `*_by_name` actions to identify records by name.\n\nNote: If autonumbering is selected for the custom object's name field, record names aren't allowed in the request body because they are generated automatically. If uniqueness is enabled, the record names must be unique.\n\n#### Identifying records by a unique field\nReturns a `400 Bad Request` with the error `InvalidUniqueFieldKey` if `unique_field_key` is missing or isn't the key of a unique field on the custom object.\n\nIn the job status `results`, each item of a `\"delete_by_unique_field\"` job reports the `unique_field_key` and `value` from the request, along with its `index` and `status` (for example, `\"Deleted\"`). An item that matches no record fails with \"Record not found\". Each item in a `\"create_or_update_by_unique_field\"` job reports the record's `id`, its `index` and `status`. An item without a value for the unique field fails with \"Unique field value cannot be blank\". If the field's uniqueness is turned off before the job runs, its items fail with \"Uniqueness must be enabled on the field to identify records by it\".\n\n#### Allowed For\n* Agents\n\n#### Response ###\nThis endpoint returns a `job_status` [JSON object](/api-reference/ticketing/ticket-management/job_statuses/#json-format) and queues a background job to do the work. Use the [Show Job Status](/api-reference/ticketing/ticket-management/job_statuses/#show-job-status) endpoint to check for the job's completion. Only a certain number of jobs can be queued or running at the same time. See [Job limit](/api-reference/introduction/rate-limits/#job-limit) for more information.\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -4852,6 +5737,32 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/CustomObjectRecordsJobsResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - `unique_field_key` is missing or isn't the key of a unique field on the custom object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "description": "job.unique_field_key must be the key of a unique field on the car custom object",
+                      "error": "InvalidUniqueFieldKey"
+                    }
                   }
                 }
               }
@@ -5170,7 +6081,7 @@
           "Custom Object Records"
         ],
         "summary": "Create or Update Custom Object Record",
-        "description": "Creates or updates a custom object record based on the provided external id or name. If a record exists for the given external id or name, updates it. Only the specified attributes are updated. Otherwise, creates a new record with the provided external id, name and other attributes. The `is_unique` property on the custom object's name field must be enabled in order to update or create by name. External id and name cannot be used together in the same request.\n#### Allowed For\n* Agents\n",
+        "description": "Creates or updates a custom object record based on the provided external id, name, or unique field value. If a record exists for the given identifier, the endpoint updates it. Only the specified attributes are updated. Otherwise, the endpoint creates a new record with the provided identifier and other attributes. Specify only one identifier per request.\n\n* The `is_unique` property on the custom object's name field must be enabled in order to update or create by name.\n* To update or create by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. A new record is created with that value in the field.\n#### Allowed For\n* Agents\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -5180,6 +6091,9 @@
           },
           {
             "$ref": "#/components/parameters/CustomObjectRecordName"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordUniqueFieldValue"
           }
         ],
         "requestBody": {
@@ -5220,7 +6134,7 @@
           "Custom Object Records"
         ],
         "summary": "Delete Custom Object Record by External Id Or Name",
-        "description": "Deletes a record with the specified external id or name. The `is_unique` property on the custom object's name field must be enabled in order to delete by name. External id and name cannot be used together in the same request.\n\nIf the record is a parent in a parent-child relationship, all associated child records are also deleted asynchronously via a background job.\n#### Allowed For\n* Agents\n",
+        "description": "Deletes a record with the specified external id, name, or unique field value. Specify only one identifier per request.\n\n* The `is_unique` property on the custom object's name field must be enabled in order to delete by name.\n* To delete by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled.\n\nIf the record is a parent in a parent-child relationship, all associated child records are also deleted asynchronously via a background job.\n#### Allowed For\n* Agents\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -5230,6 +6144,9 @@
           },
           {
             "$ref": "#/components/parameters/CustomObjectRecordName"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordUniqueFieldValue"
           }
         ],
         "responses": {
@@ -5993,6 +6910,155 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/CustomObjectRecordsSearchResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/custom_objects/{custom_object_key}/records/show_by_unique_identifier": {
+      "get": {
+        "operationId": "ShowCustomObjectRecordByUniqueIdentifier",
+        "tags": [
+          "Custom Object Records"
+        ],
+        "summary": "Show Custom Object Record by Unique Identifier",
+        "description": "Returns a custom object record identified by its external id, its name, or the value of one of the custom object's unique fields. Send exactly one identifier per request.\n\n* To identify the record by name, the `is_unique` property on the custom object's name field must be enabled.\n* To identify the record by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. For a unique lookup field, the value is the id of the record the field references.\n\nReturns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.\n#### Allowed For\n* Agents\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomObjectKey"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordExternalId"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordName"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordUniqueFieldValue"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Custom Object Record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomObjectRecordResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/CustomObjectRecordsCreateResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/custom_objects/{custom_object_key}/records/update_by_unique_identifier": {
+      "put": {
+        "operationId": "UpdateCustomObjectRecordByUniqueIdentifierViaPut",
+        "tags": [
+          "Custom Object Records"
+        ],
+        "summary": "Update Custom Object Record by Unique Identifier (PUT)",
+        "description": "Same as [Update Custom Object Record by Unique Identifier](#update-custom-object-record-by-unique-identifier), using PUT.\n#### Allowed For\n* Agents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomObjectKey"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordExternalId"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordName"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordUniqueFieldValue"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomObjectRecordsUpsertRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/CustomObjectRecordsUpsertRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomObjectRecordResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/CustomObjectRecordsCreateResponseExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "UpdateCustomObjectRecordByUniqueIdentifier",
+        "tags": [
+          "Custom Object Records"
+        ],
+        "summary": "Update Custom Object Record by Unique Identifier",
+        "description": "Updates a custom object record identified by its external id, its name, or the value of one of the custom object's unique fields. Unlike [Create or Update Custom Object Record](#create-or-update-custom-object-record), it never creates a record. Send exactly one identifier per request.\n\n* To identify the record by name, the `is_unique` property on the custom object's name field must be enabled.\n* To identify the record by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. For a unique lookup field, the value is the id of the record the field references.\n\nThe update rules are the same as for [Update Custom Object Record](#update-custom-object-record):\n* Send a `custom_object_record` object that specifies the properties to update\n* Nest the custom object fields inside a `custom_object_fields` object\n\nReturns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.\n#### Allowed For\n* Agents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomObjectKey"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordExternalId"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordName"
+          },
+          {
+            "$ref": "#/components/parameters/CustomObjectRecordUniqueFieldValue"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomObjectRecordsUpsertRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/CustomObjectRecordsUpsertRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomObjectRecordResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/CustomObjectRecordsCreateResponseExample"
                   }
                 }
               }
@@ -17842,6 +18908,21 @@
         ],
         "summary": "Create SLA Policy",
         "description": "#### Availability\n\n* Accounts on the Support Professional or Suite Growth plan or above\n\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPolicyRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/SLAPolicyRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Created response",
@@ -17899,6 +18980,21 @@
         ],
         "summary": "Update SLA Policy",
         "description": "Updates the specified policy.\n\n#### Availability\n\n* Accounts on the Support Professional or Suite Growth plan or above\n\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPolicyUpdateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/SLAPolicyUpdateRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success response",
@@ -17965,21 +19061,21 @@
           "SLA Policies"
         ],
         "summary": "Reorder SLA Policies",
-        "description": "#### Availability\n\n* Accounts on the Support Professional or Suite Growth plan or above\n\n#### Allowed For\n\n* Admins\n",
-        "parameters": [
-          {
-            "name": "sla_policy_ids",
-            "in": "query",
-            "description": "The IDs of the SLA Policies to reorder",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer",
-                "format": "int64"
+        "description": "Reorders the SLA policies. The new order is set in a `sla_policy_ids` array in the JSON request body.\n\n#### Availability\n\n* Accounts on the Support Professional or Suite Growth plan or above\n\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SLAPoliciesReorderRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/SLAPoliciesReorderRequestExample"
+                }
               }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success response",
@@ -22057,6 +23153,21 @@
         ],
         "summary": "Create a Satisfaction Rating",
         "description": "Creates a CSAT rating for a solved ticket, or for a ticket that was previously\nsolved and then reopened.\n\nOnly the end user listed as the ticket requester can create a satisfaction rating for the ticket.\n\nOnly \"good\" and \"bad\" are valid values for the score when creating a rating. Other states, like \"offered\", are not valid and will result in a 422 error.\n\n#### Allowed For\n\n* End user who requested the ticket\n\nThe end user must be a verified user.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SatisfactionRatingRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/SatisfactionRatingRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success response",
@@ -24056,7 +25167,7 @@
           "Triggers"
         ],
         "summary": "Reorder Ticket Triggers",
-        "description": "Alters the firing order of ticket triggers in the account. See\n[Reordering and sorting triggers](https://support.zendesk.com/hc/en-us/articles/10356973691546)\nin the Zendesk Help Center. The firing order is set in a `trigger_ids` array in the request body.\n\nYou must include every ticket trigger id in your account to reorder the ticket triggers. If not, the endpoint will return 404 Forbidden.\n\nReordering ticket triggers via the API is not permitted if you have more than one ticket trigger category. If there is more than one\nticket trigger category, the endpoint will return a `LimitOneCategory` error.\n\n#### Allowed For\n\n* Agents\n",
+        "description": "Alters the firing order of ticket triggers in the account. See\n[Reordering and sorting triggers](https://support.zendesk.com/hc/en-us/articles/10356973691546)\nin the Zendesk Help Center. The firing order is set in a `trigger_ids` array in the request body.\n\nYou must include the id of every **active** ticket trigger in the account to reorder the ticket triggers — inactive triggers are excluded by the endpoint and must not be sent. If not, the endpoint will return a `400 Bad Request` (`Invalid attribute`) error and nothing is reordered.\n\nReordering ticket triggers via the API is not permitted if you have more than one ticket trigger category. If there is more than one\nticket trigger category, the endpoint will return a `LimitOneCategory` error.\n\n#### Allowed For\n\n* Agents\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -24074,19 +25185,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TriggerResponse"
-                },
-                "examples": {
-                  "default": {
-                    "$ref": "#/components/examples/TriggerResponseExample"
-                  }
-                }
-              }
-            }
+            "description": "Success response (empty body)"
           }
         }
       }
@@ -33763,6 +34862,79 @@
           }
         }
       },
+      "ApprovalClarificationFlowMessagesShowResponse": {
+        "title": "ApprovalClarificationFlowMessagesShowResponse",
+        "type": "object",
+        "description": "Response for showing the clarification flow thread for an approval request",
+        "properties": {
+          "approval_request_id": {
+            "type": "string",
+            "description": "The id of the approval request this thread belongs to",
+            "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+          },
+          "clarification_flow_messages": {
+            "type": "array",
+            "description": "The messages exchanged in the clarification flow thread, oldest first",
+            "items": {
+              "type": "object",
+              "properties": {
+                "author": {
+                  "type": "object",
+                  "properties": {
+                    "avatar": {
+                      "type": "string",
+                      "description": "URL of the author's avatar",
+                      "nullable": true
+                    },
+                    "id": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Unique identifier for the author",
+                      "nullable": true
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the author",
+                      "nullable": true
+                    },
+                    "role": {
+                      "type": "string",
+                      "description": "Role of the author (for example, agent or end_user)",
+                      "nullable": true
+                    }
+                  },
+                  "nullable": true
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The time the message was created",
+                  "readOnly": true
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier for the message"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "The content of the message"
+                },
+                "via": {
+                  "type": "string",
+                  "description": "The channel the message was sent through",
+                  "enum": [
+                    "API",
+                    "EMAIL",
+                    "MSTEAMS",
+                    "SLACK",
+                    "SUPPORT"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "ApprovalRequestCreateRequest": {
         "title": "ApprovalRequestCreateRequest",
         "type": "object",
@@ -34051,6 +35223,53 @@
                 },
                 "nullable": true
               },
+              "clarification_flow_messages": {
+                "type": "array",
+                "description": "List of clarification messages exchanged on this approval request. Present when the account has the clarification flow feature enabled",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "author": {
+                      "type": "object",
+                      "properties": {
+                        "avatar": {
+                          "type": "string",
+                          "description": "URL for the author's avatar"
+                        },
+                        "id": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "Unique identifier for the message author",
+                          "nullable": true
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the message author",
+                          "nullable": true
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "Role of the message author",
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the message was created"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Unique identifier for the message"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "The message content"
+                    }
+                  }
+                }
+              },
               "created_at": {
                 "type": "string",
                 "format": "date-time",
@@ -34127,6 +35346,18 @@
                     "decision_notes": {
                       "type": "string",
                       "description": "Notes provided with the decision",
+                      "nullable": true
+                    },
+                    "origination_type": {
+                      "type": "string",
+                      "description": "Source where the decision was made. Present when Slack approval notifications are enabled",
+                      "enum": [
+                        "UI_ORIGINATION",
+                        "API_ORIGINATION",
+                        "SLACK_ORIGINATION",
+                        "ACTION_FLOW_ORIGINATION",
+                        "UNKNOWN_ORIGINATION"
+                      ],
                       "nullable": true
                     },
                     "status": {
@@ -34414,6 +35645,12 @@
                     }
                   }
                 },
+                "deeplink": {
+                  "type": "string",
+                  "description": "The approval request's agent-facing or Help Center decision page, depending on who\nit's assigned to. Only present when the request included `include=deeplinks` and the\naccount has the `approvals_api_parity` feature enabled.\n",
+                  "example": "https://company.zendesk.com/agent/tickets/123/approvals/01KFP3S9EVXF9CKAYY080NV98C",
+                  "nullable": true
+                },
                 "id": {
                   "type": "string",
                   "description": "Unique identifier for the approval request"
@@ -34512,6 +35749,199 @@
         "required": [
           "approval_requests"
         ]
+      },
+      "ApprovalWorkflowInstanceWithdrawResponse": {
+        "title": "ApprovalWorkflowInstanceWithdrawResponse",
+        "type": "object",
+        "description": "Response for withdrawing an approval workflow instance",
+        "properties": {
+          "approval_requests": {
+            "type": "array",
+            "description": "The approval requests that were withdrawn as part of this workflow instance",
+            "items": {
+              "type": "object",
+              "properties": {
+                "approval_workflow_instance_id": {
+                  "type": "string",
+                  "description": "The id of the approval workflow instance this approval request belongs to. Present when the account has parallel approvals enabled",
+                  "example": "01KFP3S9EVXF9CKAYY080NV98D",
+                  "nullable": true
+                },
+                "assignee_group": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Unique identifier for the assigned group"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the assigned group"
+                    }
+                  },
+                  "nullable": true
+                },
+                "assignee_user": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Unique identifier for the assigned user"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the assigned user"
+                    }
+                  },
+                  "nullable": true
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The time the approval request was created",
+                  "readOnly": true
+                },
+                "created_by_user": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64",
+                      "description": "Unique identifier for the user who created the approval request"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the user who created the approval request"
+                    },
+                    "photo": {
+                      "type": "object",
+                      "properties": {
+                        "content_url": {
+                          "type": "string",
+                          "description": "URL of the creating user's photo"
+                        }
+                      },
+                      "nullable": true
+                    }
+                  }
+                },
+                "decided_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The time when the approval request was responded to",
+                  "nullable": true
+                },
+                "decisions": {
+                  "type": "array",
+                  "description": "List of responses made on this approval request before it was withdrawn",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "decided_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The time when the response was made"
+                      },
+                      "decided_by_user": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "description": "Unique identifier for the user who responded"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the user who responded"
+                          },
+                          "photo": {
+                            "type": "object",
+                            "properties": {
+                              "content_url": {
+                                "type": "string",
+                                "description": "URL of the responding user's photo"
+                              }
+                            },
+                            "nullable": true
+                          }
+                        },
+                        "nullable": true
+                      },
+                      "decision_notes": {
+                        "type": "string",
+                        "description": "Notes provided with the decision",
+                        "nullable": true
+                      },
+                      "origination_type": {
+                        "type": "string",
+                        "description": "Source where the decision was made. Present when Slack approval notifications are enabled",
+                        "enum": [
+                          "UI_ORIGINATION",
+                          "API_ORIGINATION",
+                          "SLACK_ORIGINATION",
+                          "ACTION_FLOW_ORIGINATION",
+                          "UNKNOWN_ORIGINATION"
+                        ],
+                        "nullable": true
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "The decision status. Allowed values: \"approved\", \"rejected\", or \"clarification_requested\""
+                      }
+                    }
+                  }
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier for the approval request",
+                  "example": "01KFP3S9EVXF9CKAYY080NV98C"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Details and context for the approval request",
+                  "example": "Please approve"
+                },
+                "origination_type": {
+                  "type": "string",
+                  "description": "Source where the approval request originated from",
+                  "enum": [
+                    "API_ORIGINATION",
+                    "UI_ORIGINATION",
+                    "TRIGGER_ORIGINATION",
+                    "DATA_IMPORTER_ORIGINATION",
+                    "TEMPLATE_ORIGINATION",
+                    "ACTION_FLOW_ORIGINATION",
+                    "UNKNOWN_ORIGINATION"
+                  ],
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Current status of the approval request. Always `withdrawn` in this response",
+                  "example": "withdrawn"
+                },
+                "subject": {
+                  "type": "string",
+                  "description": "Subject line for the approval request",
+                  "example": "Budget Approval"
+                },
+                "ticket_id": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "The id of the ticket this approval request is attached to",
+                  "example": 123
+                },
+                "withdrawn_reason": {
+                  "type": "string",
+                  "description": "Reason provided when the approval request was withdrawn",
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
       },
       "AssigneeFieldAssignableAgentObject": {
         "title": "AssigneeFieldAssignableAgents",
@@ -35760,6 +37190,35 @@
             }
           }
         }
+      },
+      "BrandAgentCreateRequest": {
+        "type": "object",
+        "properties": {
+          "brand_agent": {
+            "type": "object",
+            "properties": {
+              "brand_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The id of a brand",
+                "example": 88
+              },
+              "user_id": {
+                "type": "integer",
+                "format": "int64",
+                "description": "The id of an agent",
+                "example": 72
+              }
+            },
+            "required": [
+              "user_id",
+              "brand_id"
+            ]
+          }
+        },
+        "required": [
+          "brand_agent"
+        ]
       },
       "BrandAgentObject": {
         "type": "object",
@@ -37396,7 +38855,7 @@
       },
       "CustomObjectFieldPropertiesObject": {
         "type": "object",
-        "description": "A set of field-specific properties. For the standard::name field, this includes autonumbering and uniqueness settings (which can't be used together). For currency fields, this includes the allowed currency code. For parent fields, includes the `cascade_permissions_enabled` setting. For roll-up summary fields, includes the aggregation configuration.",
+        "description": "A set of field-specific properties. For the standard::name field, this includes autonumbering and uniqueness settings (which can't be used together). For text, integer, regexp, and lookup fields, this includes the uniqueness setting. For currency fields, this includes the allowed currency code. For parent fields, includes the `cascade_permissions_enabled` setting. For roll-up summary fields, includes the aggregation configuration.",
         "properties": {
           "allowed_currencies": {
             "type": "array",
@@ -37427,7 +38886,7 @@
           },
           "is_unique": {
             "type": "boolean",
-            "description": "Turns uniqueness on or off"
+            "description": "Turns uniqueness on or off. Supported on the standard::name field and on text, integer, regexp, and lookup fields"
           },
           "rollup_aggregated_field": {
             "type": "string",
@@ -38062,6 +39521,10 @@
                     }
                   ]
                 }
+              },
+              "unique_field_key": {
+                "type": "string",
+                "description": "The key of the unique field that identifies the records. Required for the `create_or_update_by_unique_field` and `delete_by_unique_field` actions."
               }
             }
           }
@@ -38380,6 +39843,10 @@
           "manage_dynamic_content": {
             "type": "boolean",
             "description": "Whether or not the agent can access dynamic content"
+          },
+          "manage_end_user_settings": {
+            "type": "boolean",
+            "description": "Whether or not the agent can manage end user settings"
           },
           "manage_extensions_and_channels": {
             "type": "boolean",
@@ -40702,6 +42169,72 @@
           "user_name": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "GlobalClientAccessStateObject": {
+        "title": "Global Client Access State",
+        "type": "object",
+        "properties": {
+          "access_state": {
+            "type": "string",
+            "description": "The client's incremental API blocking access state",
+            "enum": [
+              "allowed",
+              "blocked",
+              "extended",
+              "exempt"
+            ],
+            "readOnly": true
+          },
+          "extension_eligible": {
+            "type": "boolean",
+            "description": "Whether the client is eligible for the one-time self-service extension",
+            "readOnly": true
+          },
+          "extension_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The expiry of the saved extension, if one was granted",
+            "nullable": true,
+            "readOnly": true
+          },
+          "extension_ineligibility_reason": {
+            "type": "string",
+            "description": "Why the client is not eligible for the self-service extension: one of `already_granted`, `exempt`, `custom_schedule`, or `cutoff_passed`. Null when the client is eligible.\n",
+            "enum": [
+              "already_granted",
+              "exempt",
+              "custom_schedule",
+              "cutoff_passed",
+              null
+            ],
+            "nullable": true,
+            "readOnly": true
+          },
+          "global_client_id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of the global OAuth client",
+            "readOnly": true
+          }
+        },
+        "example": {
+          "access_state": "allowed",
+          "extension_eligible": true,
+          "extension_expires_at": null,
+          "extension_ineligibility_reason": null,
+          "global_client_id": 223443
+        }
+      },
+      "GlobalClientAccessStatesResponse": {
+        "type": "object",
+        "properties": {
+          "global_client_access": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GlobalClientAccessStateObject"
+            }
           }
         }
       },
@@ -49106,6 +50639,24 @@
           }
         }
       },
+      "SLAPoliciesReorderRequest": {
+        "type": "object",
+        "properties": {
+          "sla_policy_ids": {
+            "type": "array",
+            "description": "The IDs of the SLA policies, in the order the policies should be matched in. Policies that are not listed are placed after the listed ones, keeping their previous relative order. Omitting it, `null` and `[]` are all accepted and reorder nothing",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": [
+              12,
+              55
+            ],
+            "nullable": true
+          }
+        }
+      },
       "SLAPoliciesResponse": {
         "type": "object",
         "properties": {
@@ -49128,6 +50679,47 @@
             "items": {
               "$ref": "#/components/schemas/SLAPolicyObject"
             }
+          }
+        }
+      },
+      "SLAPolicyFilterConditionInput": {
+        "type": "object",
+        "description": "A condition that a ticket must match. See [Filter](#filter)",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "The name of a ticket field. Use the [Retrieve Supported Filter Definition Items](#retrieve-supported-filter-definition-items) endpoint to list the fields available on the account",
+            "example": "type"
+          },
+          "operator": {
+            "type": "string",
+            "description": "A comparison operator supported by the field",
+            "example": "is"
+          },
+          "value": {
+            "description": "The value of the ticket field. Fields that accept multiple selections, such as `custom_status_id`, take an array. Operators that take no value, such as `present`, accept `null`",
+            "oneOf": [
+              {
+                "type": "string",
+                "nullable": true
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       },
@@ -49193,12 +50785,21 @@
                         }
                       }
                     },
+                    "output_key": {
+                      "type": "string",
+                      "description": "The key output by the definition's field, for custom ticket and organization field definitions. Null for definitions without a field output",
+                      "nullable": true
+                    },
                     "target": {
                       "type": "string",
                       "nullable": true
                     },
                     "title": {
                       "type": "string"
+                    },
+                    "title_for_field": {
+                      "type": "string",
+                      "description": "The title of the field the definition corresponds to, falling back to `title` when the definition has no field"
                     },
                     "value": {
                       "type": "string"
@@ -49251,12 +50852,21 @@
                         }
                       }
                     },
+                    "output_key": {
+                      "type": "string",
+                      "description": "The key output by the definition's field, for custom ticket and organization field definitions. Null for definitions without a field output",
+                      "nullable": true
+                    },
                     "target": {
                       "type": "string",
                       "nullable": true
                     },
                     "title": {
                       "type": "string"
+                    },
+                    "title_for_field": {
+                      "type": "string",
+                      "description": "The title of the field the definition corresponds to, falling back to `title` when the definition has no field"
                     },
                     "value": {
                       "type": "string"
@@ -49291,6 +50901,28 @@
           }
         }
       },
+      "SLAPolicyFilterInput": {
+        "type": "object",
+        "description": "The conditions a ticket must match for the SLA policy to be applied to it. See [Filter](#filter)",
+        "properties": {
+          "all": {
+            "type": "array",
+            "description": "Conditions that must all be met. `null` and `[]` behave alike and neither is a no-op - the filter is rebuilt from the supplied keys only, so either one leaves the policy with no `all` conditions",
+            "items": {
+              "$ref": "#/components/schemas/SLAPolicyFilterConditionInput"
+            },
+            "nullable": true
+          },
+          "any": {
+            "type": "array",
+            "description": "Conditions of which at least one must be met. `null` and `[]` behave alike and neither is a no-op - the filter is rebuilt from the supplied keys only, so either one leaves the policy with no `any` conditions",
+            "items": {
+              "$ref": "#/components/schemas/SLAPolicyFilterConditionInput"
+            },
+            "nullable": true
+          }
+        }
+      },
       "SLAPolicyFilterObject": {
         "type": "object",
         "description": "An object that describes the conditions that a ticket must match in order for an SLA policy to be applied to that ticket. See [Filter](#filter).",
@@ -49306,6 +50938,95 @@
             "items": {
               "$ref": "#/components/schemas/SLAPolicyFilterConditionObject"
             }
+          }
+        }
+      },
+      "SLAPolicyInput": {
+        "type": "object",
+        "description": "The writable attributes accepted when creating an SLA policy",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The description of the SLA policy",
+            "example": "For urgent incidents, we will respond to tickets in 10 minutes",
+            "nullable": true
+          },
+          "filter": {
+            "$ref": "#/components/schemas/SLAPolicyFilterInput"
+          },
+          "metric_settings": {
+            "description": "Per-metric activation and fulfillment settings. `null` and `{}` both leave the policy with no settings",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLAPolicyMetricSettingsInput"
+              },
+              {
+                "type": "object",
+                "nullable": true
+              }
+            ]
+          },
+          "policy_metrics": {
+            "type": "array",
+            "description": "The targets for the policy. See [Policy Metric](#policy-metric)",
+            "items": {
+              "$ref": "#/components/schemas/SLAPolicyMetricInput"
+            },
+            "nullable": true
+          },
+          "policy_triggers": {
+            "type": "array",
+            "description": "Notifications attached to the policy. Only acted on when the account has the SLA policy triggers feature; without it the field is accepted and then silently dropped",
+            "items": {
+              "$ref": "#/components/schemas/SLAPolicyTriggerInput"
+            },
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "description": "Position of the SLA policy, which determines the order policies are matched in. Omitted or `null` places the new policy last",
+            "example": 3,
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the SLA policy",
+            "example": "Incidents"
+          }
+        },
+        "required": [
+          "title",
+          "filter"
+        ]
+      },
+      "SLAPolicyMetricInput": {
+        "type": "object",
+        "description": "A target for one combination of ticket priority and metric. Each priority and metric pair may only appear once in a policy",
+        "properties": {
+          "business_hours": {
+            "type": "boolean",
+            "description": "Whether the target is measured in business hours rather than calendar hours",
+            "example": false
+          },
+          "metric": {
+            "type": "string",
+            "description": "The time being measured. Allowed values are `agent_work_time`, `first_reply_time`, `next_reply_time`, `pausable_update_time`, `periodic_update_time`, `requester_wait_time`, or `total_resolution_time`",
+            "example": "first_reply_time"
+          },
+          "priority": {
+            "type": "string",
+            "description": "The ticket priority the target applies to. Allowed values are `low`, `normal`, `high`, or `urgent`",
+            "example": "normal"
+          },
+          "target": {
+            "type": "integer",
+            "description": "The target for the metric, in minutes. Ignored when `target_in_seconds` is supplied",
+            "example": 30
+          },
+          "target_in_seconds": {
+            "type": "integer",
+            "description": "The target for the metric, in seconds. Takes precedence over `target`",
+            "example": 1800
           }
         }
       },
@@ -49327,6 +51048,57 @@
           "target": {
             "type": "integer",
             "description": "The time within which the end-state for a metric should be met"
+          }
+        }
+      },
+      "SLAPolicyMetricSettingsInput": {
+        "type": "object",
+        "description": "Per-metric activation and fulfillment settings",
+        "properties": {
+          "first_reply_time": {
+            "type": "object",
+            "properties": {
+              "activate_on_agent_created_ticket_for_self": {
+                "type": "boolean"
+              },
+              "activate_on_agent_ticket_created_for_end_user_with_internal_note": {
+                "type": "boolean"
+              },
+              "activate_on_light_agent_on_email_forward_ticket_from_end_user": {
+                "type": "boolean"
+              },
+              "activate_on_ticket_created_for_end_user": {
+                "type": "boolean"
+              },
+              "fulfill_on_agent_internal_note": {
+                "type": "boolean"
+              }
+            }
+          },
+          "next_reply_time": {
+            "type": "object",
+            "properties": {
+              "activate_on_agent_requested_ticket_with_public_comment_or_internal_note": {
+                "type": "boolean"
+              },
+              "activate_on_end_user_added_internal_note": {
+                "type": "boolean"
+              },
+              "activate_on_light_agent_internal_note": {
+                "type": "boolean"
+              },
+              "fulfill_on_non_requesting_agent_internal_note_after_activation": {
+                "type": "boolean"
+              }
+            }
+          },
+          "periodic_update_time": {
+            "type": "object",
+            "properties": {
+              "activate_on_agent_internal_note": {
+                "type": "boolean"
+              }
+            }
           }
         }
       },
@@ -49424,6 +51196,17 @@
           "filter"
         ]
       },
+      "SLAPolicyRequest": {
+        "type": "object",
+        "properties": {
+          "sla_policy": {
+            "$ref": "#/components/schemas/SLAPolicyInput"
+          }
+        },
+        "required": [
+          "sla_policy"
+        ]
+      },
       "SLAPolicyResponse": {
         "type": "object",
         "properties": {
@@ -49431,6 +51214,275 @@
             "$ref": "#/components/schemas/SLAPolicyObject"
           }
         }
+      },
+      "SLAPolicyTriggerInput": {
+        "type": "object",
+        "properties": {
+          "actions": {
+            "type": "array",
+            "description": "The actions the notification performs. The API enforces no element shape, so the item schema here is unconstrained rather than authoritative",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the notification is active. Must be `true` or `false` — `Sla::PolicyTrigger` validates inclusion, so `null` is rejected",
+            "example": true
+          },
+          "conditions": {
+            "type": "string",
+            "description": "Signed time offsets relative to the metric target, in `{hours}.{minutes}` form, comma-separated. Unlike the rest of the rules family this is a plain string, not a condition object",
+            "example": "+1.30,-0.30"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the notification",
+            "example": "NEW NOTIFICATION"
+          }
+        },
+        "required": [
+          "conditions"
+        ]
+      },
+      "SLAPolicyUpdateInput": {
+        "type": "object",
+        "description": "Only the supplied properties are updated. Supplying `policy_metrics` replaces the policy's targets in full. Every property here is also a no-op when sent as null, so no property can be cleared that way",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The description of the SLA policy. A blank or `null` value is ignored, so the description cannot be cleared through this endpoint",
+            "example": "For urgent incidents, we will resolve the ticket within 2 hours",
+            "nullable": true
+          },
+          "filter": {
+            "description": "The conditions a ticket must match for the SLA policy to be applied to it. A supplied filter **replaces the policy's conditions in full**, so omitting `all` or sending it as `null` or `[]` removes the policy's existing `all` conditions - and likewise for `any`. Sending `null` or `{}` for `filter` itself is a no-op that leaves the current filter in place",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLAPolicyFilterInput"
+              },
+              {
+                "type": "object",
+                "nullable": true
+              }
+            ]
+          },
+          "metric_settings": {
+            "description": "Per-metric activation and fulfillment settings. `null` is ignored and leaves the current settings in place, whereas `{}` **clears every setting** on the policy",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SLAPolicyMetricSettingsInput"
+              },
+              {
+                "type": "object",
+                "nullable": true
+              }
+            ]
+          },
+          "policy_metrics": {
+            "type": "array",
+            "description": "The targets for the policy. See [Policy Metric](#policy-metric). Supplying this replaces the policy's targets in full, so a partial list deletes the targets it omits. `null` and `[]` are both ignored and leave the current targets in place",
+            "items": {
+              "$ref": "#/components/schemas/SLAPolicyMetricInput"
+            },
+            "nullable": true
+          },
+          "policy_triggers": {
+            "type": "array",
+            "description": "Notifications attached to the policy. Only acted on when the account has the SLA policy triggers feature; without it the field is accepted and then silently dropped. When it is acted on, the supplied list replaces the policy's notifications in full. `null` and `[]` are both ignored and leave the current notifications in place",
+            "items": {
+              "$ref": "#/components/schemas/SLAPolicyTriggerInput"
+            },
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "description": "Position of the SLA policy, which determines the order policies are matched in. A `null` value is ignored and the current position is kept",
+            "example": 3,
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the SLA policy. A blank or `null` value is ignored and the current title is kept",
+            "example": "Urgent Incidents",
+            "nullable": true
+          }
+        }
+      },
+      "SLAPolicyUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "sla_policy": {
+            "$ref": "#/components/schemas/SLAPolicyUpdateInput"
+          }
+        },
+        "required": [
+          "sla_policy"
+        ]
+      },
+      "SandboxObject": {
+        "type": "object",
+        "description": "A sandbox of the current account",
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "Whether the sandbox account is active and serviceable",
+            "readOnly": true
+          },
+          "country_code": {
+            "type": "string",
+            "description": "The country code inferred from IP at signup",
+            "nullable": true,
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the sandbox account was created",
+            "readOnly": true
+          },
+          "help_desk_size": {
+            "type": "string",
+            "description": "The help desk size given at signup",
+            "nullable": true,
+            "readOnly": true
+          },
+          "id": {
+            "type": "integer",
+            "description": "The ID of the sandbox account",
+            "readOnly": true
+          },
+          "is_trial": {
+            "type": "boolean",
+            "description": "Whether the sandbox was created during the account's trial. True only when `sandbox_creation_flow` is `trial_express`",
+            "readOnly": true
+          },
+          "multiproduct": {
+            "type": "boolean",
+            "description": "Whether the sandbox account is multiproduct",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the sandbox account",
+            "readOnly": true
+          },
+          "owner_id": {
+            "type": "integer",
+            "description": "The ID of the sandbox account's owner",
+            "readOnly": true
+          },
+          "region": {
+            "type": "string",
+            "description": "The region inferred at signup",
+            "nullable": true,
+            "readOnly": true
+          },
+          "sandbox": {
+            "type": "boolean",
+            "description": "Always true for a sandbox",
+            "readOnly": true
+          },
+          "sandbox_creation_flow": {
+            "type": "string",
+            "description": "How the sandbox was created. Set once at creation and never changes. `trial_sandbox` is a\n90-day trial sandbox, and stays `trial_sandbox` after the trial is converted. Null for\nsandboxes created before creation flows were recorded. Values may be added; ignore values\nyou don't recognise.\n",
+            "enum": [
+              "regular",
+              "express",
+              "trial_express",
+              "trial_sandbox",
+              null
+            ],
+            "nullable": true,
+            "readOnly": true
+          },
+          "subdomain": {
+            "type": "string",
+            "description": "The subdomain of the sandbox account",
+            "readOnly": true
+          },
+          "time_format": {
+            "type": "integer",
+            "description": "The clock format the sandbox uses. Returns 12 or 24",
+            "readOnly": true
+          },
+          "time_zone": {
+            "type": "string",
+            "description": "The default time zone of the sandbox account",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL of the sandbox. Null if the sandbox has no route",
+            "nullable": true,
+            "readOnly": true
+          }
+        }
+      },
+      "SandboxResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/SandboxObject"
+          }
+        }
+      },
+      "SandboxesResponse": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "description": "The sandboxes of the current account",
+            "items": {
+              "$ref": "#/components/schemas/SandboxObject"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "description": "The number of sandboxes",
+            "readOnly": true
+          },
+          "next_page": {
+            "type": "string",
+            "description": "Always null. The list isn't paginated",
+            "nullable": true,
+            "readOnly": true
+          },
+          "previous_page": {
+            "type": "string",
+            "description": "Always null. The list isn't paginated",
+            "nullable": true,
+            "readOnly": true
+          }
+        }
+      },
+      "SatisfactionRatingInput": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "The comment left by the requester with this rating. Omitting the property, sending an empty string and sending `null` are equivalent — the rating is created with no comment. A non-empty comment upgrades the score stored on the ticket from \"good\" to \"good_with_comment\" or from \"bad\" to \"bad_with_comment\", although the `score` in the response still reads \"good\" or \"bad\"",
+            "nullable": true
+          },
+          "reason_code": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The reason code for a negative rating. See [Reason codes](/api-reference/ticketing/ticket-management/satisfaction_reasons/#reason-codes) in the Satisfaction Reasons API. **This property is only accepted on accounts that have satisfaction reasons enabled**; on any other account the property is silently dropped and the rating is created without it, with a success response and no error. It also only takes effect on a \"bad\" score — a \"good\" score resets the reason to the default 0 (\"no reason\"). An explicit `null` is accepted and ignored, preserving any reason code already recorded on the ticket",
+            "nullable": true
+          },
+          "score": {
+            "type": "string",
+            "description": "The rating. Only \"good\" and \"bad\" create a rating: the parameter filter accepts the full satisfaction-score vocabulary used by the List Satisfaction Ratings `score` filter (\"offered\", \"unoffered\", \"received\", \"good_with_comment\" and so on), but any value other than \"good\" or \"bad\" is mapped to no score and the request then fails validation with a 422 rather than a 400",
+            "enum": [
+              "good",
+              "bad"
+            ]
+          }
+        },
+        "required": [
+          "score"
+        ]
       },
       "SatisfactionRatingObject": {
         "type": "object",
@@ -49521,6 +51573,17 @@
           "requester_id",
           "ticket_id",
           "score"
+        ]
+      },
+      "SatisfactionRatingRequest": {
+        "type": "object",
+        "properties": {
+          "satisfaction_rating": {
+            "$ref": "#/components/schemas/SatisfactionRatingInput"
+          }
+        },
+        "required": [
+          "satisfaction_rating"
         ]
       },
       "SatisfactionRatingResponse": {
@@ -62484,6 +64547,22 @@
         },
         "example": "boat"
       },
+      "CustomObjectRecordUniqueFieldValue": {
+        "name": "unique_field_value",
+        "in": "query",
+        "description": "A value of one of the custom object's unique fields, sent as `{unique_field_key}={value}`. For example, `vin=1HGCM82633A004352` identifies the record whose unique field with the key \"vin\" holds that value. The field's `is_unique` property must be enabled.\n",
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "example": {
+            "vin": "1HGCM82633A004352"
+          }
+        }
+      },
       "CustomRoleId": {
         "name": "custom_role_id",
         "in": "path",
@@ -63490,6 +65569,16 @@
           "format": "int64"
         },
         "example": 36
+      },
+      "SandboxSubdomain": {
+        "name": "sandbox_subdomain",
+        "in": "path",
+        "description": "The subdomain of a sandbox of the current account",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "example": "sandbox1234"
       },
       "SavedSearchId": {
         "name": "id",
@@ -65615,6 +67704,25 @@
           ]
         }
       },
+      "ApprovalClarificationFlowMessagesShowResponseExample": {
+        "value": {
+          "approval_request_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+          "clarification_flow_messages": [
+            {
+              "author": {
+                "avatar": "https://company.zendesk.com/system/photos/12345/avatar.png",
+                "id": 12345,
+                "name": "Jane Doe",
+                "role": "end_user"
+              },
+              "created_at": "2026-09-29T14:32:00Z",
+              "id": "msg_123",
+              "message": "Can you clarify the budget line?",
+              "via": "SUPPORT"
+            }
+          ]
+        }
+      },
       "ApprovalRequestCreateParallelRequestExample": {
         "summary": "Parallel (multiple approval requests)",
         "value": {
@@ -65776,6 +67884,47 @@
           }
         }
       },
+      "ApprovalRequestsListResponseWithDeeplinksExample": {
+        "value": {
+          "approval_requests": [
+            {
+              "approval_workflow_instance_id": "01HX123ABD",
+              "assignee_user": {
+                "id": 12345,
+                "name": "Jane Approver"
+              },
+              "clarification_flow_messages": [],
+              "created_at": "2025-02-26T10:30:00Z",
+              "created_by_user": {
+                "id": 789,
+                "name": "John Requester",
+                "photo": {
+                  "content_url": "https://example.zendesk.com/photos/789.jpg"
+                }
+              },
+              "decided_at": null,
+              "decisions": [],
+              "deeplink": "https://example.zendesk.com/agent/tickets/101/approvals/01HX123ABC",
+              "id": "01HX123ABC",
+              "message": "Please approve the software license request",
+              "origination_type": "API_ORIGINATION",
+              "status": "active",
+              "subject": "Software License Approval",
+              "ticket_id": 101,
+              "withdrawn_reason": null
+            }
+          ],
+          "links": {
+            "next": null,
+            "prev": null
+          },
+          "meta": {
+            "after_cursor": null,
+            "before_cursor": null,
+            "has_more": false
+          }
+        }
+      },
       "ApprovalRequestsParallelResponseExample": {
         "summary": "Parallel approval requests",
         "value": {
@@ -65805,6 +67954,37 @@
               "status": "active",
               "subject": "Budget Approval",
               "ticket_id": 123
+            }
+          ]
+        }
+      },
+      "ApprovalWorkflowInstanceWithdrawResponseExample": {
+        "value": {
+          "approval_requests": [
+            {
+              "approval_workflow_instance_id": "01KFP3S9EVXF9CKAYY080NV98D",
+              "assignee_group": null,
+              "assignee_user": {
+                "id": 456,
+                "name": "Jane Approver"
+              },
+              "created_at": "2026-01-23T19:02:36Z",
+              "created_by_user": {
+                "id": 789,
+                "name": "John Requester",
+                "photo": {
+                  "content_url": "https://company.zendesk.com/system/photos/789/photo.png"
+                }
+              },
+              "decided_at": null,
+              "decisions": [],
+              "id": "01KFP3S9EVXF9CKAYY080NV98C",
+              "message": "Please approve",
+              "origination_type": "API_ORIGINATION",
+              "status": "withdrawn",
+              "subject": "Budget Approval",
+              "ticket_id": 123,
+              "withdrawn_reason": "No longer needed"
             }
           ]
         }
@@ -66520,6 +68700,14 @@
               "type": "plan"
             }
           ]
+        }
+      },
+      "BrandAgentCreateRequestExample": {
+        "value": {
+          "brand_agent": {
+            "brand_id": 88,
+            "user_id": 72
+          }
         }
       },
       "BrandAgentResponseExample": {
@@ -67865,6 +70053,7 @@
                 "manage_business_rules": true,
                 "manage_contextual_workspaces": false,
                 "manage_dynamic_content": false,
+                "manage_end_user_settings": false,
                 "manage_extensions_and_channels": true,
                 "manage_facebook": false,
                 "manage_organization_fields": false,
@@ -67921,6 +70110,7 @@
                 "manage_business_rules": true,
                 "manage_contextual_workspaces": false,
                 "manage_dynamic_content": false,
+                "manage_end_user_settings": false,
                 "manage_extensions_and_channels": true,
                 "manage_facebook": false,
                 "manage_organization_fields": false,
@@ -69326,6 +71516,26 @@
               "title": "some schedule",
               "updated_at": "2021-07-20T22:55:29Z",
               "url": "https://{some domain}.zendesk.com/api/v2/deletion_schedules/7772196094461"
+            }
+          ]
+        }
+      },
+      "GlobalClientAccessStatesResponseExample": {
+        "value": {
+          "global_client_access": [
+            {
+              "access_state": "allowed",
+              "extension_eligible": true,
+              "extension_expires_at": null,
+              "extension_ineligibility_reason": null,
+              "global_client_id": 223443
+            },
+            {
+              "access_state": "extended",
+              "extension_eligible": false,
+              "extension_expires_at": "2027-03-08T00:00:00Z",
+              "extension_ineligibility_reason": "already_granted",
+              "global_client_id": 8678530
             }
           ]
         }
@@ -73788,6 +75998,14 @@
           ]
         }
       },
+      "SLAPoliciesReorderRequestExample": {
+        "value": {
+          "sla_policy_ids": [
+            12,
+            55
+          ]
+        }
+      },
       "SLAPoliciesResponseExample": {
         "value": {
           "count": 1,
@@ -73946,6 +76164,63 @@
           }
         }
       },
+      "SLAPolicyRequestExample": {
+        "value": {
+          "sla_policy": {
+            "description": "For urgent incidents, we will respond to tickets in 10 minutes",
+            "filter": {
+              "all": [
+                {
+                  "field": "type",
+                  "operator": "is",
+                  "value": "incident"
+                }
+              ],
+              "any": []
+            },
+            "policy_metrics": [
+              {
+                "business_hours": false,
+                "metric": "first_reply_time",
+                "priority": "normal",
+                "target": 30
+              },
+              {
+                "business_hours": false,
+                "metric": "first_reply_time",
+                "priority": "urgent",
+                "target": 10
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "low",
+                "target": 180
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "normal",
+                "target": 160
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "high",
+                "target": 140
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "urgent",
+                "target": 120
+              }
+            ],
+            "position": 3,
+            "title": "Incidents"
+          }
+        }
+      },
       "SLAPolicyResponseExample": {
         "value": {
           "sla_policy": {
@@ -73977,6 +76252,63 @@
             "position": 3,
             "title": "Incidents",
             "url": "https://{subdomain}.zendesk.com/api/v2/slas/policies/36"
+          }
+        }
+      },
+      "SLAPolicyUpdateRequestExample": {
+        "value": {
+          "sla_policy": {
+            "description": "For urgent incidents, we will resolve the ticket within 2 hours",
+            "filter": {
+              "all": [
+                {
+                  "field": "type",
+                  "operator": "is",
+                  "value": "incident"
+                }
+              ],
+              "any": []
+            },
+            "policy_metrics": [
+              {
+                "business_hours": false,
+                "metric": "first_reply_time",
+                "priority": "normal",
+                "target": 30
+              },
+              {
+                "business_hours": false,
+                "metric": "first_reply_time",
+                "priority": "urgent",
+                "target": 10
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "low",
+                "target": 180
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "normal",
+                "target": 160
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "high",
+                "target": 140
+              },
+              {
+                "business_hours": false,
+                "metric": "requester_wait_time",
+                "priority": "urgent",
+                "target": 120
+              }
+            ],
+            "position": 3,
+            "title": "Urgent Incidents"
           }
         }
       },
@@ -74036,6 +76368,81 @@
             "position": 3,
             "title": "Urgent Incidents",
             "url": "https://{subdomain}.zendesk.com/api/v2/slas/policies/36"
+          }
+        }
+      },
+      "SandboxResponseExample": {
+        "value": {
+          "account": {
+            "active": true,
+            "country_code": "US",
+            "created_at": "2026-10-16T04:33:34Z",
+            "help_desk_size": null,
+            "id": 5678,
+            "is_trial": false,
+            "multiproduct": false,
+            "name": "Example Company",
+            "owner_id": 16,
+            "region": null,
+            "sandbox": true,
+            "sandbox_creation_flow": "trial_sandbox",
+            "subdomain": "sandbox5678",
+            "time_format": 24,
+            "time_zone": "Pacific Time (US & Canada)",
+            "url": "https://sandbox5678.zendesk.com/"
+          }
+        }
+      },
+      "SandboxesResponseExample": {
+        "value": {
+          "accounts": [
+            {
+              "active": true,
+              "country_code": "US",
+              "created_at": "2026-01-01T00:00:00Z",
+              "help_desk_size": null,
+              "id": 1234,
+              "is_trial": false,
+              "multiproduct": false,
+              "name": "Example Company",
+              "owner_id": 16,
+              "region": null,
+              "sandbox": true,
+              "sandbox_creation_flow": "express",
+              "subdomain": "sandbox1234",
+              "time_format": 24,
+              "time_zone": "Pacific Time (US & Canada)",
+              "url": "https://sandbox1234.zendesk.com/"
+            },
+            {
+              "active": true,
+              "country_code": "US",
+              "created_at": "2026-10-16T04:33:34Z",
+              "help_desk_size": null,
+              "id": 5678,
+              "is_trial": false,
+              "multiproduct": false,
+              "name": "Example Company",
+              "owner_id": 16,
+              "region": null,
+              "sandbox": true,
+              "sandbox_creation_flow": "trial_sandbox",
+              "subdomain": "sandbox5678",
+              "time_format": 24,
+              "time_zone": "Pacific Time (US & Canada)",
+              "url": "https://sandbox5678.zendesk.com/"
+            }
+          ],
+          "count": 2,
+          "next_page": null,
+          "previous_page": null
+        }
+      },
+      "SatisfactionRatingRequestExample": {
+        "value": {
+          "satisfaction_rating": {
+            "comment": "Awesome support.",
+            "score": "good"
           }
         }
       },
@@ -79141,6 +81548,77 @@
         "type": "http",
         "description": "Bearer access token authentication.",
         "scheme": "bearer"
+      },
+      "oauth2": {
+        "type": "oauth2",
+        "description": "Zendesk OAuth 2.0 access tokens. When an operation lists multiple\nscopes, a token needs only one of the scopes to authorize the request.\nThis behavior differs from the OpenAPI specification, in which all\nscopes listed for a security scheme are required.\n",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "/oauth/authorizations/new",
+            "tokenUrl": "/oauth/tokens",
+            "refreshUrl": "/oauth/tokens",
+            "scopes": {
+              "account_settings:read": "View account settings. Includes account configuration, ticket and user fields, and workspaces.",
+              "account_settings:write": "Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces.",
+              "accounts:read": "Accounts read scope.",
+              "accounts:write": "Accounts write scope.",
+              "ai_agents:chat": "Ai agents chat scope.",
+              "any_channel:write": "Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only.",
+              "apps:read": "View installed apps and their settings. Includes a list of installed apps and each app's settings.",
+              "apps:write": "Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages.",
+              "auditlogs:read": "View audit logs, which provide an account-wide record of who changed what and when.",
+              "automations:read": "View automations and their details.",
+              "automations:write": "Create, edit, and delete automations.",
+              "brands:read": "View brands and their agent assignments.",
+              "brands:write": "Create, edit, and delete brands and their agent assignments.",
+              "custom_objects:read": "View custom objects. Includes custom object definitions and record attachments.",
+              "custom_objects:write": "Create, edit, and delete custom objects. Includes definitions and record attachments.",
+              "deletion_schedules:read": "View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data.",
+              "deletion_schedules:write": "Delete deletion schedules. Includes deleting data retention policies.",
+              "dynamic_content:read": "View dynamic content items and language variants.",
+              "dynamic_content:write": "Create, edit, and delete dynamic content items and language variants.",
+              "groups:read": "View groups and their memberships.",
+              "groups:write": "Create, edit, and delete groups and their memberships.",
+              "hc:read": "View Help Center content. Includes articles, sections, categories, community posts and comments.",
+              "hc:write": "Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments.",
+              "impersonate": "Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).",
+              "macros:read": "View macros, their categories, and attachments.",
+              "macros:write": "Create, edit, and delete macros and their attachments.",
+              "organizations:read": "View organizations and their details. Includes memberships, subscriptions, and merge history.",
+              "organizations:write": "Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations.",
+              "read": "Read all data. Gives access to GET endpoints, including permission to sideload related resources.",
+              "requests:read": "View support requests and their comments.",
+              "requests:write": "Submit and edit support requests. Includes creating new requests and adding comments to existing ones.",
+              "satisfaction_ratings:read": "View satisfaction ratings, scores, and reasons.",
+              "satisfaction_ratings:write": "Submit satisfaction ratings. Includes rating a ticket as good or bad with an optional reason.",
+              "security:read": "View security and sign-in settings. Includes password policies, session timeouts, IP restrictions, and SSO configuration. Read only.",
+              "side_conversations:read": "Side conversations read scope.",
+              "side_conversations:write": "Side conversations write scope.",
+              "sla_policies:read": "View SLA and group SLA policies.",
+              "sla_policies:write": "Create, edit, delete, and reorder SLA and group SLA policies.",
+              "targets:read": "View targets and their delivery failures.",
+              "targets:write": "Create, edit, and delete targets.",
+              "themes:read": "View Guide themes and their files.",
+              "themes:write": "Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes.",
+              "ticket_attachments:read": "View files attached to tickets.",
+              "ticket_attachments:write": "Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them.",
+              "ticket_views:read": "View ticket views and the tickets they return.",
+              "ticket_views:write": "Create, edit, and delete ticket views.",
+              "tickets:read": "View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics.",
+              "tickets:write": "Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses.",
+              "triggers:read": "View triggers, trigger categories, and their revision history.",
+              "triggers:write": "Create, edit, delete, and reorder triggers and trigger categories.",
+              "users:read": "View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings.",
+              "users:write": "Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles.",
+              "web_widget:write": "Edit Web Widget settings and configuration. Write only.",
+              "webhooks:read": "View webhooks and their activity history.",
+              "webhooks:write": "Create, edit, test, and delete webhooks.",
+              "write": "Write all data. Gives access to POST, PUT, and DELETE endpoints.",
+              "zis:read": "View private integrations. Includes configurations, connections, and inbound webhooks.",
+              "zis:write": "Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks."
+            }
+          }
+        }
       },
       "sessionAuth": {
         "name": "_zendesk_shared_session",

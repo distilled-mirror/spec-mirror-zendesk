@@ -7337,7 +7337,7 @@
           "Applications"
         ],
         "summary": "Get Application Access Status",
-        "description": "Returns the caller's own IdP access status for one application. Answers\n\"do I have access\", never another user's; there is no way to pass a\ndifferent target user. Proxied by Help Center to the saas-management\nservice, with the caller's Doorman headers forwarded so the upstream\nsees the acting agent, not Help Center.\n\nNote on the fallback shape: when the upstream lookup answers 404 (no\napplication with that id on the account, the application is deleted, or\nan admin has hidden it from employees), this endpoint answers 200 with\n`{\"has_access\": false, \"role\": null}` rather than forwarding the 404.\n\n#### Allowed for\n\n* Agents, admins\n",
+        "description": "Returns the caller's own IdP access status for one application. Answers\n\"do I have access\", never another user's; there is no way to pass a\ndifferent target user. Proxied by Help Center to the saas-management\nservice, with the caller's Doorman headers forwarded so the upstream\nsees the acting agent, not Help Center.\n\nAn application that exists but is hidden from employees answers 200 with\n`access_status` set to `unknown`. A 404 means no application with that id\nexists on the account (or it was deleted).\n\n#### Allowed for\n\n* Agents, admins\n",
         "responses": {
           "200": {
             "description": "The caller's access status for this application",
@@ -7360,6 +7360,24 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PlatformErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No application with that id on the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "NotFound"
                 }
               }
             }
@@ -7652,75 +7670,47 @@
       },
       "ApplicationAccessStatusResponse": {
         "type": "object",
-        "description": "The caller's IdP access status for one application. Normally proxied verbatim\nfrom the saas-management service (first shape below). When the upstream lookup\nanswers 404, Help Center does not forward the 404: it answers 200 with the\nfallback shape, so callers cannot distinguish \"no such application\" from \"no\naccess\".\n",
-        "oneOf": [
-          {
-            "title": "Upstream access status",
+        "description": "The caller's IdP access status for one application, proxied verbatim from the\nsaas-management service.\n",
+        "properties": {
+          "access_evidence": {
             "type": "object",
+            "description": "Present only when access_status is granted.",
             "properties": {
-              "access_evidence": {
-                "type": "object",
-                "description": "Present only when access_status is granted.",
-                "properties": {
-                  "last_seen_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "When sync last observed this assignment edge as active.",
-                    "example": "2026-09-24T12:00:00Z"
-                  },
-                  "source": {
-                    "type": "string",
-                    "description": "How access was proven; a direct assignment or a group-derived one.",
-                    "enum": [
-                      "direct",
-                      "group"
-                    ],
-                    "example": "direct"
-                  }
-                },
-                "nullable": true,
-                "required": [
-                  "source",
-                  "last_seen_at"
-                ]
-              },
-              "access_status": {
+              "last_seen_at": {
                 "type": "string",
-                "description": "Whether the caller has IdP application access. `unknown` covers cases where access cannot yet be proven or disproven.",
+                "format": "date-time",
+                "description": "When sync last observed this assignment edge as active.",
+                "example": "2026-09-24T12:00:00Z"
+              },
+              "source": {
+                "type": "string",
+                "description": "How access was proven; a direct assignment or a group-derived one.",
                 "enum": [
-                  "granted",
-                  "not_granted",
-                  "unknown"
+                  "direct",
+                  "group"
                 ],
-                "example": "granted"
+                "example": "direct"
               }
             },
+            "nullable": true,
             "required": [
-              "access_status"
+              "source",
+              "last_seen_at"
             ]
           },
-          {
-            "title": "Upstream 404 fallback",
-            "type": "object",
-            "properties": {
-              "has_access": {
-                "type": "boolean",
-                "enum": [
-                  false
-                ],
-                "example": false
-              },
-              "role": {
-                "type": "string",
-                "description": "Always null in the fallback shape.",
-                "nullable": true
-              }
-            },
-            "required": [
-              "has_access",
-              "role"
-            ]
+          "access_status": {
+            "type": "string",
+            "description": "Whether the caller has IdP application access. `unknown` covers cases where access cannot yet be proven or disproven, including an application that is hidden from employees.",
+            "enum": [
+              "granted",
+              "not_granted",
+              "unknown"
+            ],
+            "example": "granted"
           }
+        },
+        "required": [
+          "access_status"
         ]
       },
       "ApplicationFiltersResponse": {
