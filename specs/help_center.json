@@ -4731,7 +4731,47 @@
           "Categories"
         ],
         "summary": "Create Category",
-        "description": "You must specify a category name and locale. The locale can be omitted if it's specified\nin the URL. Optionally, you can specify multiple [translations](/api-reference/help_center/help-center-api/translations) for\nthe category. The specified locales must be enabled for the current Help Center.\n\n#### Allowed for\n\n* Help Center managers\n",
+        "description": "You must specify a category name and locale, unless you specify multiple\n[translations](/api-reference/help_center/help-center-api/translations) instead — in that\ncase the name and locale are taken from the translations and the top-level `name`/`locale`\nfields are not needed. The locale can also be omitted if it's specified in the URL. The\nspecified locales must be enabled for the current Help Center.\n\n#### Allowed for\n\n* Help Center managers\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryPostRequest"
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "category": {
+                      "description": "This category contains a collection of super hero tricks",
+                      "locale": "en-us",
+                      "name": "Super Hero Tricks",
+                      "position": 2
+                    }
+                  }
+                },
+                "translations": {
+                  "value": {
+                    "category": {
+                      "position": 2,
+                      "translations": [
+                        {
+                          "body": "This category contains a collection of Super Hero tricks",
+                          "locale": "en-us",
+                          "title": "Super Hero Tricks"
+                        },
+                        {
+                          "body": "Cette categorie contient une collection de trucs super heros",
+                          "locale": "fr",
+                          "title": "Trucs Super Heros"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "OK Response",
@@ -4799,6 +4839,24 @@
         ],
         "summary": "Update Category",
         "description": "These endpoints only update category-level metadata such as the sorting position.\nThey don't update category translations.\n\n#### Allowed for\n\n* Help Center managers\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CategoryPutRequest"
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "category": {
+                      "position": 2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK Response",
@@ -4972,7 +5030,47 @@
           "Sections"
         ],
         "summary": "Create Section in Category",
-        "description": "Creates a section in a given [category](/api-reference/help_center/help-center-api/categories). You must\nspecify a section name and locale. The locale can be omitted if it's specified\nin the URL. Optionally, you can specify multiple [translations](/api-reference/help_center/help-center-api/translations)\nfor the section. The specified locales must be enabled for\nthe current Help Center.\n\n#### Allowed for\n\n* Agents\n",
+        "description": "Creates a section in a given [category](/api-reference/help_center/help-center-api/categories). You must\nspecify a section name and locale. The locale can be omitted if it's specified\nin the URL. Optionally, you can specify multiple [translations](/api-reference/help_center/help-center-api/translations)\nfor the section. The specified locales must be enabled for\nthe current Help Center.\n\n#### Allowed for\n\n* Agents\n\n`user_segment_id` and `manageable_by` are not accepted on this endpoint. Sending\neither one returns a `422 Unprocessable Content`, even though they are valid\nsection properties elsewhere.\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionPostRequest"
+              },
+              "examples": {
+                "default": {
+                  "value": {
+                    "section": {
+                      "description": "This section contains articles on flight instruments",
+                      "locale": "en-us",
+                      "name": "Avionics",
+                      "position": 2
+                    }
+                  }
+                },
+                "translations": {
+                  "value": {
+                    "section": {
+                      "position": 2,
+                      "translations": [
+                        {
+                          "body": "This section contains articles on flight instruments",
+                          "locale": "en-us",
+                          "title": "Avionics"
+                        },
+                        {
+                          "body": "Cette section contient des articles sur les instruments de vol",
+                          "locale": "fr",
+                          "title": "Avionique"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "description",
@@ -8353,6 +8451,90 @@
           "locale"
         ]
       },
+      "CategoryPostRequest": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "The description of the category in the source locale",
+                "example": "This category contains a collection of super hero tricks"
+              },
+              "locale": {
+                "type": "string",
+                "description": "The source locale of the category. Required together with `name` unless\n`translations` is provided, in which case the source locale is taken from\nthe first translation.\n",
+                "example": "en-us"
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the category in the source locale. Required together with `locale`\nunless `translations` is provided instead.\n",
+                "example": "Super Hero Tricks"
+              },
+              "position": {
+                "type": "integer",
+                "description": "The position of this category relative to other categories",
+                "example": 2
+              },
+              "translations": {
+                "type": "array",
+                "description": "Translations of the category into multiple locales. Use this instead of\n`name`/`locale`/`description` to create the category with more than one\nlocale at a time.\n",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "body": {
+                      "type": "string",
+                      "description": "The description of the category in this locale"
+                    },
+                    "hidden": {
+                      "type": "boolean",
+                      "description": "Whether the translation is a draft"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "The id of an existing translation. Categories have no existing\ntranslations at creation time, so this is not normally needed here.\n"
+                    },
+                    "locale": {
+                      "type": "string",
+                      "description": "The locale of this translation"
+                    },
+                    "out_of_date": {
+                      "type": "boolean",
+                      "description": "Whether the translation is outdated"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "The name of the category in this locale"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "category"
+        ]
+      },
+      "CategoryPutRequest": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "object",
+            "properties": {
+              "position": {
+                "type": "integer",
+                "description": "The position of this category relative to other categories. This is the only\ncategory property this endpoint updates.\n",
+                "example": 2
+              }
+            }
+          }
+        },
+        "required": [
+          "category"
+        ]
+      },
       "CategoryResponse": {
         "type": "object",
         "properties": {
@@ -10197,6 +10379,80 @@
         "required": [
           "name",
           "locale"
+        ]
+      },
+      "SectionPostRequest": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "The description of the section in the source locale",
+                "example": "This section contains articles on flight instruments"
+              },
+              "locale": {
+                "type": "string",
+                "description": "The source locale of the section. Required together with `name` unless\n`translations` is provided, in which case the source locale is taken from\nthe first translation.\n",
+                "example": "en-us"
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the section in the source locale. Required together with `locale`\nunless `translations` is provided instead.\n",
+                "example": "Avionics"
+              },
+              "parent_section_id": {
+                "type": "integer",
+                "description": "The id of the section to which this section belongs, making it a subsection.\nOnly writable for Guide Enterprise customers. Omit or set to `null` to create\na top-level section directly under the category.\n",
+                "nullable": true
+              },
+              "position": {
+                "type": "integer",
+                "description": "The position of this section in the section list. Used when sorting is set to\n`manual`. By default the section is added to the end of the list.\n",
+                "example": 2
+              },
+              "sorting": {
+                "type": "string",
+                "description": "Defines the type of sorting used in this section",
+                "enum": [
+                  "manual",
+                  "title",
+                  "creation_desc",
+                  "creation_asc"
+                ]
+              },
+              "theme_template": {
+                "type": "string",
+                "description": "The theme template name used to display this section in Help Center.",
+                "example": "section_template"
+              },
+              "translations": {
+                "type": "array",
+                "description": "Translations of the section into multiple locales. Use this instead of\n`name`/`locale`/`description` to create the section with more than one\nlocale at a time.\n",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "body": {
+                      "type": "string",
+                      "description": "The description of the section in this locale"
+                    },
+                    "locale": {
+                      "type": "string",
+                      "description": "The locale of this translation"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "The name of the section in this locale"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "section"
         ]
       },
       "SectionPutRequest": {
