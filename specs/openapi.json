@@ -56,6 +56,9 @@
       "name": "Email Notification Templates"
     },
     {
+      "name": "AI Agent Channels"
+    },
+    {
       "name": "AI Agent Profiles"
     },
     {
@@ -224,6 +227,9 @@
     },
     {
       "name": "Brand Agents"
+    },
+    {
+      "name": "Brand User Migrations"
     },
     {
       "name": "Users"
@@ -3845,6 +3851,250 @@
         "responses": {
           "204": {
             "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/v2/brands/{brand_id}/user_migrations": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BrandId"
+        }
+      ],
+      "get": {
+        "operationId": "ListBrandUserMigrations",
+        "tags": [
+          "Brand User Migrations",
+          "Brands"
+        ],
+        "summary": "List Brand User Migrations",
+        "description": "Returns a list of brand user migrations for a specific brand, sorted by\ncreation date in descending order.\n\nThe response is not paginated; all migrations for the brand are returned.\n\n#### Allowed For\n\n* Admins\n\n#### Availability\n\nAvailable on accounts with Department Spaces.\n",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandUserMigrationsResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandUserMigrationsExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "CreateBrandUserMigration",
+        "tags": [
+          "Brand User Migrations",
+          "Brands"
+        ],
+        "summary": "Create Brand User Migration",
+        "description": "Creates a brand user migration for the specified brand. Only one active\nmigration may exist per account at a time.\n\nThe `direction.from.scope` must match the brand's current user separation\nsetting, and the from/to scopes must differ.\n\n#### Allowed For\n\n* Admins\n\n#### Availability\n\nAvailable on accounts with Department Spaces.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandUserMigrationCreateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/BrandUserMigrationCreateRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Migration created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandUserMigrationResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandUserMigrationExample"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Concurrent requests for migration creation were received. An active\nmigration already exists for the account; retrying after the existing\nmigration completes or is aborted should succeed. The normal failure\nfor an existing active migration is 422.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandUserMigrationConflictExample"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed. Returned when the account has an active migration\nthat cannot be superseded, when `direction.from.scope` does not match\nthe brand's current user separation setting, or when the from/to\nscopes do not differ.\n\nA reversal is supported without error: creating a migration in the\nexact opposite direction of an active `in_progress` migration aborts\nthat migration and creates the new one.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "items": {
+                          "properties": {
+                            "description": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/brands/{brand_id}/user_migrations/{migration_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BrandId"
+        },
+        {
+          "name": "migration_id",
+          "in": "path",
+          "description": "ULID of the brand user migration",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "operationId": "ShowBrandUserMigration",
+        "tags": [
+          "Brand User Migrations",
+          "Brands"
+        ],
+        "summary": "Show Brand User Migration",
+        "description": "Returns a single brand user migration by ID.\n\n#### Allowed For\n\n* Admins\n\n#### Availability\n\nAvailable on accounts with Department Spaces.\n",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandUserMigrationResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandUserMigrationExample"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "UpdateBrandUserMigration",
+        "tags": [
+          "Brand User Migrations",
+          "Brands"
+        ],
+        "summary": "Update Brand User Migration",
+        "description": "Updates the status of a brand user migration.\n\n#### Allowed For\n\n* Admins\n\n#### Availability\n\nAvailable on accounts with Department Spaces.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrandUserMigrationUpdateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/BrandUserMigrationUpdateRequestExample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Migration updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandUserMigrationResponse"
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandUserMigrationExample"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation failed. Only an `in_progress` migration can be moved to\n`validating`; updating a completed or aborted migration returns 422.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "items": {
+                          "properties": {
+                            "description": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -9202,7 +9452,7 @@
           "Email Notifications"
         ],
         "summary": "List Email Notifications",
-        "description": "#### Allowed For\n\n* Agents\n\n#### Request parameters\n\n##### Filters\n\n**Important**: You must specify a `filter` query parameter to narrow the scope of the search for this endpoint.\n\n* By notification: `api/v2/email_notifications?filter[notification_id]=7824075373693`\n* By comment: `api/v2/email_notifications?filter[comment_id]=782407`\n* By ticket: `api/v2/email_notifications?filter[ticket_id]=623`\n\n##### Pagination\n\nBy default, a maximum of 100 email notifications are included per page. Use cursor-based pagination parameters (`page[after]` and `page[before]`) to navigate the records (can't be used together in the same request). See [Pagination](/api-reference/introduction/pagination/) for more details.\n\n##### Sorting\n\nBy default, email notifications are sorted by creation time (newest first). The query parameter is not supported for this endpoint.\n",
+        "description": "Deleted and archived tickets are not included in the response. See\n[About archived tickets](https://support.zendesk.com/hc/en-us/articles/4408887617050) in Zendesk help.\n\n#### Allowed For\n\n* Agents\n\n#### Request parameters\n\n##### Filters\n\n**Important**: You must specify a `filter` query parameter to narrow the scope of the search for this endpoint.\n\n* By notification: `api/v2/email_notifications?filter[notification_id]=7824075373693`\n* By comment: `api/v2/email_notifications?filter[comment_id]=782407`\n* By ticket: `api/v2/email_notifications?filter[ticket_id]=623`\n\n##### Pagination\n\nBy default, a maximum of 100 email notifications are included per page. Use cursor-based pagination parameters (`page[after]` and `page[before]`) to navigate the records (can't be used together in the same request). See [Pagination](/api-reference/introduction/pagination/) for more details.\n\n##### Sorting\n\nBy default, email notifications are sorted by creation time (newest first). The query parameter is not supported for this endpoint.\n",
         "responses": {
           "200": {
             "description": "Success response",
@@ -9234,7 +9484,7 @@
           "Email Notifications"
         ],
         "summary": "Show Email Notification",
-        "description": "Shows details on an email notification. You can get the value of the `notification_id` parameter by listing the ticket's outbound emails.\n\n#### Allowed For\n\n* Agents\n",
+        "description": "Shows details on an email notification. You can get the value of the `notification_id` parameter by listing the ticket's outbound emails.\n\nDeleted and archived tickets are not included in the response. See\n[About archived tickets](https://support.zendesk.com/hc/en-us/articles/4408887617050) in Zendesk help.\n\n#### Allowed For\n\n* Agents\n",
         "responses": {
           "200": {
             "description": "Success response",
@@ -9272,7 +9522,7 @@
           "Email Notifications"
         ],
         "summary": "Show Many Email Notifications",
-        "description": "Shows details of many email notifications. Allows you to query by providing a list of notifications, comments, or tickets IDs.\n\n#### Allowed For\n\n* Agents\n\n#### Filters\n\n* By notification: `?ids=8433702508541,8433348111869`\n* By comment: `?comment_ids=8433348111741,8433544226045,8433702508413`\n* By ticket: `?ticket_ids=730,723`\n",
+        "description": "Shows details of many email notifications. Allows you to query by providing a list of notifications, comments, or tickets IDs.\n\nDeleted and archived tickets are not included in the response. See\n[About archived tickets](https://support.zendesk.com/hc/en-us/articles/4408887617050) in Zendesk help.\n\n#### Allowed For\n\n* Agents\n\n#### Filters\n\n* By notification: `?ids=8433702508541,8433348111869`\n* By comment: `?comment_ids=8433348111741,8433544226045,8433702508413`\n* By ticket: `?ticket_ids=730,723`\n",
         "responses": {
           "200": {
             "description": "Success response",
@@ -9301,13 +9551,17 @@
           "name": "type[]",
           "in": "query",
           "description": "Filters results by one or more identity types using the format `?type[]={type}&type[]={type}`",
+          "style": "form",
           "explode": true,
           "schema": {
-            "type": "string",
-            "enum": [
-              "email",
-              "phone_number"
-            ]
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "phone_number"
+              ]
+            }
           }
         }
       ],
@@ -16660,6 +16914,21 @@
         ],
         "summary": "Create Queue",
         "description": "Creates a queue. Accepts a JSON queue definition as the request body.\n\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/QueueRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "Created response",
@@ -16717,6 +16986,21 @@
         ],
         "summary": "Update Queue",
         "description": "Updates the queue definition for a given queue id.\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueUpdateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/QueueUpdateRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success response",
@@ -16784,6 +17068,21 @@
         ],
         "summary": "Reorder Queues",
         "description": "Alters the evaluation order of OCR queues in the account.\nThe evaluation order is set in a `queue_ids` array in the request body.\n\nYou must include every queue id in your account to reorder the OCR queues. If not, the endpoint will return 400 Bad Request.\n\n#### Allowed For\n\n* Admins\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueuesReorderRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/QueuesReorderRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -18693,6 +18992,26 @@
             }
           },
           {
+            "name": "brand_id",
+            "in": "query",
+            "description": "When brand separation is enabled, scopes user results to the specified brand.\nThis parameter applies only when the account has brand separation enabled\n(`brand_user_separation_eap`). Non-user document types are unaffected.\n\nAccepted values:\n\n* \"all\" — apply no brand scoping.\n* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.\n* A numeric brand id — if the brand has user separation enabled, return that\n  brand's end users plus the agents with membership in that brand and all admins.\n  If the brand does not have user separation enabled, the request falls back to\n  account scope (0). A brand id that does not exist on the account matches no users.\n\nAny other value returns 400 Bad Request, whether or not brand separation is enabled.\n\nThe query keyword form (`query=type:user brand_id:{brand_id}`) continues to work. It\nmatches the brand id as indexed on every document type, so admins match only through\ntheir brand memberships, and it does not apply the account-scope fallback for brands\nwithout user separation.\n",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "all"
+                  ]
+                },
+                {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              ]
+            },
+            "example": "all"
+          },
+          {
             "$ref": "#/components/parameters/SearchInclude"
           }
         ],
@@ -18733,6 +19052,26 @@
               "type": "string"
             },
             "example": "https://subdomain.zendesk.com/api/v2/search?query=type:ticket status:closed"
+          },
+          {
+            "name": "brand_id",
+            "in": "query",
+            "description": "When brand separation is enabled, scopes user results to the specified brand.\nThis parameter has the same semantics as the `brand_id` parameter for\n`GET /api/v2/search`. It applies only when the account has brand separation enabled\n(`brand_user_separation_eap`).\n",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "all"
+                  ]
+                },
+                {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              ]
+            },
+            "example": "all"
           }
         ],
         "responses": {
@@ -26077,7 +26416,7 @@
           {
             "name": "brand_id",
             "in": "query",
-            "description": "When brand separation is enabled, scopes the listing to users belonging to\nthe specified brand. Only applicable when the account has brand separation enabled.\n\nAccepted values:\n\n* \"all\" — return all users across all brands (no brand filtering applied).\n* 0 — return only account-scoped (brand-less) users.\n* A numeric brand id — if the brand has user separation enabled, return\n  end users belonging to that brand plus all agents and admins (who are\n  account-level and always included). If the brand does not have user\n  separation enabled, the request falls back to account scope (0).\n\nIf `brand_id` is omitted, the account's `brand_user_separation_scope_query_default`\n[brand setting](/api-reference/ticketing/account-configuration/account_settings/#brands)\ndecides the scope. If it's set to `\"error\"`, the request is rejected with `400 Bad Request`.\nAgent Workspace, other signed-in Zendesk sessions and internal Zendesk requests always use `all`. The resolved\nscope is returned in the `X-Zendesk-Brand-Id-Scope-Resolved` response header.\n",
+            "description": "When brand separation is enabled, scopes the listing to users belonging to\nthe specified brand. Only applicable when the account has brand separation enabled.\n\nAccepted values:\n\n* \"all\" — return all users across all brands (no brand filtering applied).\n* 0 — return only account-scoped (brand-less) end users plus all agents and admins.\n* A numeric brand id — if the brand has user separation enabled, return\n  end users belonging to that brand plus the agents with membership in\n  that brand and all admins. If the brand does not have user separation\n  enabled, the request falls back to account scope (0).\n\nIf `brand_id` is omitted, the account's `brand_user_separation_scope_query_default`\n[brand setting](/api-reference/ticketing/account-configuration/account_settings/#brands)\ndecides the scope. If it's set to `\"error\"`, the request is rejected with `400 Bad Request`.\nAgent Workspace, other signed-in Zendesk sessions and internal Zendesk requests always use `all`. The resolved\nscope is returned in the `X-Zendesk-Brand-Id-Scope-Resolved` response header.\n",
             "schema": {
               "oneOf": [
                 {
@@ -29028,7 +29367,7 @@
           {
             "name": "brand_id",
             "in": "query",
-            "description": "When brand separation is enabled, scopes the count to users belonging to\nthe specified brand. Only applicable when the account has brand separation enabled.\n\nAccepted values:\n\n* \"all\" — count all users across all brands (no brand filtering applied).\n* 0 — count only account-scoped (brand-less) users.\n* A numeric brand id — if the brand has user separation enabled, count\n  end users belonging to that brand plus all agents and admins (who are\n  account-level and always included). If the brand does not have user\n  separation enabled, the request falls back to account scope (0).\n\nIf `brand_id` is omitted, the account's `brand_user_separation_scope_query_default`\n[brand setting](/api-reference/ticketing/account-configuration/account_settings/#brands)\ndecides the scope. If it's set to `\"error\"`, the request is rejected with `400 Bad Request`.\nAgent Workspace, other signed-in Zendesk sessions and internal Zendesk requests always use `all`. The resolved\nscope is returned in the `X-Zendesk-Brand-Id-Scope-Resolved` response header.\n",
+            "description": "When brand separation is enabled, scopes the count to users belonging to\nthe specified brand. Only applicable when the account has brand separation enabled.\n\nAccepted values:\n\n* \"all\" — count all users across all brands (no brand filtering applied).\n* 0 — count only account-scoped (brand-less) end users plus all agents and admins.\n* A numeric brand id — if the brand has user separation enabled, count\n  end users belonging to that brand plus the agents with membership in\n  that brand and all admins. If the brand does not have user separation\n  enabled, the request falls back to account scope (0).\n\nIf `brand_id` is omitted, the account's `brand_user_separation_scope_query_default`\n[brand setting](/api-reference/ticketing/account-configuration/account_settings/#brands)\ndecides the scope. If it's set to `\"error\"`, the request is rejected with `400 Bad Request`.\nAgent Workspace, other signed-in Zendesk sessions and internal Zendesk requests always use `all`. The resolved\nscope is returned in the `X-Zendesk-Brand-Id-Scope-Resolved` response header.\n",
             "schema": {
               "oneOf": [
                 {
@@ -29800,7 +30139,7 @@
           {
             "name": "brand_id",
             "in": "query",
-            "description": "When brand separation is enabled, scopes the search to users belonging to\nthe specified brand. Only applicable when the account has brand separation enabled.\n\nAccepted values:\n\n* \"all\" — search all users across all brands (no brand filtering applied).\n* 0 — restrict the search to account-scoped (brand-less) users only.\n* A numeric brand id — if the brand has user separation enabled, search\n  returns only end users belonging to that brand. Unlike the list, count, and show_many endpoints,\n  agents and admins are not included in the results when filtering by a\n  specific brand. If the brand does not have user separation enabled, the\n  request falls back to account scope (0).\n\nIf `brand_id` is omitted, the account's `brand_user_separation_scope_query_default`\n[brand setting](/api-reference/ticketing/account-configuration/account_settings/#brands)\ndecides the scope. If it's set to `\"error\"`, the request is rejected with `400 Bad Request`.\nAgent Workspace, other signed-in Zendesk sessions and internal Zendesk requests always use `all`. The resolved\nscope is returned in the `X-Zendesk-Brand-Id-Scope-Resolved` response header.\n",
+            "description": "When brand separation is enabled, scopes the search to users belonging to\nthe specified brand. Only applicable when the account has brand separation enabled.\n\nAccepted values:\n\n* \"all\" — search all users across all brands (no brand filtering applied).\n* 0 — restrict the search to account-scoped (brand-less) users only.\n* A numeric brand id — if the brand has user separation enabled, search\n  returns end users belonging to that brand plus the agents with membership\n  in that brand and all admins. If the brand does not have user separation\n  enabled, the request falls back to account scope (0).\n\nIf `brand_id` is omitted, the account's `brand_user_separation_scope_query_default`\n[brand setting](/api-reference/ticketing/account-configuration/account_settings/#brands)\ndecides the scope. If it's set to `\"error\"`, the request is rejected with `400 Bad Request`.\nAgent Workspace, other signed-in Zendesk sessions and internal Zendesk requests always use `all`. The resolved\nscope is returned in the `X-Zendesk-Brand-Id-Scope-Resolved` response header.\n",
             "schema": {
               "oneOf": [
                 {
@@ -31664,7 +32003,7 @@
           "Grant Type Tokens"
         ],
         "summary": "Create Token for Grant Type",
-        "description": "Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters, which must be formatted as JSON:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | \"authorization_code\", \"refresh_token\", or \"client_credentials\"\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client's configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"authorization_code\",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: \"tickets:read users:read\",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"refresh_token\",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"client_credentials\",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app's access to Zendesk resources. The \"read\" scope gives access to GET endpoints and includes permission to sideload related resources. The \"write\" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don't confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe \"impersonate\" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`\"scope\": \"read\"`\n\nThe following parameter gives read and write access to all resources:\n\n`\"scope\": \"read write\"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`\"scope\": \"resource:action\"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`\"scope\": \"tickets:read\"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`\"scope\": \"users:read users:write\"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`\"scope\": \"organizations:write read\"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn't exist (for example, a typo such as `\"scope\": [\"read\", \"write\"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client's allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n",
+        "description": "Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters, which must be formatted as JSON:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | \"authorization_code\", \"refresh_token\", or \"client_credentials\"\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client's configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"authorization_code\",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: \"tickets:read users:read\",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"refresh_token\",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"client_credentials\",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app's access to Zendesk resources. The \"read\" scope gives access to GET endpoints and includes permission to sideload related resources. The \"write\" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don't confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe \"impersonate\" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`\"scope\": \"read\"`\n\nThe following parameter gives read and write access to all resources:\n\n`\"scope\": \"read write\"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`\"scope\": \"resource:action\"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`\"scope\": \"tickets:read\"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`\"scope\": \"users:read users:write\"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`\"scope\": \"organizations:write read\"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn't exist (for example, a typo such as `\"scope\": [\"read\", \"write\"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client's allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n",
         "responses": {
           "201": {
             "description": "Created response",
@@ -36116,6 +36455,221 @@
           }
         }
       },
+      "AiAgentChannelCodedError": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "description": "page[after] is not valid",
+          "error": "InvalidPaginationParameter"
+        },
+        "required": [
+          "error",
+          "description"
+        ]
+      },
+      "AiAgentChannelFailure": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "AiAgentChannelObject": {
+        "type": "object",
+        "properties": {
+          "channel_identifier": {
+            "type": "string",
+            "description": "Support address email, `<ticket_form_id>:<brand_id>` (using the channel's stored brand), or brand id.\nOmitted when a support address can no longer be resolved.\n"
+          },
+          "channel_type": {
+            "type": "string",
+            "description": "Channel kind",
+            "enum": [
+              "email_support_address",
+              "email_web_form",
+              "email_web_service"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "string",
+            "description": "Channel ID",
+            "example": "01J4JXETB5Q4RZHHG0KYZE1W4V"
+          },
+          "service": {
+            "type": "string",
+            "description": "Owning AI Agent service",
+            "example": "ultimate"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string",
+            "description": "API URL of the channel record"
+          }
+        },
+        "required": [
+          "url",
+          "id",
+          "channel_type",
+          "service",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "AiAgentChannelRecordInvalidError": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Human-readable error message"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {
+              "items": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "error": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "error": {
+            "type": "string",
+            "description": "Error code"
+          }
+        },
+        "required": [
+          "error",
+          "description",
+          "details"
+        ]
+      },
+      "AiAgentChannelResponse": {
+        "type": "object",
+        "properties": {
+          "ai_agent_channel": {
+            "$ref": "#/components/schemas/AiAgentChannelObject"
+          }
+        },
+        "required": [
+          "ai_agent_channel"
+        ]
+      },
+      "AiAgentChannelsCollection": {
+        "type": "object",
+        "properties": {
+          "ai_agent_channels": {
+            "type": "array",
+            "description": "AI agent channel records",
+            "items": {
+              "$ref": "#/components/schemas/AiAgentChannelObject"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of records in this response"
+          },
+          "next_page": {
+            "type": "string",
+            "nullable": true
+          },
+          "previous_page": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "ai_agent_channels"
+        ]
+      },
+      "AiAgentChannelsResponse": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AiAgentChannelsCollection"
+          },
+          {
+            "$ref": "#/components/schemas/CursorPaginationMeta"
+          }
+        ]
+      },
+      "AiAgentChannelsWriteRequest": {
+        "type": "object",
+        "properties": {
+          "ai_agent_channels": {
+            "type": "array",
+            "description": "Channel records to write or delete. An empty array, or more than 100 items, is rejected.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "channel_identifier": {
+                  "type": "string",
+                  "description": "Support address email for `email_support_address`.\n`<ticket_form_id>:<brand_id>` for `email_web_form`.\nBrand id for `email_web_service`.\n"
+                },
+                "channel_type": {
+                  "type": "string",
+                  "description": "Channel kind",
+                  "enum": [
+                    "email_support_address",
+                    "email_web_form",
+                    "email_web_service"
+                  ]
+                },
+                "service": {
+                  "type": "string",
+                  "description": "Accepted but ignored. The owning service is always the authenticated system user; it cannot be set or changed through the payload.\n",
+                  "example": "ultimate"
+                }
+              },
+              "required": [
+                "channel_type",
+                "channel_identifier"
+              ]
+            },
+            "minItems": 1,
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "ai_agent_channels"
+        ]
+      },
       "AiAgentProfileCreateRequest": {
         "type": "object",
         "properties": {
@@ -39202,6 +39756,191 @@
         "properties": {
           "brand": {
             "$ref": "#/components/schemas/BrandObject"
+          }
+        }
+      },
+      "BrandUserMigration": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "integer",
+            "description": "ID of the account the migration belongs to"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the migration is currently active"
+          },
+          "brand_id": {
+            "type": "integer",
+            "description": "ID of the brand the migration is scoped to"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the migration was completed; null until the migration completes",
+            "nullable": true
+          },
+          "direction": {
+            "$ref": "#/components/schemas/BrandUserMigrationDirection"
+          },
+          "id": {
+            "type": "string",
+            "description": "ULID of the brand user migration"
+          },
+          "jobs": {
+            "type": "array",
+            "description": "The background jobs associated with the migration",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "String ID of the background job"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Type of the background job"
+                }
+              }
+            }
+          },
+          "mode": {
+            "type": "string",
+            "description": "Execution mode of the migration",
+            "enum": [
+              "manual",
+              "auto"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the migration",
+            "enum": [
+              "in_progress",
+              "validating",
+              "reconciling",
+              "aborted",
+              "completed"
+            ]
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the migration was last updated"
+          },
+          "url": {
+            "type": "string",
+            "description": "The API url of this migration"
+          }
+        }
+      },
+      "BrandUserMigrationCreateRequest": {
+        "type": "object",
+        "properties": {
+          "user_migration": {
+            "type": "object",
+            "properties": {
+              "direction": {
+                "$ref": "#/components/schemas/BrandUserMigrationDirection"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "manual",
+                  "auto"
+                ]
+              }
+            },
+            "required": [
+              "direction",
+              "mode"
+            ]
+          }
+        },
+        "required": [
+          "user_migration"
+        ]
+      },
+      "BrandUserMigrationDirection": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "description": "The user separation scope the user is migrating from",
+                "enum": [
+                  "account",
+                  "brand"
+                ]
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          },
+          "to": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string",
+                "description": "The user separation scope the user is migrating to",
+                "enum": [
+                  "account",
+                  "brand"
+                ]
+              }
+            },
+            "required": [
+              "scope"
+            ]
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      },
+      "BrandUserMigrationResponse": {
+        "type": "object",
+        "properties": {
+          "user_migration": {
+            "$ref": "#/components/schemas/BrandUserMigration"
+          }
+        }
+      },
+      "BrandUserMigrationUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "user_migration": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Desired status to set on the migration",
+                "enum": [
+                  "validating"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        },
+        "required": [
+          "user_migration"
+        ]
+      },
+      "BrandUserMigrationsResponse": {
+        "type": "object",
+        "properties": {
+          "user_migrations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrandUserMigration"
+            }
           }
         }
       },
@@ -47375,15 +48114,41 @@
                     }
                   },
                   "fields": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer",
-                        "format": "int64"
+                    "type": "array",
+                    "description": "The ticket custom field values applied by the macro.\nEach entry specifies a field ID and its value.\nThe value type depends on the field configuration, and is null\nif the macro clears the field.\n",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64",
+                          "description": "The ID of the custom field"
+                        },
+                        "value": {
+                          "description": "The value assigned to the custom field",
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ]
+                        }
                       },
-                      "value": {
-                        "type": "string"
-                      }
+                      "required": [
+                        "id"
+                      ]
                     }
                   },
                   "group_id": {
@@ -51783,6 +52548,137 @@
           }
         }
       },
+      "QueueConditionInput": {
+        "type": "object",
+        "description": "A single condition in a queue definition",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "The name of a ticket field to test. Use the List Queue Definitions endpoint for the available fields"
+          },
+          "operator": {
+            "type": "string",
+            "description": "A comparison operator. Use the List Queue Definitions endpoint for the operators each field supports. Defaults to `is` when omitted\nor `null`\n",
+            "nullable": true
+          },
+          "value": {
+            "description": "The value to compare the field against. Tag fields take a single space-separated string rather than an array",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "example": {
+          "field": "priority",
+          "operator": "is",
+          "value": "urgent"
+        },
+        "required": [
+          "field"
+        ]
+      },
+      "QueueDefinitionInput": {
+        "type": "object",
+        "description": "The conditions under which the queue applies. `all` and `any` must contain at least one and at most 100 conditions combined",
+        "properties": {
+          "all": {
+            "type": "array",
+            "description": "Logical AND. A ticket must match all of these conditions to enter the queue. `null` is accepted and treated as empty",
+            "items": {
+              "$ref": "#/components/schemas/QueueConditionInput"
+            },
+            "nullable": true
+          },
+          "any": {
+            "type": "array",
+            "description": "Logical OR. A ticket may match any of these conditions to enter the queue. `null` is accepted and treated as empty",
+            "items": {
+              "$ref": "#/components/schemas/QueueConditionInput"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "QueueInput": {
+        "type": "object",
+        "description": "The writable attributes accepted when creating a queue. A queue routes either to groups or to subqueues, never both: pass `priority` and\n`primary_groups_id` for a group queue, or `subqueues` for a subqueue queue, in which case `priority` and the group ids must be omitted\n",
+        "properties": {
+          "definition": {
+            "$ref": "#/components/schemas/QueueDefinitionInput"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the queue",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the queue. Must be unique within the account, including against subqueue names"
+          },
+          "predictive_routing": {
+            "type": "boolean",
+            "description": "Whether predictive routing is applied to the queue. Forced to `false` when the queue has subqueues"
+          },
+          "primary_groups_id": {
+            "type": "array",
+            "description": "The ids of the groups the queue routes to first. At least one is required for a group queue, and the field must be omitted when\n`subqueues` is set. `null` is accepted and behaves as omitted: the group assignment is skipped entirely rather than applied as empty\n",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true,
+            "maxItems": 20
+          },
+          "priority": {
+            "type": "integer",
+            "description": "The priority applied to tickets that enter the queue. Required for a group queue, and must be omitted when `subqueues` is set.\n`null` is accepted and behaves as omitted\n",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "secondary_groups_id": {
+            "type": "array",
+            "description": "The ids of the groups the queue falls back to. Ignored unless `primary_groups_id` is also set, and ignored when `subqueues` is set.\nIds also present in `primary_groups_id` are ignored. `null` is accepted and behaves as omitted\n",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true,
+            "maxItems": 20
+          },
+          "subqueues": {
+            "type": "array",
+            "description": "The subqueues that tickets are distributed across, instead of routing to groups directly. Requires the account to have a minimum\nEnterprise level plan for whichever of Support, Chat, Talk products it has — without that the whole `subqueues` array is dropped\nbefore it reaches the model. The array is the complete set: any existing subqueue whose id is absent from it is deleted, and\npassing an empty array deletes them all. `null` is accepted and behaves as omitted, creating a queue with no subqueues\n",
+            "items": {
+              "$ref": "#/components/schemas/QueueSubqueueInput"
+            },
+            "nullable": true,
+            "maxItems": 5
+          }
+        },
+        "required": [
+          "name",
+          "definition"
+        ]
+      },
       "QueueObject": {
         "type": "object",
         "properties": {
@@ -51951,6 +52847,17 @@
           "url": "https://company.zendesk.com/api/v2/queues/01HG80ATNNZK1N7XRFVKX48XD6"
         }
       },
+      "QueueRequest": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "$ref": "#/components/schemas/QueueInput"
+          }
+        },
+        "required": [
+          "queue"
+        ]
+      },
       "QueueResponse": {
         "type": "object",
         "properties": {
@@ -51958,6 +52865,166 @@
             "$ref": "#/components/schemas/QueueObject"
           }
         }
+      },
+      "QueueSubqueueInput": {
+        "type": "object",
+        "description": "A subqueue of the parent queue. Requires the account to have a minimum Enterprise level plan for whichever of Support, Chat, Talk\nproducts it has — without that the whole `subqueues` array is dropped before it reaches the model. Omit `id` to create a subqueue, or\npass the id of an existing one to update it. An unknown id is rejected. `name`, `priority` and `percentage` are required for a new\nsubqueue (one without `id`); when updating an existing subqueue (one with `id`) they may be omitted and the stored values are preserved.\n`primary_groups_id` is always required\n",
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "name",
+              "priority",
+              "percentage",
+              "primary_groups_id"
+            ]
+          },
+          {
+            "type": "object",
+            "required": [
+              "id",
+              "primary_groups_id"
+            ]
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of an existing subqueue to update. Omit it to create a new subqueue. `null` means the same thing as omitting it — the writer\nbranches on `id.nil?` — so it is the explicit way to say \"create\"\n",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the subqueue. Must be unique within the account, including against queue names"
+          },
+          "percentage": {
+            "type": "integer",
+            "description": "The share of matching tickets routed to this subqueue. The percentages across all subqueues of a queue must total exactly 100",
+            "maximum": 100
+          },
+          "predictive_routing": {
+            "type": "boolean",
+            "description": "Whether predictive routing is applied to this subqueue"
+          },
+          "primary_groups_id": {
+            "type": "array",
+            "description": "The ids of the groups this subqueue routes to first. At least one is required",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "maxItems": 20
+          },
+          "priority": {
+            "type": "integer",
+            "description": "The priority applied to tickets that enter this subqueue",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "secondary_groups_id": {
+            "type": "array",
+            "description": "The ids of the groups this subqueue falls back to. Ids also present in `primary_groups_id` are ignored. `null`, an empty array and\nomitting the property all remove every secondary group from the subqueue, and nothing validates secondary groups, so the request\nsucceeds\n",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true,
+            "maxItems": 20
+          }
+        }
+      },
+      "QueueUpdateInput": {
+        "type": "object",
+        "description": "The writable attributes accepted when updating a queue. `name`, `description` and `definition` are left unchanged when omitted, but\n`priority` and the group assignments are always rewritten from the request, so a group queue must send `priority` and `primary_groups_id`\non every update. A subqueue queue omits both instead, and sends `subqueues`\n",
+        "properties": {
+          "definition": {
+            "description": "`null` is accepted and leaves the stored definition unchanged",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueDefinitionInput"
+              },
+              {
+                "type": "object",
+                "nullable": true
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the queue. `null` clears the stored description; on create it creates a queue with no description\n",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the queue. Must be unique within the account, including against subqueue names"
+          },
+          "predictive_routing": {
+            "type": "boolean",
+            "description": "Whether predictive routing is applied to the queue. Forced to `false` when the queue has subqueues"
+          },
+          "primary_groups_id": {
+            "type": "array",
+            "description": "The ids of the groups the queue routes to first. Replaces the current primary groups, so a group queue must send the full list and it\ncannot be empty. Must be omitted when the queue has subqueues. `null`, an empty array and omitting the property are all the same\nrequest: each clears the primary groups, which a group queue then rejects with a 422 that rolls the whole update back, and which is the\nrequired state for a subqueue queue\n",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true,
+            "maxItems": 20
+          },
+          "priority": {
+            "type": "integer",
+            "description": "The priority applied to tickets that enter the queue. Rewritten on every update, so omitting it on a group queue clears the priority\nand fails validation. Must be omitted when the queue has subqueues. `null` is indistinguishable from omitting the property — the\ncontroller rewrites `priority` from the request either way — so it fails validation on a group queue and is the required value on a\nsubqueue queue\n",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "secondary_groups_id": {
+            "type": "array",
+            "description": "The ids of the groups the queue falls back to. Replaces the current secondary groups, and clears them when omitted. Must be omitted\nwhen the queue has subqueues. Ids also present in `primary_groups_id` are ignored. **`null` is destructive and silent**: like an empty\narray and like omitting the property, it removes every secondary group, and because nothing validates secondary groups the request still\nreturns a 200\n",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "nullable": true,
+            "maxItems": 20
+          },
+          "subqueues": {
+            "type": "array",
+            "description": "The subqueues that tickets are distributed across, instead of routing to groups directly. Applied only when the account has a\nminimum Enterprise level plan for whichever of Support, Chat, Talk products it has, and ignored without it. On such an account\nthis field is rewritten on every update rather than left\nalone: the array is the complete set, so any existing subqueue whose id is absent from it is deleted, an empty array deletes them all,\nand **omitting the field entirely also deletes them all** — which converts the queue to a group queue and so requires `priority` and\n`primary_groups_id` in the same request. **`null` is destructive in exactly the same way**: the writer tests\n`sub_queues.nil? || sub_queues.empty?` and takes the delete-everything branch for both, so `null`, `[]` and omission are one request,\nnot three. Pass each subqueue's `id` to keep it, or omit `id` to add a new one\n",
+            "items": {
+              "$ref": "#/components/schemas/QueueSubqueueInput"
+            },
+            "nullable": true,
+            "maxItems": 5
+          }
+        }
+      },
+      "QueueUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "$ref": "#/components/schemas/QueueUpdateInput"
+          }
+        },
+        "required": [
+          "queue"
+        ]
+      },
+      "QueuesReorderRequest": {
+        "type": "object",
+        "properties": {
+          "queue_ids": {
+            "type": "array",
+            "description": "Every queue id in the account, in the evaluation order you want. Duplicates are collapsed and the request succeeds. Only missing or\ninvalid ids cause a 400 response.\n",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "queue_ids"
+        ]
       },
       "QueuesResponse": {
         "type": "object",
@@ -60842,10 +61909,7 @@
         "type": "object",
         "properties": {
           "ticket_metric": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TicketMetricObject"
-            }
+            "$ref": "#/components/schemas/TicketMetricObject"
           }
         }
       },
@@ -70890,6 +71954,97 @@
           ]
         }
       },
+      "AiAgentChannelForbiddenExample": {
+        "value": {
+          "error": {
+            "message": "You do not have access to this page. Please contact the account owner of this help desk for further help.",
+            "title": "Forbidden"
+          }
+        }
+      },
+      "AiAgentChannelNotFoundExample": {
+        "value": {
+          "error": {
+            "message": "You’ve reached this page because what you were looking for does not exist or there’s been an error.",
+            "title": "Not Found"
+          }
+        }
+      },
+      "AiAgentChannelResponseExample": {
+        "summary": "Header lookup or show",
+        "value": {
+          "ai_agent_channel": {
+            "channel_identifier": "360012345678:360012345679",
+            "channel_type": "email_web_form",
+            "created_at": "2026-05-01T12:00:00Z",
+            "id": "01J4JXETB5Q4RZHHG0KYZE1W4V",
+            "service": "ultimate",
+            "updated_at": "2026-05-01T12:00:00Z",
+            "url": "https://example.zendesk.com/api/v2/internal/ai_agent_channels/01J4JXETB5Q4RZHHG0KYZE1W4V.json"
+          }
+        }
+      },
+      "AiAgentChannelsResponseExample": {
+        "summary": "Channel page",
+        "value": {
+          "ai_agent_channels": [
+            {
+              "channel_identifier": "support@example.com",
+              "channel_type": "email_support_address",
+              "created_at": "2026-05-01T12:00:00Z",
+              "id": "01J4JXETB5Q4RZHHG0KYZE1W4V",
+              "service": "ultimate",
+              "updated_at": "2026-05-01T12:00:00Z",
+              "url": "https://example.zendesk.com/api/v2/internal/ai_agent_channels/01J4JXETB5Q4RZHHG0KYZE1W4V.json"
+            }
+          ],
+          "links": {
+            "next": "https://example.zendesk.com/api/v2/internal/ai_agent_channels.json?page[after]=eyJvIjoiaWQiLCJ2IjoiYVFFIn0=",
+            "prev": "https://example.zendesk.com/api/v2/internal/ai_agent_channels.json?page[before]=eyJvIjoiaWQiLCJ2IjoiYVFFIn0="
+          },
+          "meta": {
+            "after_cursor": "eyJvIjoiaWQiLCJ2IjoiYVFFIn0=",
+            "before_cursor": "eyJvIjoiaWQiLCJ2IjoiYVFFIn0=",
+            "has_more": false
+          }
+        }
+      },
+      "AiAgentChannelsWriteRequestExample": {
+        "value": {
+          "ai_agent_channels": [
+            {
+              "channel_identifier": "support@example.com",
+              "channel_type": "email_support_address"
+            },
+            {
+              "channel_identifier": "360012345678:360012345679",
+              "channel_type": "email_web_form"
+            },
+            {
+              "channel_identifier": "360012345680",
+              "channel_type": "email_web_service"
+            }
+          ]
+        }
+      },
+      "AiAgentChannelsWriteResponseExample": {
+        "value": {
+          "ai_agent_channels": [
+            {
+              "channel_identifier": "support@example.com",
+              "channel_type": "email_support_address",
+              "created_at": "2026-05-01T12:00:00Z",
+              "id": "01J4JXETB5Q4RZHHG0KYZE1W4V",
+              "service": "ultimate",
+              "updated_at": "2026-05-01T12:00:00Z",
+              "url": "https://example.zendesk.com/api/v2/internal/ai_agent_channels/01J4JXETB5Q4RZHHG0KYZE1W4V.json"
+            }
+          ],
+          "count": 1,
+          "next_page": null,
+          "previous_page": null
+        }
+      },
       "AiAgentProfileCreateRequestExample": {
         "value": {
           "ai_agent_profile": {
@@ -72201,6 +73356,123 @@
             "name": "Brand 1",
             "subdomain": "Brand1"
           }
+        }
+      },
+      "BrandUserMigrationConflictExample": {
+        "value": {
+          "description": "an active migration already exists for this account",
+          "error": "Active migration"
+        }
+      },
+      "BrandUserMigrationCreateRequestExample": {
+        "value": {
+          "user_migration": {
+            "direction": {
+              "from": {
+                "scope": "account"
+              },
+              "to": {
+                "scope": "brand"
+              }
+            },
+            "mode": "manual"
+          }
+        }
+      },
+      "BrandUserMigrationExample": {
+        "value": {
+          "user_migration": {
+            "account_id": 1234567,
+            "active": true,
+            "brand_id": 360002783572,
+            "completed_at": null,
+            "direction": {
+              "from": {
+                "scope": "account"
+              },
+              "to": {
+                "scope": "brand"
+              }
+            },
+            "id": "01J8X4Q3Z9K7M2N5P8R6T0V1WY",
+            "jobs": [
+              {
+                "id": "V3-validation",
+                "type": "validation"
+              }
+            ],
+            "mode": "manual",
+            "status": "in_progress",
+            "updated_at": "2025-09-15T10:30:00Z",
+            "url": "https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/01J8X4Q3Z9K7M2N5P8R6T0V1WY"
+          }
+        }
+      },
+      "BrandUserMigrationUpdateRequestExample": {
+        "value": {
+          "user_migration": {
+            "status": "validating"
+          }
+        }
+      },
+      "BrandUserMigrationsExample": {
+        "value": {
+          "user_migrations": [
+            {
+              "account_id": 1234567,
+              "active": true,
+              "brand_id": 360002783572,
+              "completed_at": null,
+              "direction": {
+                "from": {
+                  "scope": "account"
+                },
+                "to": {
+                  "scope": "brand"
+                }
+              },
+              "id": "01J8X4Q3Z9K7M2N5P8R6T0V1WY",
+              "jobs": [
+                {
+                  "id": "V3-validation",
+                  "type": "validation"
+                }
+              ],
+              "mode": "manual",
+              "status": "in_progress",
+              "updated_at": "2025-09-15T10:30:00Z",
+              "url": "https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/01J8X4Q3Z9K7M2N5P8R6T0V1WY"
+            },
+            {
+              "account_id": 1234567,
+              "active": false,
+              "brand_id": 360002783572,
+              "completed_at": "2025-09-16T12:00:00Z",
+              "direction": {
+                "from": {
+                  "scope": "brand"
+                },
+                "to": {
+                  "scope": "account"
+                }
+              },
+              "id": "01J8X4Q7H2F5D8C6B9A4E3R1TY",
+              "jobs": [
+                {
+                  "id": "V3-validation",
+                  "type": "validation"
+                },
+                {
+                  "id": "V3-reconciliation",
+                  "type": "reconciliation"
+                }
+              ],
+              "mode": "auto",
+              "status": "completed",
+              "updated_at": "2025-09-16T12:00:00Z",
+              "url": "https://example.zendesk.com/api/v2/brands/360002783572/user_migrations/01J8X4Q7H2F5D8C6B9A4E3R1TY"
+            }
+          ]
         }
       },
       "BrandsResponseExample": {
@@ -76795,10 +78067,20 @@
                   ]
                 ]
               },
-              "fields": {
-                "id": 27642,
-                "value": "745"
-              },
+              "fields": [
+                {
+                  "id": 27642,
+                  "value": "745"
+                },
+                {
+                  "id": 27648,
+                  "value": false
+                },
+                {
+                  "id": 27650,
+                  "value": null
+                }
+              ],
               "group_id": 98738
             }
           }
@@ -78754,6 +80036,37 @@
           }
         }
       },
+      "QueueRequestExample": {
+        "value": {
+          "queue": {
+            "definition": {
+              "all": [
+                {
+                  "field": "priority",
+                  "operator": "is",
+                  "value": "urgent"
+                }
+              ],
+              "any": [
+                {
+                  "field": "priority",
+                  "operator": "is",
+                  "value": "normal"
+                }
+              ]
+            },
+            "description": "Queue description",
+            "name": "New queue",
+            "primary_groups_id": [
+              1100002759994
+            ],
+            "priority": 10,
+            "secondary_groups_id": [
+              4398063790591
+            ]
+          }
+        }
+      },
       "QueueResponseExample": {
         "value": {
           "queue": {
@@ -78793,6 +80106,45 @@
             "updated_at": "2023-11-27T09:03:59Z",
             "url": "https://company.zendesk.com/api/v2/queues/01HG80ATNNZK1N7XRFVKX48XD6"
           }
+        }
+      },
+      "QueueUpdateRequestExample": {
+        "value": {
+          "queue": {
+            "definition": {
+              "all": [
+                {
+                  "field": "priority",
+                  "operator": "is",
+                  "value": "urgent"
+                }
+              ],
+              "any": [
+                {
+                  "field": "priority",
+                  "operator": "is",
+                  "value": "normal"
+                }
+              ]
+            },
+            "description": "Queue description 2",
+            "name": "New queue 2",
+            "primary_groups_id": [
+              1100002759994
+            ],
+            "priority": 10,
+            "secondary_groups_id": [
+              4398063790591
+            ]
+          }
+        }
+      },
+      "QueuesReorderRequestExample": {
+        "value": {
+          "queue_ids": [
+            "01HE5HE5RCZMCEVAVV60VTHA2G",
+            "01HE5HHPM1RETPV4N0H3178P0N"
+          ]
         }
       },
       "QueuesResponseExample": {
@@ -82773,53 +84125,51 @@
       },
       "TicketMetricResponseExample": {
         "value": {
-          "ticket_metric": [
-            {
-              "agent_wait_time_in_minutes": {
-                "business": 0,
-                "calendar": 0
-              },
-              "assigned_at": "2020-07-20T06:21:26Z",
-              "assignee_stations": 0,
-              "assignee_updated_at": "2020-07-20T06:21:26Z",
-              "created_at": "2020-07-21T01:01:42Z",
-              "first_resolution_time_in_minutes": {
-                "business": 0,
-                "calendar": 0
-              },
-              "full_resolution_time_in_minutes": {
-                "business": 0,
-                "calendar": 0
-              },
-              "group_stations": 0,
-              "id": 33,
-              "initially_assigned_at": "2020-07-20T06:21:26Z",
-              "latest_comment_added_at": "2020-07-21T01:17:16Z",
-              "on_hold_time_in_minutes": {
-                "business": 0,
-                "calendar": 0
-              },
-              "reopens": 0,
-              "replies": 1,
-              "reply_time_in_minutes": {
-                "business": 16,
-                "calendar": 16
-              },
-              "reply_time_in_seconds": {
-                "calendar": 960
-              },
-              "requester_updated_at": "2020-07-21T01:17:16Z",
-              "requester_wait_time_in_minutes": {
-                "business": 0,
-                "calendar": 0
-              },
-              "solved_at": "2020-07-20T06:21:26Z",
-              "status_updated_at": "2020-07-21T01:01:41Z",
-              "ticket_id": 1517,
-              "updated_at": "2020-07-21T01:17:16Z",
-              "url": "https://example.zendesk.com/api/v2/ticket_metrics/33"
-            }
-          ]
+          "ticket_metric": {
+            "agent_wait_time_in_minutes": {
+              "business": 0,
+              "calendar": 0
+            },
+            "assigned_at": "2020-07-20T06:21:26Z",
+            "assignee_stations": 0,
+            "assignee_updated_at": "2020-07-20T06:21:26Z",
+            "created_at": "2020-07-21T01:01:42Z",
+            "first_resolution_time_in_minutes": {
+              "business": 0,
+              "calendar": 0
+            },
+            "full_resolution_time_in_minutes": {
+              "business": 0,
+              "calendar": 0
+            },
+            "group_stations": 0,
+            "id": 33,
+            "initially_assigned_at": "2020-07-20T06:21:26Z",
+            "latest_comment_added_at": "2020-07-21T01:17:16Z",
+            "on_hold_time_in_minutes": {
+              "business": 0,
+              "calendar": 0
+            },
+            "reopens": 0,
+            "replies": 1,
+            "reply_time_in_minutes": {
+              "business": 16,
+              "calendar": 16
+            },
+            "reply_time_in_seconds": {
+              "calendar": 960
+            },
+            "requester_updated_at": "2020-07-21T01:17:16Z",
+            "requester_wait_time_in_minutes": {
+              "business": 0,
+              "calendar": 0
+            },
+            "solved_at": "2020-07-20T06:21:26Z",
+            "status_updated_at": "2020-07-21T01:01:41Z",
+            "ticket_id": 1517,
+            "updated_at": "2020-07-21T01:17:16Z",
+            "url": "https://example.zendesk.com/api/v2/ticket_metrics/33"
+          }
         }
       },
       "TicketMetricsResponseExample": {
@@ -85170,6 +86520,7 @@
               "accounts:read": "Accounts read scope.",
               "accounts:write": "Accounts write scope.",
               "ai_agents:chat": "Ai agents chat scope.",
+              "ai_agents:list": "Ai agents list scope.",
               "any_channel:write": "Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only.",
               "apps:read": "View installed apps and their settings. Includes a list of installed apps and each app's settings.",
               "apps:write": "Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages.",
