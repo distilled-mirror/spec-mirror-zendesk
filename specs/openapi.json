@@ -2742,7 +2742,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "post": {
         "operationId": "CreateAutomation",
@@ -2782,7 +2792,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/automations/{automation_id}": {
@@ -2814,7 +2834,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateAutomation",
@@ -2854,7 +2884,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteAutomation",
@@ -2867,7 +2907,17 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/automations/active": {
@@ -2894,7 +2944,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/automations/destroy_many": {
@@ -2923,7 +2983,17 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/automations/search": {
@@ -2967,7 +3037,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/automations/update_many": {
@@ -3009,7 +3089,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "automations:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/bookmarks": {
@@ -18517,7 +18607,21 @@
           "Skill Based Routing"
         ],
         "summary": "Set Ticket Attribute Values",
-        "description": "Adds the specified attributes if no attributes exists, or replaces all existing attributes with the specified attributes.\n\nInvalid or deleted attributes are ignored.\n\n#### Allowed For\n\n* Admins\n* [Agents in custom role with permission to manage skills](https://support.zendesk.com/hc/en-us/articles/4408882153882)\n* Agents, when the account setting for editing ticket skills is enabled for all agents\n",
+        "description": "Adds the specified attributes if no attributes exists, or replaces all existing attributes with the specified attributes.\n\nAttribute value ids that are valid UUIDs but unknown or deleted are ignored; a malformed id causes a 422 response.\n\n#### Allowed For\n\n* Admins\n* [Agents in custom role with permission to manage skills](https://support.zendesk.com/hc/en-us/articles/4408882153882)\n* Agents, when the account setting for editing ticket skills is enabled for all agents\n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillBasedRoutingAttributeValueIdsRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/SkillBasedRoutingAttributeValueIdsRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success response",
@@ -18529,6 +18633,124 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/SkillBasedRoutingTicketAttributesResponseExample"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. The `attribute_value_ids` parameter is invalid: it must be\nan array of strings (attribute value IDs).\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "error": {
+                        "message": "You passed an invalid value for the attribute_value_ids attribute. must be an array",
+                        "title": "Invalid attribute"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. The authenticated user is not allowed to edit ticket skills.\nOnly admins, agents in a custom role with permission to manage skills,\nor agents when the account setting for editing ticket skills is enabled\nfor all agents can set a ticket's attribute values.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "error": {
+                        "message": "You do not have access to this page. Please contact the account owner of this help desk for further help.",
+                        "title": "Forbidden"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found. Either the skill-based ticket routing feature is not enabled\nfor the account (empty response body), or no ticket with the given id\nexists.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "description": "Not found",
+                      "error": "RecordNotFound"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity. Either an attribute value id in the request body is\nmalformed (fails the UUID shape check; empty response body), or the ticket\nis a change management ticket, whose skills cannot be modified (JSON body\nwith an `error` code of \"ChangeManagementTicket\").\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "description": "Skills cannot be modified on change management tickets",
+                      "error": "ChangeManagementTicket"
+                    }
                   }
                 }
               }
@@ -24781,7 +25003,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTriggerCategory",
@@ -24883,7 +25115,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/trigger_categories/{trigger_category_id}": {
@@ -24944,7 +25186,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateTriggerCategory",
@@ -25042,7 +25294,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTriggerCategory",
@@ -25103,7 +25365,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/trigger_categories/jobs": {
@@ -25239,7 +25511,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers": {
@@ -25292,7 +25574,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTrigger",
@@ -25332,7 +25624,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/{trigger_id}": {
@@ -25364,7 +25666,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTrigger",
@@ -25404,7 +25716,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTrigger",
@@ -25417,7 +25739,17 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/{trigger_id}/revisions": {
@@ -25536,7 +25868,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/{trigger_id}/revisions/{trigger_revision_id}": {
@@ -25626,7 +25968,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/active": {
@@ -25667,7 +26019,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/definitions": {
@@ -25694,7 +26056,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/destroy_many": {
@@ -25714,7 +26086,17 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/limits": {
@@ -25740,7 +26122,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/reorder": {
@@ -25770,7 +26162,17 @@
           "200": {
             "description": "Success response (empty body)"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/search": {
@@ -25820,7 +26222,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:read"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/update_many": {
@@ -25862,7 +26274,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/triggers/validate": {
@@ -25927,7 +26349,17 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "triggers:write"
+            ]
+          },
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/uploads": {
@@ -26501,6 +26933,40 @@
               "examples": {
                 "default": {
                   "$ref": "#/components/examples/UserRequestExample"
+                },
+                "identity_auto_ownership": {
+                  "summary": "Create a user with automatic ownership on an identity",
+                  "value": {
+                    "user": {
+                      "external_id": "household-customer-202",
+                      "identities": [
+                        {
+                          "auto_ownership": true,
+                          "type": "email",
+                          "value": "household@example.com"
+                        }
+                      ],
+                      "name": "Jamie Rivera",
+                      "role": "end-user"
+                    }
+                  }
+                },
+                "shared_email_identity": {
+                  "summary": "Create a user with a shared email identity",
+                  "value": {
+                    "user": {
+                      "external_id": "household-customer-202",
+                      "identities": [
+                        {
+                          "ownership": "shared",
+                          "type": "email",
+                          "value": "household@example.com"
+                        }
+                      ],
+                      "name": "Jamie Rivera",
+                      "role": "end-user"
+                    }
+                  }
                 }
               }
             }
@@ -27242,8 +27708,28 @@
                 "$ref": "#/components/schemas/UserIdentityCreateRequest"
               },
               "examples": {
+                "auto_ownership": {
+                  "summary": "Create an email identity with automatic ownership",
+                  "value": {
+                    "identity": {
+                      "auto_ownership": true,
+                      "type": "email",
+                      "value": "household@example.com"
+                    }
+                  }
+                },
                 "default": {
                   "$ref": "#/components/examples/UserIdentityCreateRequestExample"
+                },
+                "shared_email": {
+                  "summary": "Create a shared email identity",
+                  "value": {
+                    "identity": {
+                      "ownership": "shared",
+                      "type": "email",
+                      "value": "household@example.com"
+                    }
+                  }
                 }
               }
             }
@@ -27260,6 +27746,22 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/UserIdentityCreateResponseExample"
+                  },
+                  "shared_email": {
+                    "summary": "Created shared email identity",
+                    "value": {
+                      "identity": {
+                        "created_at": "2026-10-22T14:25:21Z",
+                        "id": 77939,
+                        "ownership": "shared",
+                        "primary": true,
+                        "type": "email",
+                        "updated_at": "2026-10-22T14:25:21Z",
+                        "user_id": 202,
+                        "value": "household@example.com",
+                        "verification_method": "none"
+                      }
+                    }
                   }
                 }
               }
@@ -27318,6 +27820,14 @@
               "examples": {
                 "default": {
                   "$ref": "#/components/examples/UserIdentityUpdateRequestExample"
+                },
+                "ownership_transfer": {
+                  "summary": "Promote a shared email identity to owned",
+                  "value": {
+                    "identity": {
+                      "ownership": "owned"
+                    }
+                  }
                 }
               }
             }
@@ -27334,6 +27844,22 @@
                 "examples": {
                   "default": {
                     "$ref": "#/components/examples/UserIdentityUpdateResponseExample"
+                  },
+                  "ownership_transfer": {
+                    "summary": "Updated identity after ownership transfer",
+                    "value": {
+                      "identity": {
+                        "created_at": "2026-10-22T14:25:21Z",
+                        "id": 77939,
+                        "ownership": "owned",
+                        "primary": true,
+                        "type": "email",
+                        "updated_at": "2026-10-22T15:25:21Z",
+                        "user_id": 202,
+                        "value": "household@example.com",
+                        "verification_method": "none"
+                      }
+                    }
                   }
                 }
               }
@@ -36675,7 +37201,7 @@
         "properties": {
           "ai_agent_profile": {
             "type": "object",
-            "description": "`name`, `service`, and `avatar_upload_id` are each optional, and at least one must be present.\nSend null to store that field as null. Omit `avatar_upload_id` or send null to create the profile without an avatar.\nAn empty object is rejected.\n",
+            "description": "`name` and `avatar_upload_id` are each optional. `service` is deprecated and ignored. At least one field must be present.\nSend null to store that field as null. Omit `avatar_upload_id` or send null to create the profile without an avatar.\nAn empty object is rejected.\n",
             "properties": {
               "avatar_upload_id": {
                 "type": "string",
@@ -36689,7 +37215,8 @@
               },
               "service": {
                 "type": "string",
-                "description": "Name of the service that owns this profile. Known values are \"commerce_agent_engine\", \"ultimate\", and \"voice\". Send null to store no service.",
+                "description": "Deprecated and ignored. The owning service is the authenticated system user.",
+                "deprecated": true,
                 "nullable": true
               }
             },
@@ -36781,7 +37308,7 @@
           },
           "service": {
             "type": "string",
-            "description": "Name of the service that owns this profile. Known values are \"commerce_agent_engine\", \"ultimate\", and \"voice\".\nStored and returned as given. The list endpoint can filter on an exact match.\n",
+            "description": "Name of the service that owns this profile. Set from the authenticated system user when the profile is created, and never changed afterwards.\nCallers only see profiles owned by their own service.\n",
             "nullable": true
           },
           "updated_at": {
@@ -36883,7 +37410,7 @@
         "properties": {
           "ai_agent_profile": {
             "type": "object",
-            "description": "Omitted `name`, `service`, and `avatar_upload_id` values stay as they are.\nSend null to clear a field. Send a new `avatar_upload_id` to replace the stored upload id, or null to remove the avatar.\nAt least one field must be present. An empty object is rejected.\n",
+            "description": "Omitted `name` and `avatar_upload_id` values stay as they are. `service` is deprecated and ignored.\nSend null to clear a field. Send a new `avatar_upload_id` to replace the stored upload id, or null to remove the avatar.\nAt least one field must be present. An empty object is rejected.\n",
             "properties": {
               "avatar_upload_id": {
                 "type": "string",
@@ -36897,7 +37424,8 @@
               },
               "service": {
                 "type": "string",
-                "description": "Name of the service that owns this profile. Known values are \"commerce_agent_engine\", \"ultimate\", and \"voice\". Omit it to leave the current value. Send null to clear it.",
+                "description": "Deprecated and ignored. The owning service is the authenticated system user. The stored service is never changed by an update.",
+                "deprecated": true,
                 "nullable": true
               }
             },
@@ -42485,6 +43013,78 @@
               }
             }
           },
+          "analytics": {
+            "type": "object",
+            "description": "The agent's access to analytics. Only available to accounts with agentic analytics permissions enabled",
+            "properties": {
+              "access": {
+                "type": "string",
+                "description": "The level of access to analytics. Allowed values: \"none\", \"readonly\", \"edit\", \"full\""
+              },
+              "brands_ticket_access": {
+                "type": "string",
+                "description": "Which tickets the agent can analyze, by brand. Allowed values: \"all\", \"none\", \"within-brands\", \"selected-brands\""
+              },
+              "export_analytics_data": {
+                "type": "boolean",
+                "description": "Whether or not the agent can export analytics data"
+              },
+              "groups_ticket_access": {
+                "type": "string",
+                "description": "Which tickets the agent can analyze, by group. Allowed values: \"all\", \"none\", \"within-groups\", \"selected-groups\""
+              },
+              "manage_custom_alerts": {
+                "type": "boolean",
+                "description": "Whether or not the agent can create report alerts and receive notifications. Requires `access` of \"full\""
+              },
+              "manage_custom_datasets": {
+                "type": "boolean",
+                "description": "Whether or not the agent can define and manage custom datasets. Requires `access` of \"full\""
+              },
+              "ticket_access_selected_brands": {
+                "type": "array",
+                "description": "The brand ids whose tickets the agent can analyze. Used when `brands_ticket_access` is \"selected-brands\"",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ticket_access_selected_groups": {
+                "type": "array",
+                "description": "The group ids whose tickets the agent can analyze. Used when `groups_ticket_access` is \"selected-groups\"",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "use_ai_dashboard_builder": {
+                "type": "boolean",
+                "description": "Whether or not the agent can generate dashboard datasets with natural language"
+              },
+              "use_ai_dataset_builder": {
+                "type": "boolean",
+                "description": "Whether or not the agent can generate report-ready datasets with natural language"
+              },
+              "use_analyst_copilot": {
+                "type": "boolean",
+                "description": "Whether or not the agent can use the analyst copilot for AI-assisted analysis"
+              },
+              "use_conversational_assistant": {
+                "type": "boolean",
+                "description": "Whether or not the agent can use the AI-powered assistant in analytics"
+              },
+              "use_deep_exploration": {
+                "type": "boolean",
+                "description": "Whether or not the agent can use deep exploration. Requires `use_analyst_copilot`"
+              },
+              "view_zra_anomaly_detection": {
+                "type": "boolean",
+                "description": "Whether or not the agent can view AI-powered anomaly detection insights"
+              },
+              "view_zra_trending_topics": {
+                "type": "boolean",
+                "description": "Whether or not the agent can view AI-powered trending-topic summaries. Requires `use_analyst_copilot`"
+              }
+            }
+          },
           "assign_agent_statuses": {
             "type": "boolean",
             "description": "Whether or not the agent can assign agent statuses"
@@ -44248,12 +44848,12 @@
         "properties": {
           "auto_ownership": {
             "type": "boolean",
-            "description": "Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to `google` identities - an ownership conflict for a Google-backed email identity is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.",
+            "description": "When true, creates the email identity as \"owned\", or as \"shared\" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "nullable": true
           },
           "ownership": {
             "type": "string",
-            "description": "Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to `owned`. `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected outright for `google` identities (a Google-backed email identity can only be owned), and is subject to a per-brand cap on shared identities per address (100 by default; past the cap the request fails with `LimitExceeded`). A create that will send a verification email for a shared address is rate-limited and can be rejected with `429 Too Many Requests`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.",
+            "description": "Sets the email identity to \"owned\" or \"shared\". Defaults to \"owned\". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "enum": [
               "owned",
               "shared",
@@ -47876,6 +48476,133 @@
         },
         "required": [
           "account"
+        ]
+      },
+      "LotusConversationResponse": {
+        "type": "object",
+        "description": "A single mixed audit event serialized by the same event-specific presenters as the conversations collection. Comment bodies and attachments depend on the event type. Users are optionally sideloaded with include=users.",
+        "properties": {
+          "conversation_item": {
+            "type": "object",
+            "description": "Mixed audit events serialized by the event-specific presenters. Additional fields depend on the event type; comment bodies and attachments are not shared by every event.",
+            "properties": {
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true
+              },
+              "type": {
+                "type": "string"
+              },
+              "via": {
+                "type": "object",
+                "description": "Channel-specific event origin. Email events can include original recipients and email CCs.",
+                "properties": {
+                  "channel": {
+                    "description": "Channel name or numeric channel ID.",
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      }
+                    ]
+                  },
+                  "source": {
+                    "type": "object",
+                    "description": "Channel-specific event origin details.",
+                    "properties": {
+                      "from": {
+                        "type": "object",
+                        "properties": {
+                          "address": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "nullable": true
+                          },
+                          "name": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "title": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "rel": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "to": {
+                        "type": "object",
+                        "properties": {
+                          "address": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    },
+                    "additionalProperties": true
+                  }
+                },
+                "additionalProperties": true,
+                "readOnly": true
+              }
+            },
+            "additionalProperties": true,
+            "required": [
+              "id",
+              "type"
+            ]
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "Accessible event authors and recipients serialized by the user presenter. Fields vary with the viewing user's permissions and account capabilities, including agent-only billing administrator information.",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "is_billing_admin": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": [
+          "conversation_item"
         ]
       },
       "LotusConversationStateResponse": {
@@ -56735,6 +57462,20 @@
           }
         }
       },
+      "SkillBasedRoutingAttributeValueIdsRequest": {
+        "type": "object",
+        "description": "Replaces the full set of attribute values (skills) assigned to the ticket. Ids that are valid UUIDs but\nunknown or deleted are ignored. Every id that resolves is added if missing and kept if already present,\nand every existing attribute value not named here is removed. A malformed id causes a 422 response\n",
+        "properties": {
+          "attribute_value_ids": {
+            "type": "array",
+            "description": "The ids of the attribute values to assign. Each id must be a valid UUID. Sending `null`,\n`[]`, or omitting this field entirely clears every attribute value\ncurrently assigned. There is no way to leave the existing set unchanged while calling this endpoint\n",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        }
+      },
       "SkillBasedRoutingAttributeValueObject": {
         "type": "object",
         "properties": {
@@ -65265,7 +66006,7 @@
           },
           "auto_ownership": {
             "type": "boolean",
-            "description": "Write-only ownership control for the Shared Email EAP. When true, automatic ownership is applied only to the identity created from `email`. Ignored unless the account has the Shared Email EAP enabled.",
+            "description": "When true, creates the identity specified by `email` as \"owned\", or as \"shared\" if another user owns the address. Does not apply to `identities[]`. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "writeOnly": true
           },
           "custom_role_id": {
@@ -66431,18 +67172,20 @@
         "properties": {
           "auto_ownership": {
             "type": "boolean",
-            "description": "Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to `google` identities - an ownership conflict for a Google-backed email identity is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.",
-            "nullable": true
+            "description": "When true, creates the email identity as \"owned\", or as \"shared\" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
+            "nullable": true,
+            "writeOnly": true
           },
           "ownership": {
             "type": "string",
-            "description": "Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to `owned`. `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected outright for `google` identities (a Google-backed email identity can only be owned), and is subject to a per-brand cap on shared identities per address (100 by default; past the cap the request fails with `LimitExceeded`). A create that will send a verification email for a shared address is rate-limited and can be rejected with `429 Too Many Requests`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.",
+            "description": "Sets the email identity to \"owned\" or \"shared\". Defaults to \"owned\". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "enum": [
               "owned",
               "shared",
               null
             ],
-            "nullable": true
+            "nullable": true,
+            "writeOnly": true
           },
           "primary": {
             "type": "boolean",
@@ -66511,15 +67254,17 @@
         "properties": {
           "auto_ownership": {
             "type": "boolean",
-            "description": "Write-only ownership control for the Shared Email EAP. When true, attempts `owned` first and falls back to `shared` on an ownership conflict. Ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected."
+            "description": "When true, creates the email identity as \"owned\", or as \"shared\" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
+            "writeOnly": true
           },
           "ownership": {
             "type": "string",
-            "description": "Write-only ownership control for the Shared Email EAP. Ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.",
+            "description": "Sets the email identity to \"owned\" or \"shared\". Defaults to \"owned\". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "enum": [
               "owned",
               "shared"
-            ]
+            ],
+            "writeOnly": true
           },
           "primary": {
             "type": "boolean",
@@ -66593,7 +67338,7 @@
           },
           "ownership": {
             "type": "string",
-            "description": "Indicates whether the identity is owned or shared. Only returned to non-end-user callers.",
+            "description": "Indicates whether the email identity is \"owned\" or \"shared\". Only returned to non-end-user callers. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "enum": [
               "owned",
               "shared"
@@ -66712,8 +67457,9 @@
         "properties": {
           "auto_ownership": {
             "type": "boolean",
-            "description": "Write-only ownership control for the Shared Email EAP. When true, `owned` is attempted first and falls back to `shared` on an ownership conflict. The `shared` fallback is subject to the same restrictions as `ownership: shared`: it requires the `shared_email_creation_enabled` account setting, respects the per-brand shared-identity cap, and never applies to Google-backed identities - a conflict for one is returned as an error instead of falling back. null is accepted and treated exactly like `false`. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. Mutually exclusive with `ownership`; requests that supply both keys are rejected.",
-            "nullable": true
+            "description": "When true, sets the email identity to \"owned\", or to \"shared\" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
+            "nullable": true,
+            "writeOnly": true
           },
           "deliverable_state": {
             "type": "string",
@@ -66726,13 +67472,14 @@
           },
           "ownership": {
             "type": "string",
-            "description": "Write-only ownership control for the Shared Email EAP. Only applies to `email` and `google` identities, and ignored unless the account has the Shared Email EAP enabled. null is accepted and falls back to the identity's current ownership, so it changes nothing. Setting `owned` on a shared identity promotes it to owned and demotes the identity that currently owns the address to shared in the same transaction, instead of failing with an ownership conflict. Demoting an owned identity to `shared` additionally requires the `shared_email_creation_enabled` account setting, is rejected for Google-backed identities, and is subject to the per-brand cap on shared identities per address (100 by default, `LimitExceeded` past it) when the request also changes `value`. Mutually exclusive with `auto_ownership`; requests that supply both keys are rejected.",
+            "description": "Sets the email identity to \"owned\" or \"shared\". See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "enum": [
               "owned",
               "shared",
               null
             ],
-            "nullable": true
+            "nullable": true,
+            "writeOnly": true
           },
           "value": {
             "type": "string",
@@ -67288,7 +68035,7 @@
           },
           "auto_ownership": {
             "type": "boolean",
-            "description": "Write-only ownership control for the Shared Email EAP. When true, automatic ownership is applied only to the identity created from `email`. Ignored unless the account has the Shared Email EAP enabled.",
+            "description": "When true, creates the identity specified by `email` as \"owned\", or as \"shared\" if another user owns the address. See [Shared email](/api-reference/ticketing/users/user_identities/#shared-email).",
             "writeOnly": true
           },
           "custom_role_id": {
@@ -72049,8 +72796,7 @@
         "value": {
           "ai_agent_profile": {
             "avatar_upload_id": "01M49Q8TZBKXZBDGGAK96FHFXY",
-            "name": "Support Agent",
-            "service": "ultimate"
+            "name": "Support Agent"
           }
         }
       },
@@ -72115,8 +72861,7 @@
       "AiAgentProfileUpdateRequestExample": {
         "value": {
           "ai_agent_profile": {
-            "name": "Renamed Agent",
-            "service": "supreme"
+            "name": "Renamed Agent"
           }
         }
       },
@@ -72128,7 +72873,7 @@
             "created_at": "2025-03-18T03:59:19Z",
             "id": "01J4JXETB5Q4RZHHG0KYZE1W4V",
             "name": "Renamed Agent",
-            "service": "supreme",
+            "service": "ultimate",
             "updated_at": "2025-04-18T03:59:19Z",
             "url": "https://example.zendesk.com/api/v2/internal/ai_agent_profiles/01J4JXETB5Q4RZHHG0KYZE1W4V.json"
           }
@@ -81958,6 +82703,13 @@
             "updated_at": "2018-11-08T19:22:58Z",
             "url": "https://{subdomain}.zendesk.com/api/v2/routing/attributes/afa31619-e38b-11e8-a292-5d17513d969b/values/6ccddacf-e85e-11e8-a292-ad7686bdff67"
           }
+        }
+      },
+      "SkillBasedRoutingAttributeValueIdsRequestExample": {
+        "value": {
+          "attribute_value_ids": [
+            "fa1131e2-d6cd-11e7-a492-dbdd5500c7e3"
+          ]
         }
       },
       "SkillBasedRoutingAttributeValueResponseExample": {

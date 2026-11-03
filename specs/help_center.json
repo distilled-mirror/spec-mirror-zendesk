@@ -1351,6 +1351,27 @@
         "summary": "List Articles by Locale",
         "parameters": [
           {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageBefore"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the articles by one of the accepted values",
@@ -1430,6 +1451,17 @@
         ],
         "summary": "Show Article by Locale",
         "description": "Shows the properties of an article.\n\n**Note**: `{/locale}` is an optional parameter for admins and agents. End users and anonymous users must provide the parameter.\n\n#### Allowed for\n\n* Anonymous users\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| users         | the author\n| sections      | the section\n| categories    | the category\n| translations  | the article, section and category translations, if any\n\nUnlike other sideloads, translations are embedded within the article because they're\nnot shared between resources.\nSection and category translations are only sideloaded if present.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/SortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK Response",
@@ -1640,6 +1672,26 @@
         ],
         "summary": "List Article Comments by Locale",
         "description": "Lists the comments created by a specific user, or all comments made by all users on\na specific article.\n\nThe `{locale}` for the article comments is required only for end users. Admins and agents can omit it.\n\n#### Allowed for\n\n* End users\n\nEnd-users can only list their own comments. If listing comments by user, they must specify `me` as the id.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| users         | authors\n| articles      | articles\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/SortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/SortBy"
+          }
+        ],
         "responses": {
           "200": {
             "description": "description",
@@ -2143,6 +2195,21 @@
         "description": "**Note**: `{/locale}` is an optional parameter for admins and agents. End users and anonymous users must provide the parameter.\n\n#### Allowed for\n\n* Anonymous users\n\nThe response will list only the categories that the agent, end user, or\nanonymous user can view in the help center.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sorting\n\nYou can sort the results with the `sort_by` and `sort_order` query string parameters.\n\n```\nGET /api/v2/help_center/en-us/categories.json?sort_by=updated_at&sort_order=asc\n```\n\nThe `sort_by` parameter can have one of the following values:\n\n| value         | description\n| ------------- | -----------\n| `position`    | order set manually using the Arrange Content page. Default order\n| `created_at`  | order by creation time\n| `updated_at`  | order by update time\n\nThe `sort_order` parameter can have one of the following values:\n\n| value   | description\n| ------- | -----------\n| `asc`   | ascending order\n| `desc`  | descending order\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| translations  | the category translations, if any\n\nTranslations are embedded within the category because they're\nnot shared between resources.\n",
         "parameters": [
           {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the results by one of the accepted values",
@@ -2312,6 +2379,21 @@
         "summary": "List Articles in Category by Locale",
         "parameters": [
           {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the articles by one of the accepted values",
@@ -2392,6 +2474,18 @@
         "summary": "List Sections in Category by Locale",
         "description": "Lists all the sections in Help Center or in a specific [category](/api-reference/help_center/help-center-api/categories).\n\nThe `{locale}` is required only for end users and anomynous users. Admins and agents can omit it.\n\n#### Allowed for\n\n* Anonymous users\n\nThe response will list only the sections that the requesting agent,\nend user, or anonymous user can view in the help center.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sorting\n\nYou can sort the results with the `sort_by` and `sort_order` query string parameters.\n\n```\nGET /api/v2/help_center/en-us/sections.json?sort_by=updated_at&sort_order=asc\n```\n\nThe `sort_by` parameter can have one of the following values:\n\n| value         | description\n| ------------- | -----------\n| `position`    | order set manually using the Arrange Content page. Default order\n| `created_at`  | order by creation time\n| `updated_at`  | order by update time\n\nThe `sort_order` parameter can have one of the following values:\n\n| value   | description\n| ------- | -----------\n| `asc`   | ascending order\n| `desc`  | descending order\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| categories    | the category\n| translations  | the section and category translations, if any\n\nUnlike other sideloads, translations are embedded within the section because they're\nnot shared between resources.\nCategory translations are only sideloaded if categories are.\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
           {
             "name": "sort_by",
             "in": "query",
@@ -2573,6 +2667,21 @@
         "description": "Lists all the sections in Help Center or in a specific [category](/api-reference/help_center/help-center-api/categories).\n\nThe `{locale}` is required only for end users and anomynous users. Admins and agents can omit it.\n\n#### Allowed for\n\n* Anonymous users\n\nThe response will list only the sections that the requesting agent,\nend user, or anonymous user can view in the help center.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sorting\n\nYou can sort the results with the `sort_by` and `sort_order` query string parameters.\n\n```\nGET /api/v2/help_center/en-us/sections.json?sort_by=updated_at&sort_order=asc\n```\n\nThe `sort_by` parameter can have one of the following values:\n\n| value         | description\n| ------------- | -----------\n| `position`    | order set manually using the Arrange Content page. Default order\n| `created_at`  | order by creation time\n| `updated_at`  | order by update time\n\nThe `sort_order` parameter can have one of the following values:\n\n| value   | description\n| ------- | -----------\n| `asc`   | ascending order\n| `desc`  | descending order\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| categories    | the category\n| translations  | the section and category translations, if any\n\nUnlike other sideloads, translations are embedded within the section because they're\nnot shared between resources.\nCategory translations are only sideloaded if categories are.\n",
         "parameters": [
           {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the results by one of the accepted values",
@@ -2739,6 +2848,21 @@
         ],
         "summary": "List Articles in Section by Locale",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
           {
             "name": "sort_by",
             "in": "query",
@@ -3013,6 +3137,24 @@
         "summary": "List Articles",
         "parameters": [
           {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/LocaleQuery"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the articles by one of the accepted values",
@@ -3113,6 +3255,21 @@
           "Articles"
         ],
         "summary": "Update Article",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticleUpdateRequest"
+              },
+              "examples": {
+                "default": {
+                  "$ref": "#/components/examples/ArticleUpdateRequestExample"
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK Response",
@@ -3354,6 +3511,23 @@
         ],
         "summary": "List Article Comments",
         "description": "Lists all comments made by all users on a specific article.\n\n#### Allowed for\n\n* Agents\n\nEnd-users can only list their own comments. If listing comments by user, they must specify `me` as the id.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| users         | authors\n| articles      | articles\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/SortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/SortBy"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
         "responses": {
           "200": {
             "description": "description",
@@ -3887,6 +4061,18 @@
         "summary": "List Translations",
         "description": "Lists all translations for a given [article](/api-reference/help_center/help-center-api/articles).\n\n#### Allowed for\n\n* End users\n\nFor end users, the response will list only the translations for articles that they can view in Help Center.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/SortOrder"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
           {
             "name": "locales",
             "in": "query",
@@ -4681,6 +4867,18 @@
         "summary": "List Categories",
         "description": "#### Allowed for\n\n* Agents\n\nThe response will list only the categories that the agent, end user, or\nanonymous user can view in the help center.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sorting\n\nYou can sort the results with the `sort_by` and `sort_order` query string parameters.\n\n```\nGET /api/v2/help_center/en-us/categories?sort_by=updated_at&sort_order=asc\n```\n\nThe `sort_by` parameter can have one of the following values:\n\n| value         | description\n| ------------- | -----------\n| `position`    | order set manually using the Arrange Content page. Default order\n| `created_at`  | order by creation time\n| `updated_at`  | order by update time\n\nThe `sort_order` parameter can have one of the following values:\n\n| value   | description\n| ------- | -----------\n| `asc`   | ascending order\n| `desc`  | descending order\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| translations  | the category translations, if any\n\nTranslations are embedded within the category because they're\nnot shared between resources.\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
           {
             "name": "sort_by",
             "in": "query",
@@ -5499,6 +5697,18 @@
         "summary": "List Articles Incrementally",
         "parameters": [
           {
+            "$ref": "#/components/parameters/LocaleQuery"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the articles by one of the accepted values",
@@ -5598,6 +5808,24 @@
         "summary": "List Sections",
         "description": "Lists all the sections in Help Center or in a specific [category](/api-reference/help_center/help-center-api/categories).\n\n#### Allowed for\n\n* Agents\n\nThe response will list only the sections that the requesting agent,\nend user, or anonymous user can view in the help center.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sorting\n\nYou can sort the results with the `sort_by` and `sort_order` query string parameters.\n\n```\nGET /api/v2/help_center/en-us/sections?sort_by=updated_at&sort_order=asc\n```\n\nThe `sort_by` parameter can have one of the following values:\n\n| value         | description\n| ------------- | -----------\n| `position`    | order set manually using the Arrange Content page. Default order\n| `created_at`  | order by creation time\n| `updated_at`  | order by update time\n\nThe `sort_order` parameter can have one of the following values:\n\n| value   | description\n| ------- | -----------\n| `asc`   | ascending order\n| `desc`  | descending order\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| categories    | the category\n| translations  | the section and category translations, if any\n\nUnlike other sideloads, translations are embedded within the section because they're\nnot shared between resources.\nCategory translations are only sideloaded if categories are.\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/LocaleQuery"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
           {
             "name": "sort_by",
             "in": "query",
@@ -5760,6 +5988,18 @@
         "summary": "List Articles in Section",
         "parameters": [
           {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/LocaleQuery"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the articles by one of the accepted values",
@@ -5914,6 +6154,23 @@
         ],
         "summary": "List Section Subscriptions",
         "description": "Lists the subscriptions to a given [section](/api-reference/help_center/help-center-api/sections).\n\n#### Allowed for\n\n* Agents\n\nFor end-users, the response will list only the subscriptions created by the\nrequesting end-user.\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sideloads\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| users         | users\n| sections      | sections\n| translations  | translations of any sideloaded articles and sections\n\nTo sideload the section translations, specify the `translations` sideload in\naddition to `sections`.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/PageAfter"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK Response",
@@ -6640,6 +6897,18 @@
         "summary": "List Articles by User",
         "parameters": [
           {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/LocaleQuery"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
             "name": "sort_by",
             "in": "query",
             "description": "Sorts the articles by one of the accepted values",
@@ -6716,6 +6985,17 @@
         ],
         "summary": "List Article Comments by User",
         "description": "Lists the comments created by a specific user.\n\n#### Allowed for\n\n* Agents\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload\n|---------------|--------------\n| users         | authors\n| articles      | articles\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Include"
+          }
+        ],
         "responses": {
           "200": {
             "description": "description",
@@ -6748,6 +7028,17 @@
         ],
         "summary": "List Content Subscriptions By User",
         "description": "Lists the content subscriptions of a given user. To list your own subscriptions,\nspecify `me` as the user id.\n\n#### Allowed for\n\n* End users\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n\n#### Sideloads\n\nThe following sideloads are supported:\n\n| Name          | Will sideload | For\n|---------------|---------------|----\n| users         | users         | all\n| articles      | articles      | article subscriptions\n| sections      | sections      | section subscriptions\n| questions     | questions     | question subscriptions\n| topics        | topics        | topic subscriptions\n| translations  | translations  | article or section subscriptions\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Include"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PerPage"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK Response",
@@ -6781,6 +7072,15 @@
         "summary": "List User Segments by User",
         "description": "Some user segments can only be applied to sections and topics on certain Guide plans. For instance, user segments with a `user_type` of `\"staff\"` cannot be applied to sections and topics on accounts on the Guide Lite plan or the Suite Team plan. To request only user segments applicable on the account's current Suite plan, use the `/api/v2/help_center/user_segments/applicable.json` endpoint.\n\nThe `/api/v2/help_center/users/{user_id}/user_segments` endpoint returns the list of user segments that a particular user belongs to. This is the only list endpoint that agents have access to. When an agent makes a request to this endpoint with another user's id, the response only includes user segments that the requesting agent also belongs to.\n\nThese endpoints support pagination, as described in the [pagination documentation](/api-reference/introduction/pagination/).\n\n#### Allowed for\n\n* Help Center managers\n* Agents\n\n#### Pagination\n\n* Cursor pagination (recommended)\n* Offset pagination\n\nSee [Pagination](/api-reference/introduction/pagination/).\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/PerPage"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
           {
             "name": "built_in",
             "in": "query",
@@ -8340,6 +8640,120 @@
             "readOnly": true
           }
         }
+      },
+      "ArticleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "article": {
+            "type": "object",
+            "description": "Only the properties documented here are applied to the article. Any other\nkey does not change the article.\n",
+            "properties": {
+              "author_id": {
+                "type": "integer",
+                "description": "The id of the user to set as the article's author. `null`, `false`, or\nomission is a no-op: the author is left unchanged. There is no way to\nclear the author via this property.\n"
+              },
+              "block_attachment_ids": {
+                "type": "array",
+                "description": "The full set of block (non-inline) attachment ids for this article; the\nprevious set is entirely replaced by the given set. Omit the property to\nleave block attachments unchanged; send `[]` to detach every block\nattachment. Do not send `null` — sending it alone is rejected with a\n400 (a `TypeError` from the same internal concatenation, but this time\ncaught by the controller). Sending it together with an explicit\n`inline_attachment_ids: null` still 500s, because `inline_attachment_ids`\nis evaluated first.\n",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "comments_disabled": {
+                "type": "boolean",
+                "description": "True if comments are disabled; false otherwise. `null` is accepted and\ntreated the same as `false` (enables comments) — it is not a no-op.\n",
+                "nullable": true
+              },
+              "content_tag_ids": {
+                "type": "array",
+                "description": "The full set of content tag ids attached to this article; the previous\nset is entirely replaced by the given set. `null` and `[]` are\nequivalent and both remove every content tag. Omit the property to\nleave content tags unchanged. Only available on certain plans; ignored\notherwise.\n",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true
+              },
+              "inline_attachment_ids": {
+                "type": "array",
+                "description": "The full set of inline attachment ids for this article; the previous\nset is entirely replaced by the given set. Omit the property to leave\ninline attachments unchanged; send `[]` to detach every inline\nattachment. Do not send `null` — it currently causes an uncaught 500\n(`nil` is on the left side of an internal array concatenation with\n`block_attachment_ids`, so `NoMethodError` is raised and not rescued).\n",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "label_names": {
+                "type": "array",
+                "description": "An array of label names associated with this article. Only available on\ncertain plans; ignored otherwise. Omit the property to leave labels\nunchanged; send `[]` to remove every label. Do not send `null` — it is\nrejected with a 400 (must be an array of strings).\n",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "owner": {
+                "type": "object",
+                "description": "Assigns ownership of the article. Set to `null` to unassign ownership.\nWhen present, both `id` and `type` are required together — a partial\nobject (e.g. `type` without `id`) is rejected with a 500, not a 400, so\nalways send both keys or omit the property entirely. Only takes effect\nwhen the account has the article-owner feature; otherwise the property\nis silently ignored.\n",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": "The id of the owning user or group."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Whether `id` refers to a user or a group.",
+                    "enum": [
+                      "user",
+                      "group"
+                    ]
+                  }
+                },
+                "nullable": true,
+                "required": [
+                  "id",
+                  "type"
+                ]
+              },
+              "permission_group_id": {
+                "type": "integer",
+                "description": "The id of the permission group which defines who can edit and publish\nthis article. `null`, `false`, or omission is a no-op: the permission\ngroup is left unchanged.\n"
+              },
+              "position": {
+                "type": "integer",
+                "description": "The position of this article in the article list. `0` is a valid\nposition and is applied. `null`, `false`, or omission leaves the\nposition unchanged.\n"
+              },
+              "promoted": {
+                "type": "boolean",
+                "description": "True if this article is promoted; false otherwise. `null` is accepted\nand treated the same as `false` (demotes the article) — it is not a\nno-op.\n",
+                "nullable": true
+              },
+              "section_id": {
+                "type": "integer",
+                "description": "The id of the section to move the article into. `null`, `false`, or\nomission is a no-op: the section is left unchanged.\n"
+              },
+              "source_locale": {
+                "type": "string",
+                "description": "The locale to make the source (default) translation of the article.\nDo not send `null` — it currently causes a 500.\n"
+              },
+              "theme": {
+                "type": "string",
+                "description": "The identifier of an alternate template assigned to this article. Set\nto `null` to remove the alternate-template assignment and revert the\narticle to the default template for its type.\n",
+                "nullable": true
+              },
+              "user_segment_id": {
+                "type": "integer",
+                "description": "The id of the user segment which defines who can see this article.\nSet to `null` to make the article visible to everyone (unrestrict\nviewing). Omit to leave the current restriction unchanged. Only one of\n`user_segment_id` or `user_segment_ids` may be supplied in the same\nrequest; supplying both is rejected with a 400.\n",
+                "nullable": true
+              },
+              "user_segment_ids": {
+                "type": "array",
+                "description": "List of user segment ids which define who can view this article. `null`\nand `[]` are equivalent and both unrestrict viewing (make the article\nvisible to everyone). Omit to leave the current restriction unchanged.\nFor Enterprise plans this may contain more than one id. Only one of\n`user_segment_id` or `user_segment_ids` may be supplied in the same\nrequest; supplying both is rejected with a 400.\n",
+                "items": {
+                  "type": "integer"
+                },
+                "nullable": true
+              }
+            }
+          }
+        },
+        "required": [
+          "article"
+        ]
       },
       "ArticlesResponse": {
         "type": "object",
@@ -11199,6 +11613,14 @@
         },
         "example": 360004163994
       },
+      "Include": {
+        "name": "include",
+        "in": "query",
+        "description": "Comma-separated list of side-loaded resources to include in the response\n",
+        "schema": {
+          "type": "string"
+        }
+      },
       "ItemId": {
         "name": "item_id",
         "in": "path",
@@ -11219,6 +11641,22 @@
         },
         "example": 360015727233
       },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "The maximum number of items to return\n",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "LocaleQuery": {
+        "name": "locale",
+        "in": "query",
+        "description": "The locale to use for the response. Overrides the locale in the path when present.\n",
+        "schema": {
+          "type": "string"
+        }
+      },
       "OptionalLocale": {
         "name": "locale",
         "in": "path",
@@ -11229,6 +11667,14 @@
           "example": "en-us"
         },
         "example": "en-us"
+      },
+      "Page": {
+        "name": "page",
+        "in": "query",
+        "description": "The page number of the results to return\n",
+        "schema": {
+          "type": "integer"
+        }
       },
       "PageAfter": {
         "name": "page[after]",
@@ -11250,6 +11696,14 @@
         "name": "page[size]",
         "in": "query",
         "description": "A numeric value to specify the number of items to return per page\n",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "PerPage": {
+        "name": "per_page",
+        "in": "query",
+        "description": "The number of items to return per page\n",
         "schema": {
           "type": "integer"
         }
@@ -11632,6 +12086,23 @@
           "vote": {
             "id": 37486578,
             "value": 1
+          }
+        }
+      },
+      "ArticleUpdateRequestExample": {
+        "value": {
+          "article": {
+            "comments_disabled": true,
+            "content_tag_ids": [
+              "01GT23D51Y",
+              "01GT23FWWN"
+            ],
+            "label_names": [
+              "photo",
+              "tripod"
+            ],
+            "position": 42,
+            "promoted": false
           }
         }
       },
