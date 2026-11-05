@@ -25,12 +25,12 @@
     {
       "path": "docs/security-and-auth.html",
       "source": "https://developer.zendesk.com/api-reference/introduction/security-and-auth/",
-      "bytes": 131843
+      "bytes": 132062
     },
     {
       "path": "docs/pagination.html",
       "source": "https://developer.zendesk.com/api-reference/introduction/pagination/",
-      "bytes": 140511
+      "bytes": 140730
     },
     {
       "path": "docs/help-center-introduction.html",

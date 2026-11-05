@@ -274,6 +274,10 @@
       "name": "Voice Settings"
     },
     {
+      "name": "End User MCP",
+      "description": "Private Admin Center API for managing End User MCP settings."
+    },
+    {
       "name": "Column Preferences"
     },
     {
@@ -672,7 +676,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateAccountSettings",
@@ -725,7 +736,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/accounts": {
@@ -771,7 +789,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "accounts:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/accounts/available": {
@@ -813,7 +838,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "accounts:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/activities": {
@@ -2324,7 +2356,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_attachments:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateAttachment",
@@ -2368,7 +2407,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_attachments:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteAttachment",
@@ -2386,7 +2432,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_attachments:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/audit_logs": {
@@ -2509,7 +2562,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "auditlogs:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/audit_logs/{audit_log_id}": {
@@ -2541,7 +2601,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "auditlogs:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/audit_logs/export": {
@@ -2618,7 +2685,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "auditlogs:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/autocomplete/tags": {
@@ -6230,7 +6304,7 @@
           "Custom Object Permissions"
         ],
         "summary": "List Permission Policies",
-        "description": "Returns a list of permission policies for a custom object.\nPermission policies define what actions (create, read, update, delete) different roles can perform on custom object records.\n#### Allowed For\n* Admins\n",
+        "description": "Returns a list of permission policies for a custom object.\nPermission policies define what actions (create, read, update, delete) different roles can perform on custom object records.\nThe list also includes an `anonymous` policy that controls whether unauthenticated users can read the object's records. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).\n#### Allowed For\n* Admins\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6262,7 +6336,7 @@
           "Custom Object Permissions"
         ],
         "summary": "Show Permission Policy",
-        "description": "Returns a permission policy for a specific role on a custom object.\nThe policy ID can be:\n- `custom-role-{custom_role_id}` for custom roles\n- `end-user` for the end user system role\n#### Allowed For\n* Admins\n",
+        "description": "Returns a permission policy for a specific role on a custom object.\nThe policy ID can be:\n- `custom-role-{custom_role_id}` for custom roles\n- `end-user` for the end user system role\n- `anonymous` for unauthenticated users. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).\n#### Allowed For\n* Admins\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6270,7 +6344,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles or `end-user` for the end user system role.\n",
+            "description": "The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles, `end-user` for the end user system role, or `anonymous` for unauthenticated users.\n",
             "required": true,
             "schema": {
               "type": "string"
@@ -6302,7 +6376,7 @@
           "Custom Object Permissions"
         ],
         "summary": "Update Permission Policy",
-        "description": "Updates a permission policy for a specific role on a custom object.\nDefine what actions (create, read, update, delete) the role can perform and optionally specify access rules.\n#### Allowed For\n* Admins\n",
+        "description": "Updates a permission policy for a specific role on a custom object.\nDefine what actions (create, read, update, delete) the role can perform and optionally specify access rules.\n\nFor the `anonymous` policy, only the `read` scope can be set: `records.read.allowed` turns anonymous read access on or off, and `rule_id` has no effect. Allowing a write scope returns `400 Bad Request`. See [Anonymous Access](/api-reference/custom-data/custom-objects/custom_object_permissions/#anonymous-access).\n\nWhile anonymous reads are allowed, every role has object-level read access, but read access rules still limit the records that each role, and anonymous users through the `end-user` policy, can read. A request that changes the `read` scope of any other policy returns `422 Unprocessable Entity`.\n\nWhile anonymous reads are allowed, allowing a write scope on a policy other than `anonymous` also grants that policy full read access if its `read` scope doesn't allow it. A full write scope replaces a rule-scoped read with full read. The read access stays if you later remove the write scopes or turn off anonymous access.\n\n#### Allowed For\n* Admins\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6310,7 +6384,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles or `end-user` for the end user system role.\n",
+            "description": "The permission policy ID. Use `custom-role-{custom_role_id}` for custom roles, `end-user` for the end user system role, or `anonymous` for unauthenticated users.\n",
             "required": true,
             "schema": {
               "type": "string"
@@ -6348,6 +6422,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request. For example, a write scope was allowed on the `anonymous` policy."
+          },
+          "422": {
+            "description": "Unprocessable Entity. The `read` scope of a policy other than `anonymous` can't be changed while anonymous reads are allowed."
           }
         }
       }
@@ -6359,7 +6439,7 @@
           "Custom Object Records"
         ],
         "summary": "List Custom Object Records",
-        "description": "Lists all undeleted custom object records for the specified object.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n #### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n#### Allowed For\n* Agents",
+        "description": "Lists all undeleted custom object records for the specified object.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n #### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6448,8 +6528,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCustomObjectRecord",
@@ -6583,7 +6674,7 @@
           "Custom Object Records"
         ],
         "summary": "Show Custom Object Record",
-        "description": "Returns a custom record for a specific object using a provided id.\n#### Allowed For\n* Agents\n",
+        "description": "Returns a custom record for a specific object using a provided id.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6607,8 +6698,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateCustomObjectRecord",
@@ -6687,7 +6789,7 @@
           "Custom Object Record Attachments"
         ],
         "summary": "List Custom Object Record Attachments",
-        "description": "Lists all attachments associated with a custom object record.\n\n#### Allowed For\n* Agents",
+        "description": "Lists all attachments associated with a custom object record.\n\n#### Allowed For\n* Agents\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6731,8 +6833,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCustomObjectRecordAttachment",
@@ -6935,7 +7048,7 @@
           "Custom Object Record Attachments"
         ],
         "summary": "Download Custom Object Record Attachment",
-        "description": "Downloads the specified attachment content. Returns a redirect to the attachment's content URL.\nAccess to malicious attachments is controlled by the `malware_access_override` setting.\n\n#### Allowed For\n* Agents\n",
+        "description": "Downloads the specified attachment content. Returns a redirect to the attachment's content URL.\nAccess to malicious attachments is controlled by the `malware_access_override` setting.\n\n#### Allowed For\n* Agents\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -6997,8 +7110,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/autocomplete": {
@@ -7008,7 +7132,7 @@
           "Custom Object Records"
         ],
         "summary": "Autocomplete Custom Object Record Search",
-        "description": "Retrieves an array of custom object records that have a field value that matches the value specified in the `name` parameter.\n\nIf the object has a parent field with `cascade_permissions_enabled`, the request must be made in the context of a cascade parent field using the `field_id` and `source` parameters.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the first 10,000 records sorted by relevancy with page limits.\n#### Allowed For\n* Agents",
+        "description": "Retrieves an array of custom object records that have a field value that matches the value specified in the `name` parameter.\n\nIf the object has a parent field with `cascade_permissions_enabled`, the request must be made in the context of a cascade parent field using the `field_id` and `source` parameters.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the first 10,000 records sorted by relevancy with page limits.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -7124,8 +7248,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/count": {
@@ -7135,7 +7270,7 @@
           "Custom Object Records"
         ],
         "summary": "Count Custom Object Records",
-        "description": "Returns a total count of records for a specific custom object as well as the time the count was refreshed.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Allowed For\n* Agents",
+        "description": "Returns a total count of records for a specific custom object as well as the time the count was refreshed.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -7181,8 +7316,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/search": {
@@ -7192,7 +7338,7 @@
           "Custom Object Records"
         ],
         "summary": "Search Custom Object Records",
-        "description": "Returns an array of custom object records where the search query matches the values in Text Fields, Multi Line Text fields, and RegExp fields. To find records in other fields, use the [Filtered Search API](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n#### Allowed For\n* Agents",
+        "description": "Returns an array of custom object records where the search query matches the values in Text Fields, Multi Line Text fields, and RegExp fields. To find records in other fields, use the [Filtered Search API](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents receive a `403 Forbidden` response. Use the [Filtered Search endpoint](/api-reference/custom-data/custom-objects/custom_object_records/#filtered-search-of-custom-object-records) with a filter on the parent field instead.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -7254,8 +7400,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       },
       "post": {
         "operationId": "FilteredSearchCustomObjectRecords",
@@ -7263,7 +7420,7 @@
           "Custom Object Records"
         ],
         "summary": "Filtered Search of Custom Object Records",
-        "description": "Returns an array of custom object records that meet the search and filter criteria. For simple searches limited to only text fields and no complex logic, use the [Search Custom Object Records API](/api-reference/custom-data/custom-objects/custom_object_records/#search-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents must include a filter on the parent field (for example, `\"custom_object_fields.parent_field_key\": { \"$eq\": \"parent_record_id\" }`). Requests without a parent filter return `403 Forbidden`.\n\nFilters can contain either an individual [comparison object](#comparison-object) or an array of filter expressions within logical namespaces. Filter expressions can themselves be either comparison objects or `$and` / `$or` groups, so logical operators can be nested to build complex Boolean queries.\n\nA filter is a JSON object that has the following properties:\n\n| Name      | Type   | Required | Description\n| --------- | ------ | -------- | -----------\n| ATTRIBUTE | object | no       | A [comparison object](#comparison-object) specifying an attribute value condition to be met for records to match.<br/><br/>Examples are marked below.\n| $and      | array  | no       | Array of filter expressions combined with logical AND. Each element may be a comparison object or a nested `$and` / `$or` group.\n| $or       | array  | no       | Array of filter expressions combined with logical OR. Each element may be a comparison object or a nested `$and` / `$or` group.\n\nLimits for nested `$and` / `$or` groups:\n\n* Maximum nesting depth: `5` (outermost `$and` / `$or` counts as level 1). Exceeding it returns `422 Invalid Condition`.\n* Attribute keys cannot share a level with `$and` / `$or` once the payload contains any `$and` / `$or` nested inside another `$and` / `$or`. The request returns `422 Invalid Condition`; wrap the attribute inside the group instead.\n\n##### Examples\n\n```js\n{\n  \"filter\": {\n    \"custom_object_fields.field_key\": { \"$eq\": \"value\" } // ATTRIBUTE\n  }\n}\n```\n\n```js\n{\n  \"filter\": {\n    \"$or\": [\n      { \"custom_object_fields.field_key\": { \"$eq\": \"value\" } }, // ATTRIBUTE\n      { \"external_id\": { \"$eq\": \"Record123\" } } // ATTRIBUTE\n    ]\n  }\n}\n```\n\n```js\n// Nested $and / $or\n{\n  \"filter\": {\n    \"$and\": [\n      { \"custom_object_fields.contract_term_months\": { \"$gt\": 5 } },\n      {\n        \"$or\": [\n          { \"custom_object_fields.status\": { \"$eq\": \"active\" } },\n          { \"custom_object_fields.status\": { \"$eq\": \"pending\" } }\n        ]\n      }\n    ]\n  }\n}\n```\n\n#### Comparison Object\n\nA comparison object defines a condition a record must meet to be considered a match. The condition is based on an attribute value or object type.\n\nA comparison object is a JSON object that has the following properties:\n\n| Name      | Type          | Required | Description\n| --------- | ------------- | -------- | -----------\n| FIELD_KEY | string        | yes      | When filtering on a custom field, they must be namedspaced with `custom_object_fields.`. ex. `custom_object_fields.field_key`<br/><br/>When filtering on a standard field, no namespace is required. The following fields are considered standard: `created_at`, `updated_at`, `created_by_user`, `updated_by_user`, `name`, `external_id`\n| OPERATOR  | string        | yes      | [Supported operators](/documentation/custom-data/v2/searching-custom-object-records/) vary by the value's data type\n| VALUE     | string, array | yes      | The value you're filtering for\n\n* Date values should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n\n#### Allowed For\n\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)",
+        "description": "Returns an array of custom object records that meet the search and filter criteria. For simple searches limited to only text fields and no complex logic, use the [Search Custom Object Records API](/api-reference/custom-data/custom-objects/custom_object_records/#search-custom-object-records) endpoint.\n\nIf the object has a parent field with `cascade_permissions_enabled`, non-admin agents must include a filter on the parent field (for example, `\"custom_object_fields.parent_field_key\": { \"$eq\": \"parent_record_id\" }`). Requests without a parent filter return `403 Forbidden`.\n\nFilters can contain either an individual [comparison object](#comparison-object) or an array of filter expressions within logical namespaces. Filter expressions can themselves be either comparison objects or `$and` / `$or` groups, so logical operators can be nested to build complex Boolean queries.\n\nA filter is a JSON object that has the following properties:\n\n| Name      | Type   | Required | Description\n| --------- | ------ | -------- | -----------\n| ATTRIBUTE | object | no       | A [comparison object](#comparison-object) specifying an attribute value condition to be met for records to match.<br/><br/>Examples are marked below.\n| $and      | array  | no       | Array of filter expressions combined with logical AND. Each element may be a comparison object or a nested `$and` / `$or` group.\n| $or       | array  | no       | Array of filter expressions combined with logical OR. Each element may be a comparison object or a nested `$and` / `$or` group.\n\nLimits for nested `$and` / `$or` groups:\n\n* Maximum nesting depth: `5` (outermost `$and` / `$or` counts as level 1). Exceeding it returns `422 Invalid Condition`.\n* Attribute keys cannot share a level with `$and` / `$or` once the payload contains any `$and` / `$or` nested inside another `$and` / `$or`. The request returns `422 Invalid Condition`; wrap the attribute inside the group instead.\n\n##### Examples\n\n```js\n{\n  \"filter\": {\n    \"custom_object_fields.field_key\": { \"$eq\": \"value\" } // ATTRIBUTE\n  }\n}\n```\n\n```js\n{\n  \"filter\": {\n    \"$or\": [\n      { \"custom_object_fields.field_key\": { \"$eq\": \"value\" } }, // ATTRIBUTE\n      { \"external_id\": { \"$eq\": \"Record123\" } } // ATTRIBUTE\n    ]\n  }\n}\n```\n\n```js\n// Nested $and / $or\n{\n  \"filter\": {\n    \"$and\": [\n      { \"custom_object_fields.contract_term_months\": { \"$gt\": 5 } },\n      {\n        \"$or\": [\n          { \"custom_object_fields.status\": { \"$eq\": \"active\" } },\n          { \"custom_object_fields.status\": { \"$eq\": \"pending\" } }\n        ]\n      }\n    ]\n  }\n}\n```\n\n#### Comparison Object\n\nA comparison object defines a condition a record must meet to be considered a match. The condition is based on an attribute value or object type.\n\nA comparison object is a JSON object that has the following properties:\n\n| Name      | Type          | Required | Description\n| --------- | ------------- | -------- | -----------\n| FIELD_KEY | string        | yes      | When filtering on a custom field, they must be namedspaced with `custom_object_fields.`. ex. `custom_object_fields.field_key`<br/><br/>When filtering on a standard field, no namespace is required. The following fields are considered standard: `created_at`, `updated_at`, `created_by_user`, `updated_by_user`, `name`, `external_id`\n| OPERATOR  | string        | yes      | [Supported operators](/documentation/custom-data/v2/searching-custom-object-records/) vary by the value's data type\n| VALUE     | string, array | yes      | The value you're filtering for\n\n* Date values should be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\n\n#### Pagination\n\n* [Cursor pagination](/api-reference/introduction/pagination/#cursor-pagination) only.\n* Returns the records sorted by relevancy with page limits. Without a `sort` parameter, only the first 10,000 records are returned. With a `sort` parameter, all records are returned.\n\n#### Allowed For\n\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -7349,8 +7506,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/show_by_unique_identifier": {
@@ -7360,7 +7528,7 @@
           "Custom Object Records"
         ],
         "summary": "Show Custom Object Record by Unique Identifier",
-        "description": "Returns a custom object record identified by its external id, its name, or the value of one of the custom object's unique fields. Send exactly one identifier per request.\n\n* To identify the record by name, the `is_unique` property on the custom object's name field must be enabled.\n* To identify the record by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. For a unique lookup field, the value is the id of the record the field references.\n\nReturns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.\n#### Allowed For\n* Agents\n",
+        "description": "Returns a custom object record identified by its external id, its name, or the value of one of the custom object's unique fields. Send exactly one identifier per request.\n\n* To identify the record by name, the `is_unique` property on the custom object's name field must be enabled.\n* To identify the record by a unique field, send the field's key as the query parameter, for example `?vin=1HGCM82633A004352`. The field's `is_unique` property must be enabled. For a unique lookup field, the value is the id of the record the field references.\n\nReturns a `400 Bad Request` if more than one identifier is sent, if `name` is sent and the name field isn't unique, or if no identifier is sent. A parameter that isn't the key of a unique field doesn't count as an identifier. Returns a `404 Not Found` if no record matches.\n#### Allowed For\n* Agents\n* End users (when an admin [configures](https://support.zendesk.com/hc/en-us/articles/6034260247066) the custom object to be accessible to end users)\n* Anonymous users (when an admin [allows anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access) for the custom object)\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/CustomObjectKey"
@@ -7390,8 +7558,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized. Returned to an anonymous caller when anonymous access isn't allowed for the custom object."
+          },
+          "429": {
+            "description": "Too Many Requests. Returned to an anonymous caller that exceeds the request limit for its IP address."
           }
-        }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/update_by_unique_identifier": {
@@ -10163,7 +10342,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateGroupSLAPolicy",
@@ -10203,7 +10389,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_slas/policies/{group_sla_policy_id}": {
@@ -10322,7 +10515,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateGroupSLAPolicy",
@@ -10362,7 +10562,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteGroupSLAPolicy",
@@ -10375,7 +10582,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_slas/policies/definitions": {
@@ -10402,7 +10616,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_slas/policies/reorder": {
@@ -10511,7 +10732,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups": {
@@ -13940,7 +14168,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateMacro",
@@ -14019,7 +14254,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/{macro_id}": {
@@ -14051,7 +14293,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateMacro",
@@ -14110,7 +14359,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteMacro",
@@ -14123,7 +14379,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/{macro_id}/apply": {
@@ -14163,7 +14426,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/{macro_id}/attachments": {
@@ -14195,7 +14465,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateAssociatedMacroAttachment",
@@ -14220,7 +14497,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/actions": {
@@ -14256,7 +14540,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/active": {
@@ -14317,7 +14608,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/attachments": {
@@ -14344,7 +14642,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/attachments/{attachment_id}": {
@@ -14376,7 +14681,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/attachments/{attachment_id}/content": {
@@ -14404,7 +14716,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/categories": {
@@ -14431,7 +14750,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/definitions": {
@@ -14472,7 +14798,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/destroy_many": {
@@ -14507,7 +14840,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/groups": {
@@ -14542,7 +14882,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/most_used": {
@@ -14569,7 +14916,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/new": {
@@ -14612,7 +14966,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/search": {
@@ -14668,7 +15029,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/macros/update_many": {
@@ -14720,7 +15088,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/oauth/clients": {
@@ -14755,7 +15130,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOAuthClient",
@@ -14780,7 +15162,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/oauth/clients/{oauth_client_id}": {
@@ -14812,7 +15201,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateClient",
@@ -14837,7 +15233,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteClient",
@@ -14850,7 +15253,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/oauth/clients/{oauth_client_id}/generate_secret": {
@@ -14882,7 +15292,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/oauth/global_clients": {
@@ -14917,7 +15334,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/oauth/global_clients/{global_client_id}": {
@@ -15030,7 +15454,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/oauth/tokens/{oauth_token_id}": {
@@ -15062,7 +15493,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "RevokeOAuthToken",
@@ -15102,7 +15540,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "RevokeCurrentOAuthToken",
@@ -15185,7 +15630,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOrganizationField",
@@ -15225,7 +15677,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_fields/{organization_field_id}": {
@@ -15257,7 +15716,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateOrganizationField",
@@ -15296,7 +15762,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteOrganizationField",
@@ -15309,7 +15782,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_fields/reorder": {
@@ -15349,7 +15829,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_memberships": {
@@ -16105,7 +16592,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/subscriptions": {
@@ -17218,7 +17712,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSupportAddress",
@@ -17243,7 +17744,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/recipient_addresses/{support_address_id}": {
@@ -17275,7 +17783,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateSupportAddress",
@@ -17300,7 +17815,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteRecipientAddress",
@@ -17313,7 +17835,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/recipient_addresses/{support_address_id}/verify": {
@@ -17343,7 +17872,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/relationships/definitions/{target_type}": {
@@ -17429,7 +17965,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "security:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests": {
@@ -17488,7 +18031,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateRequest",
@@ -17528,7 +18078,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/{request_id}": {
@@ -17560,7 +18117,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateRequest",
@@ -17599,7 +18163,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/{request_id}/comments": {
@@ -17649,7 +18220,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/{request_id}/comments/{ticket_comment_id}": {
@@ -17684,7 +18262,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/ccd": {
@@ -17729,7 +18314,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/open": {
@@ -17774,7 +18366,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/search": {
@@ -17811,7 +18410,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/requests/solved": {
@@ -17856,7 +18462,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/resource_collections": {
@@ -17888,7 +18501,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "apps:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateResourceCollection",
@@ -17913,7 +18533,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "apps:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/resource_collections/{resource_collection_id}": {
@@ -17945,7 +18572,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "apps:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateResourceCollection",
@@ -17970,7 +18604,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "apps:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteResourceCollection",
@@ -17995,7 +18636,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "apps:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/agents/{user_id}/instance_values": {
@@ -18794,7 +19442,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "satisfaction_ratings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/satisfaction_ratings/{satisfaction_rating_id}": {
@@ -18834,7 +19489,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "satisfaction_ratings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/satisfaction_ratings/count": {
@@ -18861,7 +19523,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "satisfaction_ratings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/satisfaction_reasons": {
@@ -18888,7 +19557,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "satisfaction_ratings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/satisfaction_reasons/{satisfaction_reason_id}": {
@@ -18928,7 +19604,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "satisfaction_ratings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/saved_searches": {
@@ -19418,7 +20101,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "security:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/sessions": {
@@ -19704,7 +20394,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSLAPolicy",
@@ -19744,7 +20441,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/slas/policies/{sla_policy_id}": {
@@ -19776,7 +20480,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateSLAPolicy",
@@ -19816,7 +20527,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSLAPolicy",
@@ -19829,7 +20547,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/slas/policies/definitions": {
@@ -19856,7 +20581,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/slas/policies/reorder": {
@@ -19895,7 +20627,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets": {
@@ -21296,6 +22035,14 @@
             }
           },
           {
+            "name": "include_anonymous_availability",
+            "in": "query",
+            "description": "If true, includes the `relationship_target_publicly_listable` property on each lookup and multi-lookup field that targets a custom object. The property is true when anonymous users can read the target custom object's records. See [Anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access).\n",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "$ref": "#/components/parameters/CursorPaginationPage"
           },
           {
@@ -21324,7 +22071,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTicketField",
@@ -21364,7 +22118,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields/{ticket_field_id}": {
@@ -21399,7 +22160,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTicketField",
@@ -21439,7 +22207,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTicketField",
@@ -21452,7 +22227,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields/{ticket_field_id}/options": {
@@ -21484,7 +22266,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOrUpdateTicketFieldOption",
@@ -21524,7 +22313,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields/{ticket_field_id}/options/{ticket_field_option_id}": {
@@ -21559,7 +22355,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTicketFieldOption",
@@ -21572,7 +22375,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields/count": {
@@ -21599,7 +22409,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields/reorder": {
@@ -21624,7 +22441,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields/show_many": {
@@ -21687,7 +22511,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_form_statuses": {
@@ -23301,7 +24132,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_attachments:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/comments/{ticket_comment_id}/make_private": {
@@ -23597,7 +24435,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/incidents": {
@@ -23680,7 +24525,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "macros:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/mark_as_spam": {
@@ -23989,7 +24841,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "satisfaction_ratings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/skips": {
@@ -24097,7 +24956,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "sla_policies:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/tags": {
@@ -26398,7 +27264,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_attachments:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/uploads/{token}": {
@@ -26425,7 +27303,19 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_attachments:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/user_fields": {
@@ -26465,7 +27355,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserField",
@@ -26505,7 +27402,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/user_fields/{user_field_id}": {
@@ -26537,7 +27441,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateUserField",
@@ -26577,7 +27488,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserField",
@@ -26590,7 +27508,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/user_fields/{user_field_id}/options": {
@@ -26622,7 +27547,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOrUpdateUserFieldOption",
@@ -26677,7 +27609,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/user_fields/{user_field_id}/options/{user_field_option_id}": {
@@ -26712,7 +27651,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserFieldOption",
@@ -26725,7 +27671,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/user_fields/reorder": {
@@ -26765,7 +27718,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/user_fields/show_many": {
@@ -26803,7 +27763,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users": {
@@ -28614,7 +29581,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "requests:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/sessions": {
@@ -30422,7 +31396,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/me/session": {
@@ -31019,7 +32000,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateView",
@@ -31044,7 +32032,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/{view_id}": {
@@ -31101,7 +32096,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateView",
@@ -31126,7 +32128,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteView",
@@ -31139,7 +32148,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/{view_id}/count": {
@@ -31191,7 +32207,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/{view_id}/execute": {
@@ -31278,7 +32301,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/{view_id}/export": {
@@ -31310,7 +32340,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/{view_id}/tickets": {
@@ -31380,7 +32417,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/active": {
@@ -31442,7 +32486,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/compact": {
@@ -31469,7 +32520,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/count": {
@@ -31496,7 +32554,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/count_many": {
@@ -31557,7 +32622,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/definitions": {
@@ -31711,7 +32783,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/destroy_many": {
@@ -31738,7 +32817,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/preview": {
@@ -31794,7 +32880,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/preview/count": {
@@ -31821,7 +32914,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/search": {
@@ -31910,7 +33010,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/show_many": {
@@ -31957,7 +33064,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views/update_many": {
@@ -31984,7 +33098,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "ticket_views:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/workspaces": {
@@ -32075,7 +33196,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateWorkspace",
@@ -32196,7 +33324,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/workspaces/{workspace_id}": {
@@ -32286,7 +33421,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateWorkspace",
@@ -32407,7 +33549,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteWorkspace",
@@ -32420,7 +33569,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/workspaces/destroy_many": {
@@ -32465,7 +33621,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/workspaces/reorder": {
@@ -32519,7 +33682,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "account_settings:write"
+            ]
+          }
+        ]
       }
     },
     "/oauth/tokens": {
@@ -32529,7 +33699,7 @@
           "Grant Type Tokens"
         ],
         "summary": "Create Token for Grant Type",
-        "description": "Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters, which must be formatted as JSON:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | \"authorization_code\", \"refresh_token\", or \"client_credentials\"\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client's configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"authorization_code\",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: \"tickets:read users:read\",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"refresh_token\",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"client_credentials\",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app's access to Zendesk resources. The \"read\" scope gives access to GET endpoints and includes permission to sideload related resources. The \"write\" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don't confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe \"impersonate\" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`\"scope\": \"read\"`\n\nThe following parameter gives read and write access to all resources:\n\n`\"scope\": \"read write\"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`\"scope\": \"resource:action\"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`\"scope\": \"tickets:read\"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`\"scope\": \"users:read users:write\"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`\"scope\": \"organizations:write read\"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn't exist (for example, a typo such as `\"scope\": [\"read\", \"write\"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client's allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n",
+        "description": "Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n- a [device code](https://datatracker.ietf.org/doc/html/rfc8628) obtained from [Start a device authorization grant](#oauth-device-authorization) (not yet generally available)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters, which must be formatted as JSON:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | \"authorization_code\", \"refresh_token\", \"client_credentials\", or \"urn:ietf:params:oauth:grant-type:device_code\" (not yet generally available)\n| device_code              | Device grant flow only. The device verification code received from [Start a device authorization grant](#oauth-device-authorization). Required for the device grant type\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client's configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"authorization_code\",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: \"tickets:read users:read\",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"refresh_token\",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"client_credentials\",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Device grant example**\n\n```javascript\n// Poll after starting the flow at POST /oauth/device_authorization.\n// While the end user has not yet approved: 400 authorization_pending.\n// If polling faster than the advertised interval: 400 slow_down.\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"urn:ietf:params:oauth:grant-type:device_code\",\n    device_code: DEVICE_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app's access to Zendesk resources. The \"read\" scope gives access to GET endpoints and includes permission to sideload related resources. The \"write\" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don't confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe \"impersonate\" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`\"scope\": \"read\"`\n\nThe following parameter gives read and write access to all resources:\n\n`\"scope\": \"read write\"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`\"scope\": \"resource:action\"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`\"scope\": \"tickets:read\"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`\"scope\": \"users:read users:write\"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`\"scope\": \"organizations:write read\"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn't exist (for example, a typo such as `\"scope\": [\"read\", \"write\"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client's allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n",
         "responses": {
           "201": {
             "description": "Created response",
@@ -37741,6 +38911,17 @@
         "type": "object",
         "description": "Request body for approval requests. Two mutually exclusive shapes are supported:\n\n* **Single**: Specify a top-level `assignee_user_id` or `assignee_group_id` to create one approval request with a specified `subject` and `message`. \n* **Parallel**: Specify an `approval_requests` array instead of a top-level assignee value. This creates multiple approval requests under a single workflow instance. All approval requests in the array share the same `subject` and `message`.\n",
         "properties": {
+          "approval_attachment_tokens": {
+            "type": "array",
+            "description": "Optional. Staged upload tokens returned when uploading files for the approval request.\nEach token is consumed once to attach its staged file to the approval request at\ncreation time. Maximum five tokens, matching the attachments limit.\n",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "01JAR7ZK3M9Q2VX8B5C4D6E7F8",
+              "01JAR7ZK3M9Q2VX8B5C4D6E7F9"
+            ]
+          },
           "approval_requests": {
             "type": "array",
             "description": "Parallel approval requests only. One entry per approval request to create, up to five. Each entry must\nspecify exactly one of `assignee_user_id` or `assignee_group_id`.  Can't be used with a top-level `assignee_user_id` or `assignee_group_id`.\n",
@@ -40665,15 +41846,16 @@
           },
           "role": {
             "type": "string",
-            "description": "The role of the user (staff or end-user), empty if identity does not exist",
+            "description": "The role of the user (staff or end-user), empty if the identity does not exist or is reserved as a Support address",
             "example": "staff"
           },
           "status": {
             "type": "string",
-            "description": "Whether the identity exists",
+            "description": "Whether the identity exists, or whether it is reserved as a Support address and cannot be used for a new user",
             "enum": [
               "EXISTS",
-              "DOES_NOT_EXIST"
+              "DOES_NOT_EXIST",
+              "RESERVED_SUPPORT_ADDRESS"
             ],
             "example": "EXISTS"
           },
@@ -42307,7 +43489,7 @@
           },
           "created_by": {
             "type": "string",
-            "description": "The name of the user who created the attachment",
+            "description": "The name of the user who created the attachment. Omitted from responses to anonymous requests.",
             "example": "John Doe",
             "readOnly": true
           },
@@ -42331,21 +43513,21 @@
           },
           "malware_access_override": {
             "type": "boolean",
-            "description": "If true, you can download an attachment flagged as malware. If false, you can't download such an attachment.",
+            "description": "If true, you can download an attachment flagged as malware. If false, you can't download such an attachment. Omitted from responses to anonymous requests.",
             "example": false,
             "readOnly": true
           },
           "malware_scan_completed_at": {
             "type": "string",
             "format": "date-time",
-            "description": "The date and time when the malware scan was completed",
+            "description": "The date and time when the malware scan was completed. Omitted from responses to anonymous requests.",
             "example": "2024-01-15T14:30:00Z",
             "nullable": true,
             "readOnly": true
           },
           "malware_scan_status": {
             "type": "string",
-            "description": "The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed.",
+            "description": "The result of the malware scan. There is a delay between the time the attachment is uploaded and when the malware scan is completed. Omitted from responses to anonymous requests.",
             "enum": [
               "malware_found",
               "malware_not_found",
@@ -50887,6 +52069,48 @@
           }
         }
       },
+      "OAuthDeviceAuthorizationResponse": {
+        "title": "Device Authorization Response",
+        "type": "object",
+        "properties": {
+          "device_code": {
+            "type": "string",
+            "description": "The device verification code. The device sends it to the token endpoint as the `device_code` parameter when polling for the access token. The device must treat it like a password.",
+            "readOnly": true
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Number of seconds the device_code and user_code remain valid (300 = 5 minutes). Both codes share a single lifetime.",
+            "readOnly": true
+          },
+          "interval": {
+            "type": "integer",
+            "description": "Minimum number of seconds the device must wait between polling requests to the token endpoint. Polling faster returns the `slow_down` error, which requires adding 5 seconds to the interval.",
+            "readOnly": true
+          },
+          "user_code": {
+            "type": "string",
+            "description": "The end-user verification code to display on the device. The user enters it at the verification_uri, where Dashes are for display only and can be omitted on entry.",
+            "readOnly": true
+          },
+          "verification_uri": {
+            "type": "string",
+            "description": "The URL the end user visits on a browser-equipped device to enter the user_code and approve or deny the request.",
+            "readOnly": true
+          },
+          "verification_uri_complete": {
+            "type": "string",
+            "description": "The verification_uri with the user_code pre-filled. Devices that can display it should direct the end user to this URL instead.",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "device_code",
+          "user_code",
+          "verification_uri",
+          "expires_in"
+        ]
+      },
       "OAuthTokenForGrantTypesObject": {
         "title": "OAuth Tokens for Grant Types",
         "type": "object",
@@ -53196,7 +54420,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The policy ID (e.g., 'custom-role-123' or 'end-user')",
+            "description": "The policy ID (e.g., 'custom-role-123', 'end-user', or 'anonymous')",
             "example": "custom-role-6678128886399"
           },
           "records": {
@@ -56782,6 +58006,7 @@
                           },
                           "password_history_length": {
                             "type": "integer",
+                            "description": "Number of most recently recorded passwords to reject, including the current password. Supports 3–8, or 3–20 with auth_extended_password_history enabled. A saved higher value remains supported when the flag is disabled. Null means history checking is disabled.",
                             "nullable": true
                           },
                           "password_in_mixed_case": {
@@ -60815,6 +62040,11 @@
           "relationship_filter": {
             "type": "object",
             "description": "A filter definition that allows your autocomplete to filter down results"
+          },
+          "relationship_target_publicly_listable": {
+            "type": "boolean",
+            "description": "Present for \"lookup\" and \"multi_lookup\" fields that target a custom object, and only when the `include_anonymous_availability` query parameter is true. True if anonymous users can read the target custom object's records. See [Anonymous access](/api-reference/custom-data/custom-objects/custom_object_records/#anonymous-access).",
+            "readOnly": true
           },
           "relationship_target_type": {
             "type": "string",
@@ -73018,6 +74248,10 @@
       "ApprovalRequestCreateParallelRequestExample": {
         "summary": "Parallel (multiple approval requests)",
         "value": {
+          "approval_attachment_tokens": [
+            "01JAR7ZK3M9Q2VX8B5C4D6E7F8",
+            "01JAR7ZK3M9Q2VX8B5C4D6E7F9"
+          ],
           "approval_requests": [
             {
               "assignee_user_id": 101
@@ -73033,6 +74267,10 @@
       },
       "ApprovalRequestCreateRequestExample": {
         "value": {
+          "approval_attachment_tokens": [
+            "01JAR7ZK3M9Q2VX8B5C4D6E7F8",
+            "01JAR7ZK3M9Q2VX8B5C4D6E7F9"
+          ],
           "assignee_user_id": 456,
           "message": "Please approve this request for a new laptop for the engineering team",
           "subject": "Laptop Purchase Approval",
@@ -79392,6 +80630,16 @@
           ]
         }
       },
+      "OAuthDeviceAuthorizationResponseExample": {
+        "value": {
+          "device_code": "1c73ef0ff5fb9eaf7826378c275c3bcd5b6178b5ce40667469d0ca73f8f5c515",
+          "expires_in": 300,
+          "interval": 5,
+          "user_code": "DPKV-TJBF",
+          "verification_uri": "https://example.zendesk.com/oauth/device",
+          "verification_uri_complete": "https://example.zendesk.com/oauth/device?user_code=DPKV-TJBF"
+        }
+      },
       "OAuthTokenForGrantTypesResponseExample": {
         "value": {
           "access_token": "gErypPlm4dOVgGRvA1ZzMH5MQ3nLo8bo",
@@ -80678,6 +81926,27 @@
                 }
               },
               "role_name": "End User"
+            },
+            {
+              "id": "anonymous",
+              "records": {
+                "create": {
+                  "allowed": false,
+                  "rule_id": null
+                },
+                "delete": {
+                  "allowed": false,
+                  "rule_id": null
+                },
+                "read": {
+                  "allowed": true,
+                  "rule_id": null
+                },
+                "update": {
+                  "allowed": false,
+                  "rule_id": null
+                }
+              }
             }
           ]
         }
