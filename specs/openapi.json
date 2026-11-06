@@ -482,7 +482,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/account/email_settings": {
@@ -895,7 +902,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/activities/{activity_id}": {
@@ -927,7 +941,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/activities/count": {
@@ -954,7 +975,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/any_channel/channelback/report_error": {
@@ -979,7 +1007,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "any_channel:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/any_channel/push": {
@@ -1006,7 +1041,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "any_channel:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/any_channel/validate_token": {
@@ -1031,7 +1073,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "any_channel:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/api_tokens": {
@@ -1494,7 +1543,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/approval_clarification_flow_messages/{approval_request_id}": {
@@ -1580,7 +1636,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/approval_requests": {
@@ -1718,7 +1781,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateApprovalRequest",
@@ -1785,7 +1855,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/approval_workflow_instances/{workflow_instance_id}/approval_requests/{id}": {
@@ -1915,7 +1992,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/approval_workflow_instances/{workflow_instance_id}/approval_requests/{id}/decision": {
@@ -2148,7 +2232,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/approval_workflow_instances/{workflow_instance_id}/withdraw": {
@@ -2324,7 +2415,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/attachments/{attachment_id}": {
@@ -2724,7 +2822,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "AutocompleteTagsPost",
@@ -2772,7 +2882,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/automations": {
@@ -3200,7 +3322,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateBookmark",
@@ -3254,7 +3383,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/bookmarks/{bookmark_id}": {
@@ -3274,7 +3410,14 @@
           "204": {
             "description": "No content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brand_agents": {
@@ -3312,7 +3455,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateBrandAgent",
@@ -3352,7 +3507,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brand_agents/{brand_agent_id}": {
@@ -3384,7 +3551,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteBrandAgentById",
@@ -3402,7 +3581,19 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands": {
@@ -3904,7 +4095,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/{brand_id}/check_host_mapping": {
@@ -4508,7 +4711,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/voice/agents/{agent_id}/users/{user_id}/display": {
@@ -4554,7 +4764,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/voice/tickets": {
@@ -4626,7 +4843,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/whatsapp_templates": {
@@ -4737,7 +4961,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/whatsapp_templates/{template_id}/toggle": {
@@ -4897,7 +5128,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/whatsapp_templates/languages": {
@@ -4966,7 +5204,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/whatsapp_templates/toggle_many": {
@@ -5109,7 +5354,14 @@
           "422": {
             "description": "Returned when `template_ids` contains no non-blank values. No response body is returned\nin this case.\n"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/chat_file_redactions/{ticket_id}": {
@@ -5197,7 +5449,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/chat_redactions/{ticket_id}": {
@@ -5305,7 +5564,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/comment_redactions/{ticket_comment_id}": {
@@ -5429,7 +5695,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/countries.json": {
@@ -5570,7 +5843,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCustomObject",
@@ -5609,7 +5889,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}": {
@@ -5657,7 +5944,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:read"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateCustomObject",
@@ -5702,7 +5996,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomObject",
@@ -5720,7 +6021,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/access_rules": {
@@ -5752,7 +6060,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateAccessRule",
@@ -5797,7 +6112,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/access_rules/{id}": {
@@ -5839,7 +6161,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateAccessRule",
@@ -5894,7 +6223,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteAccessRule",
@@ -5922,7 +6258,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/access_rules/definitions": {
@@ -5954,7 +6297,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/fields": {
@@ -5989,7 +6339,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCustomObjectField",
@@ -6033,7 +6390,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/fields/{custom_object_field_key_or_id}": {
@@ -6076,7 +6440,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateCustomObjectField",
@@ -6124,7 +6495,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomObjectField",
@@ -6145,7 +6523,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/fields/reorder": {
@@ -6190,7 +6575,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/jobs": {
@@ -6262,7 +6654,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/limits/field_limit": {
@@ -6294,7 +6693,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/permission_policies": {
@@ -6326,7 +6732,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/permission_policies/{id}": {
@@ -6368,7 +6781,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdatePermissionPolicy",
@@ -6429,7 +6849,14 @@
           "422": {
             "description": "Unprocessable Entity. The `read` scope of a policy other than `anonymous` can't be changed while anonymous reads are allowed."
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records": {
@@ -6538,6 +6965,11 @@
         },
         "security": [
           {
+            "oauth2": [
+              "read"
+            ]
+          },
+          {
             "basicAuth": []
           }
         ]
@@ -6584,7 +7016,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpsertCustomObjectRecordByExternalIdOrName",
@@ -6637,7 +7076,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomObjectRecordByExternalIdOrName",
@@ -6664,7 +7110,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/{custom_object_record_id}": {
@@ -6707,6 +7160,11 @@
           }
         },
         "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          },
           {
             "basicAuth": []
           }
@@ -6758,7 +7216,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomObjectRecord",
@@ -6779,7 +7244,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/{record_id}/attachments": {
@@ -6842,6 +7314,11 @@
           }
         },
         "security": [
+          {
+            "oauth2": [
+              "custom_objects:read"
+            ]
+          },
           {
             "basicAuth": []
           }
@@ -6922,7 +7399,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/{record_id}/attachments/{id}": {
@@ -6994,7 +7478,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomObjectRecordAttachment",
@@ -7038,7 +7529,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/records/{record_id}/attachments/{id}/download": {
@@ -7119,6 +7617,11 @@
           }
         },
         "security": [
+          {
+            "oauth2": [
+              "custom_objects:read"
+            ]
+          },
           {
             "basicAuth": []
           }
@@ -7258,6 +7761,11 @@
         },
         "security": [
           {
+            "oauth2": [
+              "read"
+            ]
+          },
+          {
             "basicAuth": []
           }
         ]
@@ -7325,6 +7833,11 @@
           }
         },
         "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          },
           {
             "basicAuth": []
           }
@@ -7409,6 +7922,11 @@
           }
         },
         "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          },
           {
             "basicAuth": []
           }
@@ -7516,6 +8034,11 @@
         },
         "security": [
           {
+            "oauth2": [
+              "read"
+            ]
+          },
+          {
             "basicAuth": []
           }
         ]
@@ -7567,6 +8090,11 @@
           }
         },
         "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          },
           {
             "basicAuth": []
           }
@@ -7625,7 +8153,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateCustomObjectRecordByUniqueIdentifier",
@@ -7678,7 +8213,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers": {
@@ -7721,7 +8263,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateObjectTrigger",
@@ -7761,7 +8310,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers/{trigger_id}": {
@@ -7796,7 +8352,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateObjectTrigger",
@@ -7836,7 +8399,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteObjectTrigger",
@@ -7849,7 +8419,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers/active": {
@@ -7887,7 +8464,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers/definitions": {
@@ -7919,7 +8503,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers/destroy_many": {
@@ -7942,7 +8533,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers/search": {
@@ -7995,7 +8593,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/{custom_object_key}/triggers/update_many": {
@@ -8042,7 +8647,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/limits/object_limit": {
@@ -8069,7 +8681,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "custom_objects:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_objects/limits/record_limit": {
@@ -8096,7 +8715,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_roles": {
@@ -8123,7 +8749,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCustomRole",
@@ -8148,7 +8781,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_roles/{custom_role_id}": {
@@ -8180,7 +8820,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateCustomRoleById",
@@ -8205,7 +8852,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomRoleById",
@@ -8218,7 +8872,14 @@
           "204": {
             "description": "No Contetnt response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_status/default": {
@@ -8259,7 +8920,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_statuses": {
@@ -8312,7 +8980,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCustomStatus",
@@ -8352,7 +9027,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_statuses/{custom_status_id}": {
@@ -8384,7 +9066,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateCustomStatus",
@@ -8428,7 +9117,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCustomStatus",
@@ -8446,7 +9142,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_statuses/{custom_status_id}/ticket_form_statuses": {
@@ -8517,7 +9220,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/custom_statuses/show_many": {
@@ -8555,7 +9265,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_tickets": {
@@ -8599,7 +9316,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_tickets/{ticket_id}": {
@@ -8631,7 +9355,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_tickets/{ticket_id}/restore": {
@@ -8661,7 +9392,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_tickets/destroy_many": {
@@ -8693,7 +9431,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_tickets/restore_many": {
@@ -8723,7 +9468,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_users": {
@@ -8869,7 +9621,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_users/{deleted_user_id}": {
@@ -8944,7 +9703,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "PermanentlyDeleteUser",
@@ -9012,7 +9778,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deleted_users/count": {
@@ -9039,7 +9812,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deletion_schedules": {
@@ -9074,7 +9854,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "deletion_schedules:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateDeletionSchedule",
@@ -9124,7 +9911,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "deletion_schedules:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/deletion_schedules/{deletion_schedule_id}": {
@@ -9161,7 +9955,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "deletion_schedules:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateDeletionSchedule",
@@ -9216,7 +10017,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "deletion_schedules:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteDeletionSchedule",
@@ -9234,7 +10042,14 @@
           "204": {
             "description": "Success Response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "deletion_schedules:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items": {
@@ -9272,7 +10087,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateDynamicContent",
@@ -9312,7 +10134,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items/{dynamic_content_item_id}": {
@@ -9344,7 +10173,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateDynamicContentItem",
@@ -9384,7 +10220,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteDynamicContentItem",
@@ -9397,7 +10240,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items/{dynamic_content_item_id}/variants": {
@@ -9440,7 +10290,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateDynamicContentVariant",
@@ -9480,7 +10337,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/{dynamic_content_variant_id}": {
@@ -9515,7 +10379,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateDynamicContentVariant",
@@ -9555,7 +10426,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteDynamicContentVariant",
@@ -9568,7 +10446,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/create_many": {
@@ -9615,7 +10500,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items/{dynamic_content_item_id}/variants/update_many": {
@@ -9662,7 +10554,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/dynamic_content/items/show_many": {
@@ -9700,7 +10599,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "dynamic_content:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/email_notifications": {
@@ -9738,7 +10644,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/email_notifications/{notification_id}": {
@@ -9770,7 +10683,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/email_notifications/show_many": {
@@ -9808,7 +10728,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/end_users/{user_id}/identities": {
@@ -9857,7 +10784,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateEndUserIdentity",
@@ -9908,7 +10842,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/end_users/{user_id}/identities/{user_identity_id}": {
@@ -9943,7 +10884,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteEndUserIdentity",
@@ -9956,7 +10904,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/end_users/{user_id}/identities/{user_identity_id}/make_primary": {
@@ -9991,7 +10946,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/end_users/{user_id}/identities/{user_identity_id}/request_verification": {
@@ -10024,7 +10986,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_memberships": {
@@ -10065,7 +11034,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateGroupMembership",
@@ -10105,7 +11086,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_memberships/{group_membership_id}": {
@@ -10137,7 +11130,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteGroupMembership",
@@ -10150,7 +11155,19 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_memberships/assignable": {
@@ -10177,7 +11194,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_memberships/create_many": {
@@ -10219,7 +11248,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_memberships/destroy_many": {
@@ -10257,7 +11298,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/group_slas/policies": {
@@ -10789,7 +11842,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateGroup",
@@ -10829,7 +11889,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/{group_id}": {
@@ -10866,7 +11933,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateGroup",
@@ -10906,7 +11980,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteGroup",
@@ -10919,7 +12000,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/{group_id}/memberships": {
@@ -10952,7 +12040,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/{group_id}/memberships/assignable": {
@@ -10985,7 +12085,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/{group_id}/users": {
@@ -11032,7 +12144,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/{group_id}/users/count": {
@@ -11076,7 +12195,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/assignable": {
@@ -11103,7 +12229,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/autocomplete": {
@@ -11142,7 +12275,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/available_agents": {
@@ -11203,7 +12343,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/count": {
@@ -11230,7 +12377,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/groups/default": {
@@ -11257,7 +12411,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/imports/tickets": {
@@ -11393,7 +12554,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/imports/tickets/create_many": {
@@ -11491,7 +12659,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/{incremental_resource}/sample": {
@@ -11879,7 +13054,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/organizations": {
@@ -11914,7 +13096,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/routing/attribute_values": {
@@ -11941,7 +13130,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/routing/attributes": {
@@ -11968,7 +13164,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/routing/instance_values": {
@@ -11995,7 +13198,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/ticket_events": {
@@ -12035,7 +13245,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/ticket_metric_events": {
@@ -12133,7 +13350,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/tickets": {
@@ -12168,7 +13392,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/tickets/cursor": {
@@ -12206,7 +13437,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/users": {
@@ -12241,7 +13479,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/incremental/users/cursor": {
@@ -12279,7 +13524,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/it_asset_management/asset_types": {
@@ -12682,7 +13934,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateItamAsset",
@@ -13068,7 +14327,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/it_asset_management/fields": {
@@ -13863,7 +15129,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/job_statuses/{job_status_id}": {
@@ -13895,7 +15168,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/job_statuses/show_many": {
@@ -13934,7 +15214,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/locales": {
@@ -15877,7 +17164,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOrganizationMembership",
@@ -15917,7 +17211,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_memberships/{organization_membership_id}": {
@@ -15949,7 +17255,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteOrganizationMembership",
@@ -15962,7 +17275,19 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_memberships/create_many": {
@@ -16004,7 +17329,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_memberships/destroy_many": {
@@ -16045,7 +17382,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_merges/{organization_merge_id}": {
@@ -16077,7 +17426,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_subscriptions": {
@@ -16104,7 +17460,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOrganizationSubscription",
@@ -16143,7 +17506,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organization_subscriptions/{organization_subscription_id}": {
@@ -16175,7 +17545,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteOrganizationSubscription",
@@ -16193,7 +17570,14 @@
           "204": {
             "description": "No content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations": {
@@ -16237,7 +17621,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateOrganization",
@@ -16277,7 +17668,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}": {
@@ -16325,7 +17723,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateOrganization",
@@ -16386,7 +17791,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteOrganization",
@@ -16399,7 +17811,14 @@
           "204": {
             "description": "No Content Response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/merge": {
@@ -16446,7 +17865,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/merges": {
@@ -16478,7 +17904,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/organization_memberships": {
@@ -16510,7 +17943,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/related": {
@@ -16542,7 +17982,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/requests": {
@@ -16632,7 +18079,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/tags": {
@@ -16799,7 +18253,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/tickets/count": {
@@ -16850,7 +18311,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/users": {
@@ -16908,7 +18376,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/{organization_id}/users/count": {
@@ -16951,7 +18426,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/autocomplete": {
@@ -17039,7 +18521,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/count": {
@@ -17074,7 +18563,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/create_many": {
@@ -17101,7 +18597,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/create_or_update": {
@@ -17158,7 +18661,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/destroy_many": {
@@ -17193,7 +18703,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/search": {
@@ -17228,7 +18745,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/show_many": {
@@ -17263,7 +18787,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/organizations/update_many": {
@@ -17324,7 +18855,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/problems": {
@@ -17368,7 +18906,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/problems/autocomplete": {
@@ -17423,7 +18968,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/push_notification_devices/destroy_many": {
@@ -17462,7 +19019,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/queues": {
@@ -17641,7 +19205,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/queues/order": {
@@ -17671,7 +19242,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/recipient_addresses": {
@@ -17927,7 +19505,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/remote_authentications": {
@@ -18675,7 +20260,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "SetAgentAttributeValues",
@@ -18727,7 +20319,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/agents/instance_values": {
@@ -18808,7 +20407,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/agents/instance_values/jobs": {
@@ -18866,7 +20472,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/attributes": {
@@ -18898,7 +20511,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateAttribute",
@@ -18923,7 +20543,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/attributes/{attribute_id}": {
@@ -18955,7 +20582,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateAttribute",
@@ -18980,7 +20614,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteAttribute",
@@ -18993,7 +20634,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/attributes/{attribute_id}/values": {
@@ -19025,7 +20673,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateAttributeValue",
@@ -19050,7 +20705,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/attributes/{attribute_id}/values/{attribute_value_id}": {
@@ -19085,7 +20747,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateAttributeValuePut",
@@ -19110,7 +20779,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "patch": {
         "operationId": "UpdateAttributeValue",
@@ -19135,7 +20811,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteAttributeValue",
@@ -19148,7 +20831,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/attributes/definitions": {
@@ -19175,7 +20865,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/requirements/fulfilled": {
@@ -19215,7 +20912,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/routing/tickets/{ticket_id}/instance_values": {
@@ -19247,7 +20951,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "SetTicketAttributeValues",
@@ -19404,7 +21115,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/satisfaction_ratings": {
@@ -19899,7 +21617,7 @@
           {
             "name": "brand_id",
             "in": "query",
-            "description": "When brand separation is enabled, scopes user results to the specified brand.\nThis parameter applies only when the account has brand separation enabled\n(`brand_user_separation_eap`). Non-user document types are unaffected.\n\nAccepted values:\n\n* \"all\" — apply no brand scoping.\n* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.\n* A numeric brand id — if the brand has user separation enabled, return that\n  brand's end users plus the agents with membership in that brand and all admins.\n  If the brand does not have user separation enabled, the request falls back to\n  account scope (0). A brand id that does not exist on the account matches no users.\n\nAny other value returns 400 Bad Request, whether or not brand separation is enabled.\n\nThe query keyword form (`query=type:user brand_id:{brand_id}`) continues to work. It\nmatches the brand id as indexed on every document type, so admins match only through\ntheir brand memberships, and it does not apply the account-scope fallback for brands\nwithout user separation.\n",
+            "description": "When brand separation is enabled, scopes user results to the specified brand.\nThis parameter applies only when the account has brand separation enabled\n(`brand_user_separation_eap`). Non-user document types are unaffected.\n\nAccepted values:\n\n* \"all\" — apply no brand scoping.\n* 0 — return only account-scoped (brand-less) end users; all agents and admins remain visible.\n* A numeric brand id — if the brand has user separation enabled, return that\n  brand's end users plus the agents with membership in that brand and all admins.\n  If the brand's users are account-scoped, return the account-scoped end users, any end\n  users still indexed with the brand, and all agents and admins. A brand id that does\n  not exist on the account matches no users.\n\nAny other value returns 400 Bad Request, whether or not brand separation is enabled.\n\nOmitting `brand_id` applies no brand scoping; this endpoint does not fall back to the\naccount's default brand_id behavior. Use the users search and autocomplete endpoints\nfor that fallback.\n\nThe query keyword forms (`query=type:user brand_id:{brand_id}` and `brand:{brand_id}`)\ncontinue to work. They match the brand id as indexed on every document type, so agents\nand admins match only through their brand memberships. When brand separation is enabled\nand the brand's users are account-scoped, they also match every account-scoped end user,\nand a negated keyword (`-brand_id:{brand_id}`) excludes those end users too.\n",
             "schema": {
               "oneOf": [
                 {
@@ -19936,7 +21654,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/search/count": {
@@ -19995,7 +21720,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/search/export": {
@@ -20063,7 +21795,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/security_settings": {
@@ -20143,7 +21882,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/sharing_agreements": {
@@ -20170,7 +21916,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSharingAgreement",
@@ -20210,7 +21963,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/sharing_agreements/{sharing_agreement_id}": {
@@ -20242,7 +22002,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateSharingAgreement",
@@ -20282,7 +22049,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSharingAgreement",
@@ -20295,7 +22069,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/skips": {
@@ -20327,7 +22108,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "RecordNewSkip",
@@ -20367,7 +22155,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/slas/policies": {
@@ -20677,7 +22472,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets/{id}": {
@@ -20709,7 +22511,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSuspendedTicket",
@@ -20727,7 +22536,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets/{id}/recover": {
@@ -20762,7 +22578,14 @@
           "422": {
             "description": "Recovery failed response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets/attachments": {
@@ -20897,7 +22720,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets/destroy_many": {
@@ -20917,7 +22747,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets/export": {
@@ -20944,7 +22781,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/suspended_tickets/recover_many": {
@@ -20976,7 +22820,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tags": {
@@ -21068,7 +22919,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/target_failures/{target_failure_id}": {
@@ -21100,7 +22958,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/targets": {
@@ -21127,7 +22992,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTarget",
@@ -21152,7 +23024,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/targets/{target_id}": {
@@ -21184,7 +23063,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTarget",
@@ -21209,7 +23095,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTarget",
@@ -21222,7 +23115,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "targets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/task_list_templates": {
@@ -21249,7 +23149,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTaskListTemplate",
@@ -21288,7 +23195,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/task_list_templates/{task_list_template_id}": {
@@ -21320,7 +23234,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTaskListTemplate",
@@ -21359,7 +23280,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTaskListTemplate",
@@ -21372,7 +23300,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/task_list_templates/{task_list_template_id}/tasks": {
@@ -21436,7 +23371,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateCustomTaskList",
@@ -21475,7 +23417,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTaskList",
@@ -21488,7 +23437,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/task_lists/{task_list_id}/task_items": {
@@ -21699,7 +23655,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_content_pins": {
@@ -21748,7 +23711,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTicketContentPin",
@@ -21920,7 +23890,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_content_pins/{content_pin_id}": {
@@ -21990,7 +23967,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_fields": {
@@ -22589,7 +24573,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_form_statuses/show_many": {
@@ -22628,7 +24619,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms": {
@@ -22726,7 +24724,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTicketForm",
@@ -22766,7 +24771,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms/{ticket_form_id}": {
@@ -22798,7 +24810,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTicketForm",
@@ -22838,7 +24857,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTicketForm",
@@ -22851,7 +24877,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms/{ticket_form_id}/clone": {
@@ -22897,7 +24930,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms/{ticket_form_id}/ticket_form_statuses": {
@@ -22930,7 +24970,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTicketFormStatuses",
@@ -22975,7 +25022,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTicketFormStatuses",
@@ -23021,7 +25075,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTicketFormStatuses",
@@ -23059,7 +25120,14 @@
           "204": {
             "description": "Success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms/{ticket_form_id}/ticket_form_statuses/{ticket_form_status_id}": {
@@ -23141,7 +25209,14 @@
           "204": {
             "description": "Success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms/reorder": {
@@ -23183,7 +25258,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_forms/show_many": {
@@ -23295,7 +25377,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/ticket_metrics/{ticket_metric_id}": {
@@ -23334,7 +25423,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets": {
@@ -23456,7 +25552,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTicket",
@@ -23584,7 +25687,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}": {
@@ -23698,7 +25808,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTicket",
@@ -23799,7 +25916,14 @@
           "409": {
             "description": "Conflict - optimistic locking failure (database collision)"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTicket",
@@ -23817,7 +25941,14 @@
           "204": {
             "description": "No content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/audits": {
@@ -23882,7 +26013,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/audits/{ticket_audit_id}": {
@@ -23917,7 +26055,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/audits/{ticket_audit_id}/make_private": {
@@ -23950,7 +26095,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/audits/count": {
@@ -23982,7 +26134,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/collaborators": {
@@ -24094,7 +26253,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/comments/{comment_id}/attachments/{attachment_id}/redact": {
@@ -24172,7 +26338,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/comments/{ticket_comment_id}/redact": {
@@ -24229,7 +26402,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/comments/count": {
@@ -24261,7 +26441,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/conversation_log": {
@@ -24299,7 +26486,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/email_ccs": {
@@ -24474,7 +26668,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/macros/{macro_id}/apply": {
@@ -24561,7 +26762,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/merge": {
@@ -24607,7 +26815,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/metric_events": {
@@ -24689,7 +26904,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/metrics": {
@@ -24722,7 +26944,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/parent_ticket_tasks": {
@@ -24754,7 +26983,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/related": {
@@ -24786,7 +27022,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/satisfaction_rating": {
@@ -24884,7 +27127,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/slas/policy_metrics": {
@@ -25157,7 +27407,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/task_items/{task_item_id}/task_links": {
@@ -25192,7 +27449,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "LinkExistingTicket",
@@ -25231,7 +27495,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/task_items/{task_item_id}/task_links/{task_object_link_id}": {
@@ -25264,7 +27535,14 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/{ticket_id}/task_lists": {
@@ -25296,7 +27574,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTaskList",
@@ -25353,7 +27638,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/autocomplete": {
@@ -25400,7 +27692,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/count": {
@@ -25446,7 +27745,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/create_many": {
@@ -25487,7 +27793,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/destroy_many": {
@@ -25519,7 +27832,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/mark_many_as_spam": {
@@ -25551,7 +27871,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/messaging/conversations/{conversation_id}/ticket": {
@@ -25593,7 +27920,14 @@
           "404": {
             "description": "No active ticket found for the given conversation ID"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/recent": {
@@ -25620,7 +27954,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/show_many": {
@@ -25660,7 +28001,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/tickets/update_many": {
@@ -25720,7 +28068,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/trigger_categories": {
@@ -27268,12 +29623,12 @@
         "security": [
           {
             "oauth2": [
-              "ticket_attachments:write"
+              "tickets:write"
             ]
           },
           {
             "oauth2": [
-              "tickets:write"
+              "ticket_attachments:write"
             ]
           }
         ]
@@ -27307,12 +29662,12 @@
         "security": [
           {
             "oauth2": [
-              "ticket_attachments:write"
+              "tickets:write"
             ]
           },
           {
             "oauth2": [
-              "tickets:write"
+              "ticket_attachments:write"
             ]
           }
         ]
@@ -27882,7 +30237,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUser",
@@ -27982,7 +30344,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}": {
@@ -28036,7 +30405,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateUser",
@@ -28098,7 +30474,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUser",
@@ -28142,7 +30525,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/brand_agents": {
@@ -28175,7 +30565,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/brand_agents/{brand_agent_id}": {
@@ -28211,7 +30613,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/compliance_deletion_statuses": {
@@ -28254,7 +30668,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/entitlements/full": {
@@ -28322,7 +30743,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/group_memberships": {
@@ -28365,7 +30793,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserGroupMembership",
@@ -28406,7 +30846,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/group_memberships/{group_membership_id}": {
@@ -28442,7 +30894,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserGroupMembership",
@@ -28456,7 +30920,19 @@
           "204": {
             "description": "No content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/group_memberships/{group_membership_id}/make_default": {
@@ -28491,7 +30967,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "groups:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/groups": {
@@ -28543,7 +31031,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/groups/count": {
@@ -28575,7 +31070,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "groups:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/identities": {
@@ -28646,7 +31148,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserIdentity",
@@ -28734,7 +31243,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/identities/{user_identity_id}": {
@@ -28769,7 +31285,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateUserIdentity",
@@ -28832,7 +31355,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserIdentity",
@@ -28845,7 +31375,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/identities/{user_identity_id}/make_primary": {
@@ -28880,7 +31417,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/identities/{user_identity_id}/request_verification": {
@@ -28925,7 +31469,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/identities/{user_identity_id}/verify": {
@@ -28960,7 +31511,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/merge": {
@@ -29024,7 +31582,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organization_memberships": {
@@ -29061,7 +31626,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserOrganizationMembership",
@@ -29102,7 +31674,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organization_memberships/{organization_membership_id}": {
@@ -29137,7 +31721,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserOrganizationMembership",
@@ -29151,7 +31742,19 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organization_memberships/{organization_membership_id}/make_default": {
@@ -29186,7 +31789,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organization_subscriptions": {
@@ -29219,7 +31834,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organizations": {
@@ -29304,7 +31926,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organizations/{organization_id}": {
@@ -29327,7 +31956,19 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organizations/{organization_id}/make_default": {
@@ -29362,7 +32003,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "organizations:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/organizations/count": {
@@ -29395,7 +32048,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "organizations:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/password": {
@@ -29425,7 +32085,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "ChangeOwnPassword",
@@ -29460,7 +32127,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/password/requirements": {
@@ -29492,7 +32166,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/related": {
@@ -29523,7 +32204,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/requests": {
@@ -29621,7 +32309,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "BulkDeleteSessionsByUserId",
@@ -29634,7 +32329,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/sessions/{session_id}": {
@@ -29669,7 +32371,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSession",
@@ -29682,7 +32391,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/skips": {
@@ -29717,7 +32433,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/suspension": {
@@ -29774,7 +32497,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserSuspension",
@@ -29895,7 +32625,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateUserSuspension",
@@ -30013,7 +32750,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserSuspension",
@@ -30070,7 +32814,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/tags": {
@@ -30237,7 +32988,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/tickets/assigned/count": {
@@ -30288,7 +33046,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/tickets/ccd": {
@@ -30320,7 +33085,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/tickets/ccd/count": {
@@ -30371,7 +33143,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/tickets/followed": {
@@ -30425,7 +33204,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/{user_id}/tickets/requested": {
@@ -30489,7 +33275,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "tickets:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/autocomplete": {
@@ -30639,7 +33432,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "AutocompleteUsersPost",
@@ -30843,7 +33643,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/count": {
@@ -30901,7 +33708,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/create_many": {
@@ -30943,7 +33757,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/create_or_update": {
@@ -31054,7 +33875,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/create_or_update_many": {
@@ -31096,7 +33924,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/destroy_many": {
@@ -31163,7 +33998,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/logout_many": {
@@ -31199,7 +34041,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/me": {
@@ -31369,7 +34218,14 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/me/oauth/clients": {
@@ -31430,7 +34286,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/me/session/renew": {
@@ -31457,7 +34320,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/me/settings": {
@@ -31484,7 +34354,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateCurrentUserSettings",
@@ -31567,7 +34444,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/request_create": {
@@ -31607,7 +34491,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/search": {
@@ -31718,7 +34609,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/show_many": {
@@ -31837,7 +34740,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/users/update_many": {
@@ -31916,7 +34826,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "users:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/views": {

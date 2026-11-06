@@ -20,7 +20,7 @@
     {
       "path": "docs/ticketing-introduction.html",
       "source": "https://developer.zendesk.com/api-reference/ticketing/introduction/",
-      "bytes": 172906
+      "bytes": 172904
     },
     {
       "path": "docs/security-and-auth.html",
@@ -35,7 +35,7 @@
     {
       "path": "docs/help-center-introduction.html",
       "source": "https://developer.zendesk.com/api-reference/help_center/help-center-api/introduction/",
-      "bytes": 116673
+      "bytes": 116671
     }
   ]
 }
