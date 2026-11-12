@@ -137,7 +137,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreatePost",
@@ -172,7 +179,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}": {
@@ -204,7 +218,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdatePost",
@@ -229,7 +250,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeletePost",
@@ -242,7 +270,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/comments": {
@@ -274,7 +309,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreatePostComment",
@@ -299,7 +341,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/comments/{comment_id}/down": {
@@ -344,7 +393,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/comments/{comment_id}/up": {
@@ -389,7 +450,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/comments/{comment_id}/votes": {
@@ -424,7 +497,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/comments/{post_comment_id}": {
@@ -459,7 +539,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdatePostComment",
@@ -484,7 +571,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeletePostComment",
@@ -497,7 +591,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/down": {
@@ -539,7 +640,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/subscriptions": {
@@ -571,7 +684,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreatePostSubscription",
@@ -606,7 +726,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/subscriptions/{subscription_id}": {
@@ -641,7 +768,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeletePostSubscription",
@@ -654,7 +788,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/up": {
@@ -696,7 +837,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/posts/{post_id}/votes": {
@@ -728,7 +881,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/topics": {
@@ -755,7 +915,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTopic",
@@ -790,7 +957,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/topics/{topic_id}": {
@@ -822,7 +996,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTopic",
@@ -847,7 +1028,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTopic",
@@ -860,7 +1048,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/topics/{topic_id}/posts": {
@@ -924,7 +1119,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/topics/{topic_id}/subscriptions": {
@@ -956,7 +1158,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTopicSubscription",
@@ -991,7 +1200,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/topics/{topic_id}/subscriptions/{subscription_id}": {
@@ -1026,7 +1242,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTopicSubscription",
@@ -1051,7 +1274,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteTopicSubscription",
@@ -1064,7 +1294,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/users/{user_id}/comments": {
@@ -1096,7 +1333,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/community/users/{user_id}/posts": {
@@ -1160,7 +1404,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/guide/search": {
@@ -1280,7 +1531,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/guide/user_images": {
@@ -1307,7 +1565,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/guide/user_images/uploads": {
@@ -1334,7 +1599,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles": {
@@ -1432,7 +1704,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}": {
@@ -1478,7 +1757,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateArticle",
@@ -1502,7 +1788,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "ArchiveArticle",
@@ -1515,7 +1808,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/attachments": {
@@ -1550,7 +1850,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/attachments/block": {
@@ -1585,7 +1892,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/attachments/inline": {
@@ -1620,7 +1934,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/bulk_attachments": {
@@ -1653,7 +1974,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/comments": {
@@ -1708,7 +2041,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleComment",
@@ -1743,7 +2083,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/comments/{comment_id}": {
@@ -1781,7 +2128,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateComment",
@@ -1806,7 +2160,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteComment",
@@ -1819,7 +2180,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/comments/{comment_id}/votes": {
@@ -1857,7 +2225,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/labels": {
@@ -1892,7 +2267,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleLabel",
@@ -1917,7 +2299,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/labels/{label_id}": {
@@ -1943,7 +2332,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/source_locale": {
@@ -1976,7 +2372,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/subscriptions": {
@@ -2011,7 +2419,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleSubscription",
@@ -2046,7 +2461,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/subscriptions/{subscription_id}": {
@@ -2084,7 +2506,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteArticleSubscription",
@@ -2097,7 +2526,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/up": {
@@ -2142,7 +2578,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/articles/{article_id}/votes": {
@@ -2177,7 +2625,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/categories": {
@@ -2251,7 +2706,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCategory",
@@ -2286,7 +2748,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/categories/{category_id}": {
@@ -2321,7 +2790,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateCategory",
@@ -2346,7 +2822,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCategory",
@@ -2359,7 +2842,14 @@
           "204": {
             "description": "No content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/categories/{category_id}/articles": {
@@ -2454,7 +2944,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/categories/{category_id}/sections": {
@@ -2528,7 +3025,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSection",
@@ -2578,7 +3082,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/categories/{category_id}/source_locale": {
@@ -2611,7 +3122,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/community/posts/{post_id}/comments/{post_comment_id}": {
@@ -2723,7 +3246,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/sections/{section_id}": {
@@ -2758,7 +3288,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateSection",
@@ -2816,7 +3353,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSection",
@@ -2829,7 +3373,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/sections/{section_id}/articles": {
@@ -2924,7 +3475,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticle",
@@ -2972,7 +3530,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/sections/{section_id}/source_locale": {
@@ -3005,7 +3570,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/sections/{section_id}/subscriptions": {
@@ -3040,7 +3612,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSectionSubscription",
@@ -3074,7 +3653,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/{locale}/sections/{section_id}/subscriptions/{subscription_id}": {
@@ -3112,7 +3698,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSectionSubscription",
@@ -3125,7 +3718,14 @@
           "204": {
             "description": "delete body"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles": {
@@ -3215,7 +3815,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}": {
@@ -3247,7 +3854,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateArticleNoLocale",
@@ -3286,7 +3900,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "ArchiveArticleNoLocale",
@@ -3299,7 +3920,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/attachments": {
@@ -3331,7 +3959,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleAttachment",
@@ -3366,7 +4001,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/attachments/{article_attachment_id}": {
@@ -3401,7 +4043,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/attachments/block": {
@@ -3433,7 +4082,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/attachments/inline": {
@@ -3465,7 +4121,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/bulk_attachments": {
@@ -3495,7 +4158,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/comments": {
@@ -3544,7 +4219,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleCommentNoLocale",
@@ -3579,7 +4261,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/comments/{comment_id}": {
@@ -3614,7 +4303,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateArticleCommentNoLocale",
@@ -3639,7 +4335,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteArticleCommentNoLocale",
@@ -3652,7 +4355,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/comments/{comment_id}/down": {
@@ -3697,7 +4407,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/comments/{comment_id}/up": {
@@ -3742,7 +4464,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/comments/{comment_id}/votes": {
@@ -3777,7 +4511,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/down": {
@@ -3819,7 +4560,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/labels": {
@@ -3851,7 +4604,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleLabelNoLocale",
@@ -3876,7 +4636,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/labels/{label_id}": {
@@ -3899,7 +4666,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/source_locale": {
@@ -3929,7 +4703,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/subscriptions": {
@@ -3961,7 +4747,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleSubscriptionNoLocale",
@@ -3996,7 +4789,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/subscriptions/{subscription_id}": {
@@ -4031,7 +4831,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteArticleSubscriptionNoLocale",
@@ -4044,7 +4851,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/translations": {
@@ -4117,7 +4931,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTranslation",
@@ -4152,7 +4973,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/translations/{locale}": {
@@ -4187,7 +5015,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTranslation",
@@ -4212,7 +5047,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/translations/missing": {
@@ -4244,7 +5086,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/up": {
@@ -4286,7 +5140,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/{article_id}/votes": {
@@ -4318,7 +5184,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/attachments": {
@@ -4355,7 +5228,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/attachments/{article_attachment_id}": {
@@ -4387,7 +5267,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteArticleAttachment",
@@ -4400,7 +5287,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/embeddable_search": {
@@ -4628,7 +5522,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/labels": {
@@ -4655,7 +5556,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/labels/{label_id}": {
@@ -4687,7 +5595,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteLabel",
@@ -4700,7 +5615,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/articles/search": {
@@ -4855,7 +5777,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories": {
@@ -4921,7 +5850,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateCategoryNoLocale",
@@ -4996,7 +5932,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}": {
@@ -5028,7 +5971,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateCategoryNoLocale",
@@ -5071,7 +6021,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteCategoryNoLocale",
@@ -5084,7 +6041,14 @@
           "204": {
             "description": "No content"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}/articles": {
@@ -5161,7 +6125,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}/sections": {
@@ -5220,7 +6191,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSectionByCategory",
@@ -5310,7 +6288,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}/source_locale": {
@@ -5340,7 +6325,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}/translations": {
@@ -5401,7 +6398,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTranslationByCategoryNoLocale",
@@ -5436,7 +6440,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}/translations/{locale}": {
@@ -5471,7 +6482,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTranslationByCategoryNoLocale",
@@ -5496,7 +6514,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/categories/{category_id}/translations/missing": {
@@ -5528,7 +6553,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/community_posts/search": {
@@ -5645,7 +6682,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/deflection/suggestions": {
@@ -5685,7 +6729,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/incremental/articles": {
@@ -5769,7 +6820,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/locales": {
@@ -5796,7 +6859,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections": {
@@ -5868,7 +6938,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}": {
@@ -5900,7 +6977,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateSectionNoLocale",
@@ -5958,7 +7042,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSectionNoLocale",
@@ -5971,7 +7062,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/articles": {
@@ -6060,7 +7158,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateArticleBySection",
@@ -6108,7 +7213,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/source_locale": {
@@ -6138,7 +7250,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/subscriptions": {
@@ -6187,7 +7311,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateSectionSubscriptionNoLocale",
@@ -6221,7 +7352,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/subscriptions/{subscription_id}": {
@@ -6256,7 +7394,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteSectionSubscriptionNoLocale",
@@ -6269,7 +7414,14 @@
           "204": {
             "description": "delete body"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/translations": {
@@ -6330,7 +7482,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateTranslationBySectionNoLocale",
@@ -6365,7 +7524,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/translations/{locale}": {
@@ -6400,7 +7566,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateTranslationBySectionNoLocale",
@@ -6425,7 +7598,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sections/{section_id}/translations/missing": {
@@ -6457,7 +7637,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/service_catalog/items": {
@@ -6495,7 +7687,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/service_catalog/items/{item_id}": {
@@ -6527,7 +7726,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/service_catalog/items/search": {
@@ -6568,7 +7774,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/sessions": {
@@ -6615,7 +7828,14 @@
           "204": {
             "description": "Delete response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/user_segments": {
@@ -6653,7 +7873,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserSegment",
@@ -6693,7 +7920,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/user_segments/{user_segment_id}": {
@@ -6725,7 +7959,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateUserSegment",
@@ -6765,7 +8006,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteUserSegment",
@@ -6778,7 +8026,14 @@
           "204": {
             "description": "Response when the object was deleted"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/user_segments/{user_segment_id}/sections": {
@@ -6810,7 +8065,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/user_segments/{user_segment_id}/topics": {
@@ -6842,7 +8104,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/user_segments/applicable": {
@@ -6880,7 +8149,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          },
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/articles": {
@@ -6969,7 +8250,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/comments": {
@@ -7012,7 +8300,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/subscriptions": {
@@ -7055,7 +8350,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/user_segments": {
@@ -7107,7 +8409,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/user_subscriptions": {
@@ -7153,7 +8462,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateUserSubscriptionByUserId",
@@ -7215,7 +8531,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/user_subscriptions/{subscription_id}": {
@@ -7238,7 +8561,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/users/{user_id}/votes": {
@@ -7270,7 +8600,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/votes": {
@@ -7297,7 +8634,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/help_center/votes/{vote_id}": {
@@ -7329,7 +8673,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteVote",
@@ -7342,7 +8693,14 @@
           "204": {
             "description": "Default success response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/applications": {
@@ -7464,7 +8822,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/applications/{application_id}": {
@@ -7549,7 +8914,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/applications/{application_id}/access_requests": {
@@ -7643,7 +9015,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:write"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/applications/{application_id}/access_requests/latest": {
@@ -7713,7 +9092,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/applications/{application_id}/access_status": {
@@ -7798,7 +9184,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/applications/filters": {
@@ -7853,7 +9246,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     },
     "/hc/api/v2/articles/featured": {
@@ -7945,7 +9345,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "hc:read"
+            ]
+          }
+        ]
       }
     }
   },
@@ -12801,6 +14208,21 @@
         "type": "http",
         "description": "OAuth 2.0 bearer token authentication.",
         "scheme": "bearer"
+      },
+      "oauth2": {
+        "type": "oauth2",
+        "description": "Zendesk OAuth 2.0 access tokens. When an operation lists multiple\nscopes, a token needs only one of the scopes to authorize the request.\nThis behavior differs from the OpenAPI specification, in which all\nscopes listed for a security scheme are required.\n",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "/oauth/authorizations/new",
+            "tokenUrl": "/oauth/tokens",
+            "refreshUrl": "/oauth/tokens",
+            "scopes": {
+              "hc:read": "View Help Center content. Includes articles, sections, categories, community posts and comments.",
+              "hc:write": "Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments."
+            }
+          }
+        }
       },
       "sessionAuth": {
         "name": "_zendesk_session",
