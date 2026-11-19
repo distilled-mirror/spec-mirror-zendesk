@@ -3781,7 +3781,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateBrand",
@@ -3863,7 +3870,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/{brand_id}": {
@@ -3947,7 +3961,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       },
       "put": {
         "operationId": "UpdateBrand",
@@ -4037,7 +4058,14 @@
               "image/png": {}
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteBrand",
@@ -4055,7 +4083,14 @@
           "204": {
             "description": "No Content response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/{brand_id}/agents": {
@@ -4138,7 +4173,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/{brand_id}/logo": {
@@ -4194,7 +4236,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       },
       "delete": {
         "operationId": "DeleteBrandLogo",
@@ -4212,7 +4261,14 @@
           "204": {
             "description": "Successful response"
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/{brand_id}/user_migrations": {
@@ -4245,7 +4301,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       },
       "post": {
         "operationId": "CreateBrandUserMigration",
@@ -4337,11 +4400,23 @@
                       "type": "string"
                     }
                   }
+                },
+                "examples": {
+                  "default": {
+                    "$ref": "#/components/examples/BrandUserMigrationUnprocessableEntityExample"
+                  }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:write"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/{brand_id}/user_migrations/{migration_id}": {
@@ -4356,7 +4431,8 @@
           "required": true,
           "schema": {
             "type": "string"
-          }
+          },
+          "example": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
         }
       ],
       "get": {
@@ -4383,7 +4459,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/brands/check_host_mapping": {
@@ -4424,7 +4507,14 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "brands:read"
+            ]
+          }
+        ]
       }
     },
     "/api/v2/channels/twitter/monitored_twitter_handles": {
@@ -36533,7 +36623,7 @@
           "Grant Type Tokens"
         ],
         "summary": "Create Token for Grant Type",
-        "description": "Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n- a [device code](https://datatracker.ietf.org/doc/html/rfc8628) obtained from [Start a device authorization grant](#oauth-device-authorization) (not yet generally available)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters. Send them in the request body as JSON or URL-encoded form data:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | \"authorization_code\", \"refresh_token\", \"client_credentials\",  \"urn:ietf:params:oauth:grant-type:device_code\" (not yet generally available), or \"urn:ietf:params:oauth:grant-type:jwt-bearer\"\n| assertion                 | ID-JAG grant only. A valid identity assertion JWT of type \"oauth-id-jag+jwt\" from the identity provider. Required for the ID-JAG grant\n| device_code              | Device grant flow only. The device verification code received from [Start a device authorization grant](#oauth-device-authorization). Required for the device grant type\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client's configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"authorization_code\",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: \"tickets:read users:read\",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"refresh_token\",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"client_credentials\",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Device grant example**\n\n```javascript\n// Poll after starting the flow at POST /oauth/device_authorization.\n// While the end user has not yet approved: 400 authorization_pending.\n// If polling faster than the advertised interval: 400 slow_down.\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"urn:ietf:params:oauth:grant-type:device_code\",\n    device_code: DEVICE_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app's access to Zendesk resources. The \"read\" scope gives access to GET endpoints and includes permission to sideload related resources. The \"write\" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don't confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe \"impersonate\" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`\"scope\": \"read\"`\n\nThe following parameter gives read and write access to all resources:\n\n`\"scope\": \"read write\"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`\"scope\": \"resource:action\"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`\"scope\": \"tickets:read\"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`\"scope\": \"users:read users:write\"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`\"scope\": \"organizations:write read\"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn't exist (for example, a typo such as `\"scope\": [\"read\", \"write\"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client's allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n",
+        "description": "Returns an OAuth access token in exchange for one of the following:\n\n- an [authorization code](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_pvr_ncl_1l)\n- a [refresh token](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n- a [client secret](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n- a [device code](https://datatracker.ietf.org/doc/html/rfc8628) obtained from [Start a device authorization grant](#oauth-device-authorization) (not yet generally available)\n\n**Note**: The password grant type flow, which used a Zendesk username and password to get an access token, has been deprecated and is highly discouraged.\n\nTo revoke an access token, see [Revoke Token](/api-reference/ticketing/oauth/oauth_tokens/#revoke-token).\n\n#### Request parameters\n\nThe POST request takes the following parameters. Send them in the request body as JSON or URL-encoded form data:\n\n| Name                     | Description\n| ------------------------ | --------------------------------------------------\n| grant_type               | \"authorization_code\", \"refresh_token\", \"client_credentials\",  \"urn:ietf:params:oauth:grant-type:device_code\" (not yet generally available), or \"urn:ietf:params:oauth:grant-type:jwt-bearer\"\n| assertion                 | ID-JAG grant only. A valid identity assertion JWT of type \"oauth-id-jag+jwt\" from the identity provider. Required for the ID-JAG grant\n| device_code              | Device grant flow only. The device verification code received from [Start a device authorization grant](#oauth-device-authorization). Required for the device grant type\n| code                     | Authorization grant flow only. The authorization code you received from Zendesk after the user granted access. The code is valid for only 120 seconds. See [Handle the user's authorization decision](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_ykc_dcm_dcc) in Zendesk help\n| client_id                | The **Identifier** value specified in an OAuth client in the Zendesk Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| client_secret            | The **Secret** value specified in an OAuth client in the Admin Center (**Apps and integrations** > **APIs** > **OAuth clients**). See [Registering your application with Zendesk](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_s21_lfs_qk)\n| redirect_uri             | Authorization grant flow only. The redirect URL you specified when you sent the user to the Zendesk authorization page. For ID purposes only. See [Send the user to the Zendesk authorization page](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_mkc_dcm_dcc)\n| scope                    | Valid scope for this token. A space-separated string of scope values. Must be within the client's configured allowed scopes, if set. See [Scope](#scope) below\n| expires_in               | Number of seconds the access token is valid. Must be greater than or equal to 300 seconds (5 minutes) and less than or equal to 172,800 seconds (2 days), or less than `refresh_token_expires_in`, whichever is the shorter. Defaults to null\n| refresh_token_expires_in | Number of seconds the refresh token is valid. Must be greater than or equal to 604,800 seconds (7 days) or `expires_in` (if given), and less than or equal to 7,776,000 seconds (90 days). Defaults to 2,592,000 seconds (30 days)\n| refresh_token            | A valid refresh token. See [Replacing expired access tokens](https://support.zendesk.com/hc/en-us/articles/4408845965210#topic_p1c_xjf_52c)\n\n**Authorization code example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"authorization_code\",\n    code: AUTHORIZATION_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    redirect_uri: REDIRECT_URI_PKCE,\n    scope: \"tickets:read users:read\",\n    code_verifier: CODE_VERIFIER,\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Refresh token example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"refresh_token\",\n    refresh_token: REFRESH_TOKEN,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400,\n    refresh_token_expires_in: 604800,\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Client credentials example**\n\n```javascript\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"client_credentials\",\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET,\n    scope: \"tickets:write\",\n    expires_in: 86400\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n**Device grant example**\n\n```javascript\n// Poll after starting the flow at POST /oauth/device_authorization.\n// While the end user has not yet approved: 400 authorization_pending.\n// If polling faster than the advertised interval: 400 slow_down.\nconst tokenResponse = await axios.post(\n  \"https://{subdomain}.zendesk.com/oauth/tokens\",\n  {\n    grant_type: \"urn:ietf:params:oauth:grant-type:device_code\",\n    device_code: DEVICE_CODE,\n    client_id: ZENDESK_CLIENT_ID,\n    client_secret: ZENDESK_CLIENT_SECRET\n  },\n  { headers: { \"Content-Type\": \"application/json\" } }\n);\n```\n\n#### Scope\n\nYou must specify a scope to control the app's access to Zendesk resources. The \"read\" scope gives access to GET endpoints and includes permission to sideload related resources. The \"write\" scope gives access to POST, PUT, and DELETE endpoints for creating, updating, and deleting resources.\n\n**Note**: Don't confuse the **scope** parameter (singular) with the **scopes** parameter (plural) for non-grant-type tokens described in [OAuth Tokens](/api-reference/ticketing/oauth/oauth_tokens).\n\nThe \"impersonate\" scope allows a Zendesk admin to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/).\n\n**Broad scopes**\n\nThe following parameter gives read access to all resources:\n\n`\"scope\": \"read\"`\n\nThe following parameter gives read and write access to all resources:\n\n`\"scope\": \"read write\"`\n\n**Resource-specific scopes**\n\nYou can fine-tune access using resource-specific scopes. The syntax is as follows:\n\n`\"scope\": \"resource:action\"`\n\nFor example, the following parameter restricts the scope to only reading tickets:\n\n`\"scope\": \"tickets:read\"`\n\nTo give read and write access to a resource, specify both scopes:\n\n`\"scope\": \"users:read users:write\"`\n\nTo give write access only to one resource, such as organizations, and read access to everything else:\n\n`\"scope\": \"organizations:write read\"`\n\n**Scope errors**\n\nThere are two distinct scope-related error cases to be aware of:\n\n- **Unrecognized scope string**: If you specify a scope value that doesn't exist (for example, a typo such as `\"scope\": [\"read\", \"write\"]` using an array instead of a string), the endpoint still creates an access token. However, any API request made with that token will return a `403 Forbidden` error.\n- **Scope outside client's allowed scopes**: If the OAuth client has [allowed scopes](/api-reference/ticketing/oauth/oauth_clients/#create-client) configured and you request a scope not included in that list, the endpoint returns `400 Bad Request` with an `invalid_scope` error and no token is created.\n\n**Available scopes**\n\n| Scope | Description |\n| ----- | ----------- |\n| `read` | Read all data. Gives access to GET endpoints, including permission to sideload related resources. |\n| `write` | Write all data. Gives access to POST, PUT, and DELETE endpoints. |\n| `impersonate` | Allows Zendesk Support admins to make requests on behalf of end users. See [Making API requests on behalf of end users](/documentation/ticketing/using-the-zendesk-api/making-api-requests-on-behalf-of-end-users/). |\n| `account_settings:read` | View account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `account_settings:write` | Create, edit, and delete account settings. Includes account configuration, ticket and user fields, and workspaces. |\n| `ai_agents:chat` | Chat with AI agents. Includes sending messages and receiving responses via the Zendesk Developers API. |\n| `ai_agents:list` | List AI agents. Includes listing the AI agents configured on the account via the Zendesk Developers API. |\n| `ai_agents:search` | Search AI agent knowledge. Includes searching the knowledge sources of the AI agents configured on the account via the Zendesk Developers API. |\n| `apps:read` | View installed apps and their settings. Includes which apps are installed and each app's settings. |\n| `apps:write` | Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages. |\n| `auditlogs:read` | View audit logs. Includes the account-wide record of changes: who changed what and when. Read only. |\n| `automations:read` | View automations and their details. |\n| `automations:write` | Create, edit, and delete automations. |\n| `brands:read` | View brands and their agent assignments. |\n| `brands:write` | Create, edit, and delete brands and their agent assignments. |\n| `custom_objects:read` | View custom objects. Includes custom object definitions and record attachments. |\n| `custom_objects:write` | Create, edit, and delete custom objects. Includes definitions and record attachments. |\n| `deletion_schedules:read` | View deletion schedules. Includes data retention policies that automatically delete tickets, users, and other data. |\n| `deletion_schedules:write` | Delete deletion schedules. Includes deleting data retention policies. |\n| `dynamic_content:read` | View dynamic content items and language variants. |\n| `dynamic_content:write` | Create, edit, and delete dynamic content items and language variants. |\n| `groups:read` | View groups and their memberships. |\n| `groups:write` | Create, edit, and delete groups and their memberships. |\n| `hc:read` | View Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `hc:write` | Create, edit, and delete Help Center content. Includes articles, sections, categories, community posts and comments. |\n| `macros:read` | View macros, their categories, and attachments. |\n| `macros:write` | Create, edit, and delete macros and their attachments. |\n| `organizations:read` | View organizations and their details. Includes memberships, subscriptions, and merge history. |\n| `organizations:write` | Create, edit, and delete organizations and manage their memberships. Includes adding and removing users, managing subscriptions, and merging organizations. |\n| `requests:read` | View support requests and their comments. |\n| `requests:write` | Submit and edit support requests. Includes creating new requests and adding to existing ones. |\n| `satisfaction_ratings:read` | View satisfaction ratings, scores, and reasons. |\n| `satisfaction_ratings:write` | Submit satisfaction ratings. Includes rating a ticket good or bad with an optional reason. |\n| `security:read` | View security and sign-in settings. Includes password policy, session timeouts, IP restrictions, and SSO configuration. Read only. |\n| `side_conversations:read` | View side conversations. Includes the side conversations on a ticket, their messages and events, and their participants. |\n| `side_conversations:write` | Create, update, and reply to side conversations. Includes starting side conversations with people outside the ticket by email, Slack, or Microsoft Teams, creating child tickets, sending replies and files, and importing conversations from other systems. |\n| `sla_policies:read` | View SLA and group SLA policies. |\n| `sla_policies:write` | Create, edit, delete, and reorder SLA and group SLA policies. |\n| `targets:read` | View targets and their delivery failures. |\n| `targets:write` | Create, edit, and delete targets. |\n| `themes:read` | View Guide themes and their files. |\n| `themes:write` | Create, edit, and delete Guide themes. Includes importing, updating, publishing, exporting, and deleting themes. |\n| `ticket_attachments:read` | View files attached to tickets. |\n| `ticket_attachments:write` | Upload, edit, and delete ticket attachments. Includes uploading files, updating and deleting attachments, and redacting them. |\n| `ticket_views:read` | View ticket views and the tickets they return. |\n| `ticket_views:write` | Create, edit, and delete ticket views. |\n| `tickets:read` | View tickets. Includes ticket contents, comments and conversation history, tags, forms and fields, audits, events, and metrics. |\n| `tickets:write` | Create, edit, and delete tickets. Includes adding comments, tags, merging tickets, marking spam, attachments, forms, and custom statuses. |\n| `triggers:read` | View triggers, trigger categories, and their revision history. |\n| `triggers:write` | Create, edit, delete, and reorder triggers and trigger categories. |\n| `users:read` | View users. Includes identities, active sessions, group, organization, and brand memberships, roles, and settings. |\n| `users:write` | Create, edit, and delete users and manage their access. Includes resetting passwords, ending sessions, adding identities, changing memberships, and managing custom roles. |\n| `webhooks:read` | View webhooks and their activity history. |\n| `webhooks:write` | Create, edit, test, and delete webhooks. |\n| `any_channel:write` | Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only. |\n| `web_widget:write` | Edit Web Widget settings and configuration. Write only. |\n| `zis:read` | View private integrations. Includes configurations, connections, and inbound webhooks. |\n| `zis:write` | Create, edit, and delete private integrations. Includes configurations, connections, and inbound webhooks. |\n",
         "responses": {
           "201": {
             "description": "Created response",
@@ -47347,7 +47437,7 @@
           },
           "manage_support_apps": {
             "type": "boolean",
-            "description": "Whether or not the agent can manage support apps"
+            "description": "Whether or not the agent can manage Zendesk Support apps. Defaults to false for custom roles."
           },
           "manage_ticket_fields": {
             "type": "boolean",
@@ -60213,10 +60303,7 @@
         "type": "object",
         "properties": {
           "satisfaction_rating": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SatisfactionRatingObject"
-            }
+            "$ref": "#/components/schemas/SatisfactionRatingObject"
           }
         }
       },
@@ -78347,6 +78434,22 @@
           }
         }
       },
+      "BrandUserMigrationUnprocessableEntityExample": {
+        "value": {
+          "description": "Record validation errors",
+          "details": {
+            "base": [
+              {
+                "description": "Brand migration direction from and to must differ."
+              },
+              {
+                "description": "Brand migration direction from must match brand user separation value."
+              }
+            ]
+          },
+          "error": "RecordInvalid"
+        }
+      },
       "BrandUserMigrationsExample": {
         "value": {
           "user_migrations": [
@@ -79633,6 +79736,7 @@
               "manage_extensions_and_channels": true,
               "manage_facebook": false,
               "manage_organization_fields": false,
+              "manage_support_apps": false,
               "manage_ticket_fields": false,
               "manage_ticket_forms": false,
               "manage_user_fields": false,
@@ -79690,6 +79794,7 @@
                 "manage_extensions_and_channels": true,
                 "manage_facebook": false,
                 "manage_organization_fields": false,
+                "manage_support_apps": false,
                 "manage_ticket_fields": false,
                 "manage_ticket_forms": false,
                 "manage_ticket_settings": false,
@@ -79749,6 +79854,7 @@
                 "manage_extensions_and_channels": true,
                 "manage_facebook": false,
                 "manage_organization_fields": false,
+                "manage_support_apps": false,
                 "manage_ticket_fields": false,
                 "manage_ticket_forms": false,
                 "manage_ticket_settings": false,
@@ -86318,20 +86424,18 @@
       },
       "SatisfactionRatingResponseExample": {
         "value": {
-          "satisfaction_rating": [
-            {
-              "assignee_id": 135,
-              "comment": "Awesome support!",
-              "created_at": "2011-07-20T22:55:29Z",
-              "group_id": 44,
-              "id": 35436,
-              "requester_id": 7881,
-              "score": "good",
-              "ticket_id": 208,
-              "updated_at": "2011-07-20T22:55:29Z",
-              "url": "https://example.zendesk.com/api/v2/satisfaction_ratings/35436"
-            }
-          ]
+          "satisfaction_rating": {
+            "assignee_id": 135,
+            "comment": "Awesome support!",
+            "created_at": "2011-07-20T22:55:29Z",
+            "group_id": 44,
+            "id": 35436,
+            "requester_id": 7881,
+            "score": "good",
+            "ticket_id": 208,
+            "updated_at": "2011-07-20T22:55:29Z",
+            "url": "https://example.zendesk.com/api/v2/satisfaction_ratings/35436"
+          }
         }
       },
       "SatisfactionRatingsCountResponseExample": {
@@ -91501,6 +91605,7 @@
               "accounts:write": "Accounts write scope.",
               "ai_agents:chat": "Ai agents chat scope.",
               "ai_agents:list": "Ai agents list scope.",
+              "ai_agents:search": "Ai agents search scope.",
               "any_channel:write": "Push messages from an external channel into Zendesk. Includes creating tickets, comments, and users from an integrated channel. Write only.",
               "apps:read": "View installed apps and their settings. Includes a list of installed apps and each app's settings.",
               "apps:write": "Install, configure, and remove apps. Includes installing and uninstalling apps, changing settings, and uploading custom app packages.",
